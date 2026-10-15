@@ -1,0 +1,918 @@
+[
+  {
+    "id": 1,
+    "card_id": 71,
+    "number": 1,
+    "word": "số một",
+    "item_name": "chú sư tử",
+    "unit": "chú",
+    "count": 1,
+    "sample_bond": {
+      "total": 1,
+      "part_a": 1,
+      "part_b": 0,
+      "dot_representation": {
+        "total": 1,
+        "part_a": 1,
+        "part_b": 0
+      },
+      "sentences": [
+        "1 gồm 1 và 0",
+        "gộp 1 và 0 được 1"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 1,
+        "total": 1,
+        "split_sentence": "1 gồm 0 và 1",
+        "combine_sentence": "gộp 0 và 1 được 1"
+      },
+      {
+        "part_a": 1,
+        "part_b": 0,
+        "total": 1,
+        "split_sentence": "1 gồm 1 và 0",
+        "combine_sentence": "gộp 1 và 0 được 1"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 2,
+      "steps": [
+        "Nét 1: Đặt bút ở giữa ô ly (đường kẻ 2), viết nét xiên phải lên góc trên bên phải (đường kẻ 3).",
+        "Nét 2: Từ điểm dừng của nét 1, chuyển hướng kéo thẳng đứng xuống dòng kẻ ngang số 1."
+      ],
+      "common_mistakes": "Viết nét xiên quá dài hoặc kéo nét thẳng bị xiên vẹo, không vuông góc với dòng kẻ.",
+      "image_url": "assets/writing_guides/writing_so_1.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 1 gồm mấy và mấy?",
+      "daily_activity": "Cho bé giơ 1 ngón tay, đếm 1 chú sư tử, hỏi: '1 gồm 1 và mấy?' -> '1 gồm 1 và 0'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_71_front.png",
+      "card_back": "assets/cards/card_71_back.png",
+      "illustration": "assets/illustrations/illu_so_1.png",
+      "writing_guide": "assets/writing_guides/writing_so_1.png",
+      "single_animal": "assets/animals/animal_so_1.jpeg",
+      "audio_url": "/audio/module_numbers/so_1.mp3"
+    }
+  },
+  {
+    "id": 2,
+    "card_id": 72,
+    "number": 2,
+    "word": "số hai",
+    "item_name": "chú gà trống",
+    "unit": "chú",
+    "count": 2,
+    "sample_bond": {
+      "total": 2,
+      "part_a": 1,
+      "part_b": 1,
+      "dot_representation": {
+        "total": 2,
+        "part_a": 1,
+        "part_b": 1
+      },
+      "sentences": [
+        "2 gồm 1 và 1",
+        "gộp 1 và 1 được 2"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 2,
+        "total": 2,
+        "split_sentence": "2 gồm 0 và 2",
+        "combine_sentence": "gộp 0 và 2 được 2"
+      },
+      {
+        "part_a": 1,
+        "part_b": 1,
+        "total": 2,
+        "split_sentence": "2 gồm 1 và 1",
+        "combine_sentence": "gộp 1 và 1 được 2"
+      },
+      {
+        "part_a": 2,
+        "part_b": 0,
+        "total": 2,
+        "split_sentence": "2 gồm 2 và 0",
+        "combine_sentence": "gộp 2 và 0 được 2"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 2,
+      "steps": [
+        "Nét 1: Kết hợp nét cong trên và nét xiên lượn xuống góc trái dưới (dòng kẻ 1).",
+        "Nét 2: Nét ngang lượn sóng nhẹ từ trái sang phải trên dòng kẻ ngang số 1."
+      ],
+      "common_mistakes": "Đầu số 2 bị bẹt hoặc chân số 2 quá ngắn, chưa tạo được nét lượn sóng mềm mại.",
+      "image_url": "assets/writing_guides/writing_so_2.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 2 gồm mấy và mấy?",
+      "daily_activity": "Cho bé đếm 2 chú gà trống gáy vang, đố bé: 'Có 2 cái kẹo chia cho 2 bạn, mỗi bạn được mấy cái?'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_72_front.png",
+      "card_back": "assets/cards/card_72_back.png",
+      "illustration": "assets/illustrations/illu_so_2.png",
+      "writing_guide": "assets/writing_guides/writing_so_2.png",
+      "single_animal": "assets/animals/animal_so_2.jpeg",
+      "audio_url": "/audio/module_numbers/so_2.mp3"
+    }
+  },
+  {
+    "id": 3,
+    "card_id": 73,
+    "number": 3,
+    "word": "số ba",
+    "item_name": "chú vịt con",
+    "unit": "chú",
+    "count": 3,
+    "sample_bond": {
+      "total": 3,
+      "part_a": 1,
+      "part_b": 2,
+      "dot_representation": {
+        "total": 3,
+        "part_a": 1,
+        "part_b": 2
+      },
+      "sentences": [
+        "3 gồm 1 và 2",
+        "gộp 1 và 2 được 3"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 3,
+        "total": 3,
+        "split_sentence": "3 gồm 0 và 3",
+        "combine_sentence": "gộp 0 và 3 được 3"
+      },
+      {
+        "part_a": 1,
+        "part_b": 2,
+        "total": 3,
+        "split_sentence": "3 gồm 1 và 2",
+        "combine_sentence": "gộp 1 và 2 được 3"
+      },
+      {
+        "part_a": 2,
+        "part_b": 1,
+        "total": 3,
+        "split_sentence": "3 gồm 2 và 1",
+        "combine_sentence": "gộp 2 và 1 được 3"
+      },
+      {
+        "part_a": 3,
+        "part_b": 0,
+        "total": 3,
+        "split_sentence": "3 gồm 3 và 0",
+        "combine_sentence": "gộp 3 và 0 được 3"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 2,
+      "steps": [
+        "Nét 1: Nét cong hở trái phía trên, dừng ở giữa thân chữ số.",
+        "Nét 2: Nét cong hở trái phía dưới to hơn nét trên một chút, dừng bút trên dòng kẻ 1."
+      ],
+      "common_mistakes": "Hai nửa cong không cân đối hoặc phần thắt ở giữa bị hở, lưng số 3 bị gãy.",
+      "image_url": "assets/writing_guides/writing_so_3.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 3 gồm mấy và mấy?",
+      "daily_activity": "Đố con: 'Gộp 1 chú vịt và 2 chú vịt thì được mấy chú vịt?' -> 'Được 3 chú vịt!'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_73_front.png",
+      "card_back": "assets/cards/card_73_back.png",
+      "illustration": "assets/illustrations/illu_so_3.png",
+      "writing_guide": "assets/writing_guides/writing_so_3.png",
+      "single_animal": "assets/animals/animal_so_3.jpeg",
+      "audio_url": "/audio/module_numbers/so_3.mp3"
+    }
+  },
+  {
+    "id": 4,
+    "card_id": 74,
+    "number": 4,
+    "word": "số bốn",
+    "item_name": "chú thỏ trắng",
+    "unit": "chú",
+    "count": 4,
+    "sample_bond": {
+      "total": 4,
+      "part_a": 1,
+      "part_b": 3,
+      "dot_representation": {
+        "total": 4,
+        "part_a": 1,
+        "part_b": 3
+      },
+      "sentences": [
+        "4 gồm 1 và 3",
+        "gộp 1 và 3 được 4"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 4,
+        "total": 4,
+        "split_sentence": "4 gồm 0 và 4",
+        "combine_sentence": "gộp 0 và 4 được 4"
+      },
+      {
+        "part_a": 1,
+        "part_b": 3,
+        "total": 4,
+        "split_sentence": "4 gồm 1 và 3",
+        "combine_sentence": "gộp 1 và 3 được 4"
+      },
+      {
+        "part_a": 2,
+        "part_b": 2,
+        "total": 4,
+        "split_sentence": "4 gồm 2 và 2",
+        "combine_sentence": "gộp 2 và 2 được 4"
+      },
+      {
+        "part_a": 3,
+        "part_b": 1,
+        "total": 4,
+        "split_sentence": "4 gồm 3 và 1",
+        "combine_sentence": "gộp 3 và 1 được 4"
+      },
+      {
+        "part_a": 4,
+        "part_b": 0,
+        "total": 4,
+        "split_sentence": "4 gồm 4 và 0",
+        "combine_sentence": "gộp 4 và 0 được 4"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 3,
+      "steps": [
+        "Nét 1: Đặt bút trên đỉnh (đường kẻ 3), kéo nét xiên trái xuống giữa ô ly (đường kẻ 2).",
+        "Nét 2: Kéo nét ngang sang phải rộng khoảng 1 ô ly.",
+        "Nét 3: Nét thẳng đứng ngắn cắt ngang qua nét 2, dừng trên dòng kẻ 1."
+      ],
+      "common_mistakes": "Nét ngang kéo quá dài hoặc nét đứng số 3 cắt lệch tâm nét ngang.",
+      "image_url": "assets/writing_guides/writing_so_4.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 4 gồm mấy và mấy?",
+      "daily_activity": "Cho con 4 chiếc bút, bảo con chia thành 2 phần bằng nhau: '4 gồm 2 và 2'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_74_front.png",
+      "card_back": "assets/cards/card_74_back.png",
+      "illustration": "assets/illustrations/illu_so_4.png",
+      "writing_guide": "assets/writing_guides/writing_so_4.png",
+      "single_animal": "assets/animals/animal_so_4.jpeg",
+      "audio_url": "/audio/module_numbers/so_4.mp3"
+    }
+  },
+  {
+    "id": 5,
+    "card_id": 75,
+    "number": 5,
+    "word": "số năm",
+    "item_name": "chú bò sữa",
+    "unit": "chú",
+    "count": 5,
+    "sample_bond": {
+      "total": 5,
+      "part_a": 1,
+      "part_b": 4,
+      "dot_representation": {
+        "total": 5,
+        "part_a": 1,
+        "part_b": 4
+      },
+      "sentences": [
+        "5 gồm 1 và 4",
+        "gộp 1 và 4 được 5"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 5,
+        "total": 5,
+        "split_sentence": "5 gồm 0 và 5",
+        "combine_sentence": "gộp 0 và 5 được 5"
+      },
+      {
+        "part_a": 1,
+        "part_b": 4,
+        "total": 5,
+        "split_sentence": "5 gồm 1 và 4",
+        "combine_sentence": "gộp 1 và 4 được 5"
+      },
+      {
+        "part_a": 2,
+        "part_b": 3,
+        "total": 5,
+        "split_sentence": "5 gồm 2 và 3",
+        "combine_sentence": "gộp 2 và 3 được 5"
+      },
+      {
+        "part_a": 3,
+        "part_b": 2,
+        "total": 5,
+        "split_sentence": "5 gồm 3 và 2",
+        "combine_sentence": "gộp 3 và 2 được 5"
+      },
+      {
+        "part_a": 4,
+        "part_b": 1,
+        "total": 5,
+        "split_sentence": "5 gồm 4 và 1",
+        "combine_sentence": "gộp 4 và 1 được 5"
+      },
+      {
+        "part_a": 5,
+        "part_b": 0,
+        "total": 5,
+        "split_sentence": "5 gồm 5 và 0",
+        "combine_sentence": "gộp 5 và 0 được 5"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 3,
+      "steps": [
+        "Nét 1: Đặt bút ở đường kẻ 3, kéo thẳng đứng xuống giữa ô (đường kẻ 2).",
+        "Nét 2: Từ điểm dừng nét 1, viết nét cong hở trái xuống dòng kẻ 1, lượn lên một chút.",
+        "Nét 3: Đặt bút tại điểm bắt đầu nét 1, viết nét ngang ngắn sang phải trên đường kẻ 3."
+      ],
+      "common_mistakes": "Viết nét ngang trước làm lệch thân hoặc bụng số 5 quá nhỏ so với thân.",
+      "image_url": "assets/writing_guides/writing_so_5.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 5 gồm mấy và mấy?",
+      "daily_activity": "Xòe 1 bàn tay có 5 ngón: 'Bàn tay có 5 ngón, gồm 1 ngón cái và 4 ngón còn lại!'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_75_front.png",
+      "card_back": "assets/cards/card_75_back.png",
+      "illustration": "assets/illustrations/illu_so_5.png",
+      "writing_guide": "assets/writing_guides/writing_so_5.png",
+      "single_animal": "assets/animals/animal_so_5.jpeg",
+      "audio_url": "/audio/module_numbers/so_5.mp3"
+    }
+  },
+  {
+    "id": 6,
+    "card_id": 76,
+    "number": 6,
+    "word": "số sáu",
+    "item_name": "chú mèo con",
+    "unit": "chú",
+    "count": 6,
+    "sample_bond": {
+      "total": 6,
+      "part_a": 1,
+      "part_b": 5,
+      "dot_representation": {
+        "total": 6,
+        "part_a": 1,
+        "part_b": 5
+      },
+      "sentences": [
+        "6 gồm 1 và 5",
+        "gộp 1 và 5 được 6"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 6,
+        "total": 6,
+        "split_sentence": "6 gồm 0 và 6",
+        "combine_sentence": "gộp 0 và 6 được 6"
+      },
+      {
+        "part_a": 1,
+        "part_b": 5,
+        "total": 6,
+        "split_sentence": "6 gồm 1 và 5",
+        "combine_sentence": "gộp 1 và 5 được 6"
+      },
+      {
+        "part_a": 2,
+        "part_b": 4,
+        "total": 6,
+        "split_sentence": "6 gồm 2 và 4",
+        "combine_sentence": "gộp 2 và 4 được 6"
+      },
+      {
+        "part_a": 3,
+        "part_b": 3,
+        "total": 6,
+        "split_sentence": "6 gồm 3 và 3",
+        "combine_sentence": "gộp 3 và 3 được 6"
+      },
+      {
+        "part_a": 4,
+        "part_b": 2,
+        "total": 6,
+        "split_sentence": "6 gồm 4 và 2",
+        "combine_sentence": "gộp 4 và 2 được 6"
+      },
+      {
+        "part_a": 5,
+        "part_b": 1,
+        "total": 6,
+        "split_sentence": "6 gồm 5 và 1",
+        "combine_sentence": "gộp 5 và 1 được 6"
+      },
+      {
+        "part_a": 6,
+        "part_b": 0,
+        "total": 6,
+        "split_sentence": "6 gồm 6 và 0",
+        "combine_sentence": "gộp 6 và 0 được 6"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 1,
+      "steps": [
+        "Nét 1: Nét liền bắt đầu từ đường kẻ 3, lượn cong sang trái xuống dòng kẻ 1 rồi uốn tròn lên tạo nét cong kín (bụng số 6)."
+      ],
+      "common_mistakes": "Bụng số 6 không khép kín hoặc lưng quá thẳng, không có độ cong lượn tự nhiên.",
+      "image_url": "assets/writing_guides/writing_so_6.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 6 gồm mấy và mấy?",
+      "daily_activity": "Đố con: 'Có 6 chú mèo, 3 chú đang ngủ thì còn mấy chú đang chơi?'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_76_front.png",
+      "card_back": "assets/cards/card_76_back.png",
+      "illustration": "assets/illustrations/illu_so_6.png",
+      "writing_guide": "assets/writing_guides/writing_so_6.png",
+      "single_animal": "assets/animals/animal_so_6.jpeg",
+      "audio_url": "/audio/module_numbers/so_6.mp3"
+    }
+  },
+  {
+    "id": 7,
+    "card_id": 77,
+    "number": 7,
+    "word": "số bảy",
+    "item_name": "chú ốc sên",
+    "unit": "chú",
+    "count": 7,
+    "sample_bond": {
+      "total": 7,
+      "part_a": 1,
+      "part_b": 6,
+      "dot_representation": {
+        "total": 7,
+        "part_a": 1,
+        "part_b": 6
+      },
+      "sentences": [
+        "7 gồm 1 và 6",
+        "gộp 1 và 6 được 7"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 7,
+        "total": 7,
+        "split_sentence": "7 gồm 0 và 7",
+        "combine_sentence": "gộp 0 và 7 được 7"
+      },
+      {
+        "part_a": 1,
+        "part_b": 6,
+        "total": 7,
+        "split_sentence": "7 gồm 1 và 6",
+        "combine_sentence": "gộp 1 và 6 được 7"
+      },
+      {
+        "part_a": 2,
+        "part_b": 5,
+        "total": 7,
+        "split_sentence": "7 gồm 2 và 5",
+        "combine_sentence": "gộp 2 và 5 được 7"
+      },
+      {
+        "part_a": 3,
+        "part_b": 4,
+        "total": 7,
+        "split_sentence": "7 gồm 3 và 4",
+        "combine_sentence": "gộp 3 và 4 được 7"
+      },
+      {
+        "part_a": 4,
+        "part_b": 3,
+        "total": 7,
+        "split_sentence": "7 gồm 4 và 3",
+        "combine_sentence": "gộp 4 và 3 được 7"
+      },
+      {
+        "part_a": 5,
+        "part_b": 2,
+        "total": 7,
+        "split_sentence": "7 gồm 5 và 2",
+        "combine_sentence": "gộp 5 và 2 được 7"
+      },
+      {
+        "part_a": 6,
+        "part_b": 1,
+        "total": 7,
+        "split_sentence": "7 gồm 6 và 1",
+        "combine_sentence": "gộp 6 và 1 được 7"
+      },
+      {
+        "part_a": 7,
+        "part_b": 0,
+        "total": 7,
+        "split_sentence": "7 gồm 7 và 0",
+        "combine_sentence": "gộp 7 và 0 được 7"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 3,
+      "steps": [
+        "Nét 1: Nét ngang trên đỉnh (đường kẻ 3).",
+        "Nét 2: Nét xiên trái từ điểm cuối nét 1 xuống dòng kẻ 1.",
+        "Nét 3: Nét ngang ngắn cắt ngang thân nét xiên (ở đường kẻ 2)."
+      ],
+      "common_mistakes": "Nét xiên quá dốc làm số 7 bị đổ ngã hoặc quên gạch nét ngang giữa thân.",
+      "image_url": "assets/writing_guides/writing_so_7.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 7 gồm mấy và mấy?",
+      "daily_activity": "Một tuần có 7 ngày, con đếm xem có mấy ngày đi học và mấy ngày được nghỉ cuối tuần."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_77_front.png",
+      "card_back": "assets/cards/card_77_back.png",
+      "illustration": "assets/illustrations/illu_so_7.png",
+      "writing_guide": "assets/writing_guides/writing_so_7.png",
+      "single_animal": "assets/animals/animal_so_7.jpeg",
+      "audio_url": "/audio/module_numbers/so_7.mp3"
+    }
+  },
+  {
+    "id": 8,
+    "card_id": 78,
+    "number": 8,
+    "word": "số tám",
+    "item_name": "chú bướm xinh",
+    "unit": "chú",
+    "count": 8,
+    "sample_bond": {
+      "total": 8,
+      "part_a": 1,
+      "part_b": 7,
+      "dot_representation": {
+        "total": 8,
+        "part_a": 1,
+        "part_b": 7
+      },
+      "sentences": [
+        "8 gồm 1 và 7",
+        "gộp 1 và 7 được 8"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 8,
+        "total": 8,
+        "split_sentence": "8 gồm 0 và 8",
+        "combine_sentence": "gộp 0 và 8 được 8"
+      },
+      {
+        "part_a": 1,
+        "part_b": 7,
+        "total": 8,
+        "split_sentence": "8 gồm 1 và 7",
+        "combine_sentence": "gộp 1 và 7 được 8"
+      },
+      {
+        "part_a": 2,
+        "part_b": 6,
+        "total": 8,
+        "split_sentence": "8 gồm 2 và 6",
+        "combine_sentence": "gộp 2 và 6 được 8"
+      },
+      {
+        "part_a": 3,
+        "part_b": 5,
+        "total": 8,
+        "split_sentence": "8 gồm 3 và 5",
+        "combine_sentence": "gộp 3 và 5 được 8"
+      },
+      {
+        "part_a": 4,
+        "part_b": 4,
+        "total": 8,
+        "split_sentence": "8 gồm 4 và 4",
+        "combine_sentence": "gộp 4 và 4 được 8"
+      },
+      {
+        "part_a": 5,
+        "part_b": 3,
+        "total": 8,
+        "split_sentence": "8 gồm 5 và 3",
+        "combine_sentence": "gộp 5 và 3 được 8"
+      },
+      {
+        "part_a": 6,
+        "part_b": 2,
+        "total": 8,
+        "split_sentence": "8 gồm 6 và 2",
+        "combine_sentence": "gộp 6 và 2 được 8"
+      },
+      {
+        "part_a": 7,
+        "part_b": 1,
+        "total": 8,
+        "split_sentence": "8 gồm 7 và 1",
+        "combine_sentence": "gộp 7 và 1 được 8"
+      },
+      {
+        "part_a": 8,
+        "part_b": 0,
+        "total": 8,
+        "split_sentence": "8 gồm 8 và 0",
+        "combine_sentence": "gộp 8 và 0 được 8"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 1,
+      "steps": [
+        "Nét 1: Nét liền uốn lượn hình chữ S từ trên xuống dưới, vòng qua đáy rồi lượn chéo ngược lên điểm xuất phát khép kín."
+      ],
+      "common_mistakes": "Vẽ 2 hình tròn rời rạc chồng lên nhau thay vì viết một nét liền lượn sóng liên tục.",
+      "image_url": "assets/writing_guides/writing_so_8.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 8 gồm mấy và mấy?",
+      "daily_activity": "Cho bé quan sát hình dáng số 8 giống đôi cánh chú bướm xinh đẹp."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_78_front.png",
+      "card_back": "assets/cards/card_78_back.png",
+      "illustration": "assets/illustrations/illu_so_8.png",
+      "writing_guide": "assets/writing_guides/writing_so_8.png",
+      "single_animal": "assets/animals/animal_so_8.jpeg",
+      "audio_url": "/audio/module_numbers/so_8.mp3"
+    }
+  },
+  {
+    "id": 9,
+    "card_id": 79,
+    "number": 9,
+    "word": "số chín",
+    "item_name": "chú ong mật",
+    "unit": "chú",
+    "count": 9,
+    "sample_bond": {
+      "total": 9,
+      "part_a": 1,
+      "part_b": 8,
+      "dot_representation": {
+        "total": 9,
+        "part_a": 1,
+        "part_b": 8
+      },
+      "sentences": [
+        "9 gồm 1 và 8",
+        "gộp 1 và 8 được 9"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 9,
+        "total": 9,
+        "split_sentence": "9 gồm 0 và 9",
+        "combine_sentence": "gộp 0 và 9 được 9"
+      },
+      {
+        "part_a": 1,
+        "part_b": 8,
+        "total": 9,
+        "split_sentence": "9 gồm 1 và 8",
+        "combine_sentence": "gộp 1 và 8 được 9"
+      },
+      {
+        "part_a": 2,
+        "part_b": 7,
+        "total": 9,
+        "split_sentence": "9 gồm 2 và 7",
+        "combine_sentence": "gộp 2 và 7 được 9"
+      },
+      {
+        "part_a": 3,
+        "part_b": 6,
+        "total": 9,
+        "split_sentence": "9 gồm 3 và 6",
+        "combine_sentence": "gộp 3 và 6 được 9"
+      },
+      {
+        "part_a": 4,
+        "part_b": 5,
+        "total": 9,
+        "split_sentence": "9 gồm 4 và 5",
+        "combine_sentence": "gộp 4 và 5 được 9"
+      },
+      {
+        "part_a": 5,
+        "part_b": 4,
+        "total": 9,
+        "split_sentence": "9 gồm 5 và 4",
+        "combine_sentence": "gộp 5 và 4 được 9"
+      },
+      {
+        "part_a": 6,
+        "part_b": 3,
+        "total": 9,
+        "split_sentence": "9 gồm 6 và 3",
+        "combine_sentence": "gộp 6 và 3 được 9"
+      },
+      {
+        "part_a": 7,
+        "part_b": 2,
+        "total": 9,
+        "split_sentence": "9 gồm 7 và 2",
+        "combine_sentence": "gộp 7 và 2 được 9"
+      },
+      {
+        "part_a": 8,
+        "part_b": 1,
+        "total": 9,
+        "split_sentence": "9 gồm 8 và 1",
+        "combine_sentence": "gộp 8 và 1 được 9"
+      },
+      {
+        "part_a": 9,
+        "part_b": 0,
+        "total": 9,
+        "split_sentence": "9 gồm 9 và 0",
+        "combine_sentence": "gộp 9 và 0 được 9"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 1,
+      "steps": [
+        "Nét 1: Nét liền gồm một nét cong kín ở trên (đường kẻ 2 lên 3) nối liền nét cong lượn xuống dòng kẻ 1 rồi vòng sang trái."
+      ],
+      "common_mistakes": "Đầu số 9 không khép kín hoặc móc dưới uốn cong ngược chiều sang phải.",
+      "image_url": "assets/writing_guides/writing_so_9.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 9 gồm mấy và mấy?",
+      "daily_activity": "Đố con so sánh số 6 và số 9: 'Số 9 lộn ngược lại sẽ thành số mấy nhỉ?'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_79_front.png",
+      "card_back": "assets/cards/card_79_back.png",
+      "illustration": "assets/illustrations/illu_so_9.png",
+      "writing_guide": "assets/writing_guides/writing_so_9.png",
+      "single_animal": "assets/animals/animal_so_9.jpeg",
+      "audio_url": "/audio/module_numbers/so_9.mp3"
+    }
+  },
+  {
+    "id": 10,
+    "card_id": 80,
+    "number": 10,
+    "word": "số mười",
+    "item_name": "chú kiến cần cù",
+    "unit": "chú",
+    "count": 10,
+    "sample_bond": {
+      "total": 10,
+      "part_a": 1,
+      "part_b": 9,
+      "dot_representation": {
+        "total": 10,
+        "part_a": 1,
+        "part_b": 9
+      },
+      "sentences": [
+        "10 gồm 1 và 9",
+        "gộp 1 và 9 được 10"
+      ]
+    },
+    "all_bonds": [
+      {
+        "part_a": 0,
+        "part_b": 10,
+        "total": 10,
+        "split_sentence": "10 gồm 0 và 10",
+        "combine_sentence": "gộp 0 và 10 được 10"
+      },
+      {
+        "part_a": 1,
+        "part_b": 9,
+        "total": 10,
+        "split_sentence": "10 gồm 1 và 9",
+        "combine_sentence": "gộp 1 và 9 được 10"
+      },
+      {
+        "part_a": 2,
+        "part_b": 8,
+        "total": 10,
+        "split_sentence": "10 gồm 2 và 8",
+        "combine_sentence": "gộp 2 và 8 được 10"
+      },
+      {
+        "part_a": 3,
+        "part_b": 7,
+        "total": 10,
+        "split_sentence": "10 gồm 3 và 7",
+        "combine_sentence": "gộp 3 và 7 được 10"
+      },
+      {
+        "part_a": 4,
+        "part_b": 6,
+        "total": 10,
+        "split_sentence": "10 gồm 4 và 6",
+        "combine_sentence": "gộp 4 và 6 được 10"
+      },
+      {
+        "part_a": 5,
+        "part_b": 5,
+        "total": 10,
+        "split_sentence": "10 gồm 5 và 5",
+        "combine_sentence": "gộp 5 và 5 được 10"
+      },
+      {
+        "part_a": 6,
+        "part_b": 4,
+        "total": 10,
+        "split_sentence": "10 gồm 6 và 4",
+        "combine_sentence": "gộp 6 và 4 được 10"
+      },
+      {
+        "part_a": 7,
+        "part_b": 3,
+        "total": 10,
+        "split_sentence": "10 gồm 7 và 3",
+        "combine_sentence": "gộp 7 và 3 được 10"
+      },
+      {
+        "part_a": 8,
+        "part_b": 2,
+        "total": 10,
+        "split_sentence": "10 gồm 8 và 2",
+        "combine_sentence": "gộp 8 và 2 được 10"
+      },
+      {
+        "part_a": 9,
+        "part_b": 1,
+        "total": 10,
+        "split_sentence": "10 gồm 9 và 1",
+        "combine_sentence": "gộp 9 và 1 được 10"
+      },
+      {
+        "part_a": 10,
+        "part_b": 0,
+        "total": 10,
+        "split_sentence": "10 gồm 10 và 0",
+        "combine_sentence": "gộp 10 và 0 được 10"
+      }
+    ],
+    "writing_guide": {
+      "stroke_count": 3,
+      "steps": [
+        "Số 10 gồm 2 chữ số: chữ số 1 đứng trước và chữ số 0 đứng sau.",
+        "Viết số 1 trước (2 nét, cao 2 ô ly).",
+        "Cách một khoảng nửa ô ly, viết chữ số 0 (nét cong kín hình bầu dục, cao 2 ô ly)."
+      ],
+      "common_mistakes": "Khoảng cách giữa số 1 và số 0 quá xa hoặc quá dính nhau; số 0 bị méo.",
+      "image_url": "assets/writing_guides/writing_so_10.png"
+    },
+    "parent_tips": {
+      "prompt_question": "Đố con 10 gồm mấy và mấy?",
+      "daily_activity": "Hai bàn tay bé có tất cả 10 ngón. 'Gộp 5 ngón tay phải và 5 ngón tay trái được 10 ngón tay!'."
+    },
+    "assets": {
+      "card_front": "assets/cards/card_80_front.png",
+      "card_back": "assets/cards/card_80_back.png",
+      "illustration": "assets/illustrations/illu_so_10.png",
+      "writing_guide": "assets/writing_guides/writing_so_10.png",
+      "single_animal": "assets/animals/animal_so_10.jpeg",
+      "audio_url": "/audio/module_numbers/so_10.mp3"
+    }
+  }
+]

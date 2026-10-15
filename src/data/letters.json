@@ -1,0 +1,819 @@
+{
+  "basicStrokes": [
+    {
+      "id": "net_ngang",
+      "name": "Nét ngang",
+      "cardId": 1,
+      "height": "1 ô ly",
+      "description": "Kéo thẳng từ trái sang phải theo đường kẻ ngang."
+    },
+    {
+      "id": "net_thang_dung",
+      "name": "Nét thẳng đứng",
+      "cardId": 1,
+      "height": "2 đến 4 ô ly",
+      "description": "Đặt bút từ trên kéo thẳng đứng xuống theo đường kẻ dọc."
+    },
+    {
+      "id": "net_xien_phai",
+      "name": "Nét xiên phải",
+      "cardId": 1,
+      "height": "2 ô ly",
+      "description": "Đặt bút từ dưới xiên lên trên sang bên phải."
+    },
+    {
+      "id": "net_xien_trai",
+      "name": "Nét xiên trái",
+      "cardId": 1,
+      "height": "2 ô ly",
+      "description": "Đặt bút từ trên xiên xuống dưới sang bên trái."
+    },
+    {
+      "id": "net_moc_xuoi",
+      "name": "Nét móc xuôi",
+      "cardId": 2,
+      "height": "2 ô ly",
+      "description": "Đặt bút uốn cong tròn sang phải rồi kéo thẳng đứng xuống."
+    },
+    {
+      "id": "net_moc_nguoc",
+      "name": "Nét móc ngược",
+      "cardId": 3,
+      "height": "2 ô ly",
+      "description": "Kéo thẳng đứng xuống rồi uốn lượn cong sang phải hất lên."
+    },
+    {
+      "id": "net_moc_hai_dau",
+      "name": "Nét móc hai đầu",
+      "cardId": 4,
+      "height": "2 ô ly",
+      "description": "Kết hợp uốn cong trên rồi kéo thẳng và móc ngược hất lên."
+    },
+    {
+      "id": "net_cong_ho_phai",
+      "name": "Nét cong hở phải (Nét c)",
+      "cardId": 5,
+      "height": "2 ô ly",
+      "description": "Đặt bút dưới đường kẻ 3, lượn cong sang trái rồi cong xuống hở bên phải."
+    },
+    {
+      "id": "net_cong_ho_trai",
+      "name": "Nét cong hở trái",
+      "cardId": 6,
+      "height": "2 ô ly",
+      "description": "Lượn tròn cong sang phải rồi cong xuống hở bên trái."
+    },
+    {
+      "id": "net_cong_kin",
+      "name": "Nét cong kín (Nét o)",
+      "cardId": 7,
+      "height": "2 ô ly",
+      "description": "Vẽ vòng tròn khép kín, rộng 1.5 ô ly, cao 2 ô ly cân đối."
+    },
+    {
+      "id": "net_khuyet_tren",
+      "name": "Nét khuyết trên (l, b, h, k)",
+      "cardId": 8,
+      "height": "5 ô ly",
+      "description": "Đưa xiên lên uốn vòng cung qua đường kẻ 6 rồi kéo thẳng đứng xuống đất."
+    },
+    {
+      "id": "net_khuyet_duoi",
+      "name": "Nét khuyết dưới (g, y)",
+      "cardId": 9,
+      "height": "5 ô ly",
+      "description": "Kéo thẳng đứng xuống dưới dòng kẻ đậm 3 ô ly rồi uốn cong hất xiên lên."
+    },
+    {
+      "id": "net_xoan",
+      "name": "Nét xoắn (r, s)",
+      "cardId": 10,
+      "height": "2.25 ô ly",
+      "description": "Lên đỉnh tạo vòng xoắn nhỏ nhô nhẹ trên đường kẻ 3 rồi lượn tiếp."
+    },
+    {
+      "id": "net_that_giua",
+      "name": "Nét thắt giữa (k)",
+      "cardId": 11,
+      "height": "2 ô ly",
+      "description": "Tạo vòng thắt nhỏ ngay tại giao điểm đường kẻ ngang 2."
+    }
+  ],
+  "letters": [
+    {
+      "id": "a",
+      "letter": "A",
+      "upper": "A",
+      "lower": "a",
+      "soundName": "Âm A",
+      "cardId": 15,
+      "illustration": {
+        "word": "Cái Ca",
+        "meaning": "Cái ca dùng để đựng nước mát uống."
+      },
+      "writingGuide": {
+        "height": "2 ô ly (rộng 1.5 ô ly)",
+        "strokes": [
+          "Nét 1: Nét cong kín cao 2 ô ly (như chữ o).",
+          "Nét 2: Nét móc ngược áp sát bên phải nét cong kín, dừng bút ở đường kẻ 2."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Mở rộng miệng tự nhiên theo chiều dọc và ngang.",
+        "tonguePosition": "Lưỡi hạ thấp tự nhiên, nằm phẳng ở đáy miệng.",
+        "vocalAirflow": "Dây thanh rung, luồng hơi thoát ra tự do, không bị cản trở.",
+        "guideTips": "Nhắc bé mở tròn khẩu hình miệng, phát âm to rõ ràng 'A - A - A'."
+      }
+    },
+    {
+      "id": "aw",
+      "letter": "Ă",
+      "upper": "Ă",
+      "lower": "ă",
+      "soundName": "Âm Ă",
+      "cardId": 16,
+      "illustration": {
+        "word": "Mặt Trăng",
+        "meaning": "Mặt trăng lưỡi liềm sáng lung linh trên bầu trời đêm."
+      },
+      "writingGuide": {
+        "height": "2 ô ly + dấu mũ cong",
+        "strokes": [
+          "Nét 1: Viết chữ a cao 2 ô ly.",
+          "Nét 2: Viết nét cong nhỏ ngửa lên như hình trăng khuyết đặt trên đầu chữ a."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở vừa phải, hẹp hơn âm A một chút.",
+        "tonguePosition": "Lưỡi hơi nâng nhẹ hơn âm A.",
+        "vocalAirflow": "Âm ngắn, bật gọn gàng, dây thanh rung.",
+        "guideTips": "Phát âm dứt khoát, gọn gàng, không kéo dài như âm A."
+      }
+    },
+    {
+      "id": "aa",
+      "letter": "Â",
+      "upper": "Â",
+      "lower": "â",
+      "soundName": "Âm Â",
+      "cardId": 17,
+      "illustration": {
+        "word": "Cái Cây",
+        "meaning": "Cây xanh rợp bóng mát cho chim hót ca."
+      },
+      "writingGuide": {
+        "height": "2 ô ly + dấu mũ nón",
+        "strokes": [
+          "Nét 1: Viết chữ a cao 2 ô ly.",
+          "Nét 2: Viết dấu mũ nón (nét xiên trái nối nét xiên phải) cân đối trên đầu."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở hẹp vừa phải, môi hơi thả lỏng.",
+        "tonguePosition": "Phần cuống lưỡi hơi nâng nhẹ.",
+        "vocalAirflow": "Phát âm ngắn, trầm ấm hơn âm A và Ă.",
+        "guideTips": "Hình dung như chiếc nón che mưa nắng trên đầu chữ a."
+      }
+    },
+    {
+      "id": "b",
+      "letter": "B",
+      "upper": "B",
+      "lower": "b",
+      "soundName": "Âm Bờ",
+      "cardId": 18,
+      "illustration": {
+        "word": "Con Bò",
+        "meaning": "Chú bò vàng chăm chỉ ăn cỏ trên đồng cỏ xanh."
+      },
+      "writingGuide": {
+        "height": "5 ô ly (rộng 2 ô ly)",
+        "strokes": [
+          "Nét 1: Nét khuyết trên cao 5 ô ly.",
+          "Nét 2: Tiếp tục lượn nét móc ngược rồi uốn lượn thắt một vòng nhỏ ở đường kẻ 3."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Hai môi khép chặt lại để giữ hơi.",
+        "tonguePosition": "Lưỡi nằm tự nhiên trong vòm họng.",
+        "vocalAirflow": "Bật mở hai môi đột ngột, dây thanh rung tạo thành tiếng 'Bờ'.",
+        "guideTips": "Nhắc bé mím nhẹ môi rồi bật ra tiếng 'Bờ', không cắn răng."
+      }
+    },
+    {
+      "id": "c",
+      "letter": "C",
+      "upper": "C",
+      "lower": "c",
+      "soundName": "Âm Cờ",
+      "cardId": 19,
+      "illustration": {
+        "word": "Con Cá",
+        "meaning": "Chú cá bơi lội tung tăng dưới dòng nước trong veo."
+      },
+      "writingGuide": {
+        "height": "2 ô ly (rộng 1.5 ô ly)",
+        "strokes": [
+          "Nét 1: Nét cong hở phải cao 2 ô ly, đặt bút dưới đường kẻ 3 lượn tròn mềm mại."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở tự nhiên theo chiều ngang.",
+        "tonguePosition": "Gốc lưỡi nâng cao chạm vào ngạc mềm (vòm họng trên) rồi hạ nhanh.",
+        "vocalAirflow": "Bật luồng hơi từ cuống họng phát ra tiếng 'Cờ'.",
+        "guideTips": "Đây là âm tắc cuống họng, nhắc bé phát âm dứt khoát từ họng."
+      }
+    },
+    {
+      "id": "d",
+      "letter": "D",
+      "upper": "D",
+      "lower": "d",
+      "soundName": "Âm Dờ",
+      "cardId": 20,
+      "illustration": {
+        "word": "Con Dê",
+        "meaning": "Chú dê trắng nhảy nhót trên sườn núi."
+      },
+      "writingGuide": {
+        "height": "4 ô ly",
+        "strokes": [
+          "Nét 1: Nét cong kín cao 2 ô ly bên trái.",
+          "Nét 2: Nét móc ngược cao 4 ô ly từ đường kẻ 5 kéo thẳng xuống áp sát nét cong kín."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở vừa phải, hai khóe môi hơi hé.",
+        "tonguePosition": "Đầu lưỡi nâng nhẹ chạm vào mặt sau của chân răng trên.",
+        "vocalAirflow": "Hơi thoát qua khe hẹp giữa đầu lưỡi và răng, dây thanh rung nhẹ.",
+        "guideTips": "Âm 'd' phát âm như âm 'gi' trong tiếng miền Nam, nhẹ nhàng êm ái."
+      }
+    },
+    {
+      "id": "dd",
+      "letter": "Đ",
+      "upper": "Đ",
+      "lower": "đ",
+      "soundName": "Âm Đờ",
+      "cardId": 21,
+      "illustration": {
+        "word": "Đồng Hồ",
+        "meaning": "Chiếc đồng hồ tích tắc báo giờ bé đi học ngoan."
+      },
+      "writingGuide": {
+        "height": "4 ô ly + nét ngang",
+        "strokes": [
+          "Nét 1: Viết chữ d cao 4 ô ly.",
+          "Nét 2: Viết nét ngang ngắn cắt ngang thân chữ ở đường kẻ 4."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở tự nhiên, răng hơi hé.",
+        "tonguePosition": "Đầu lưỡi áp chặt vào vòm miệng trên chân răng cửa rồi bật mạnh.",
+        "vocalAirflow": "Luồng hơi bị chặn lại rồi bật mạnh dứt khoát tạo tiếng 'Đờ'.",
+        "guideTips": "Nhắc bé dùng đầu lưỡi gõ nhẹ vào chân răng trên rồi bật ra 'Đờ'."
+      }
+    },
+    {
+      "id": "e",
+      "letter": "E",
+      "upper": "E",
+      "lower": "e",
+      "soundName": "Âm E",
+      "cardId": 22,
+      "illustration": {
+        "word": "Em Bé",
+        "meaning": "Em bé đáng yêu mỉm cười chào ngày mới."
+      },
+      "writingGuide": {
+        "height": "2 ô ly",
+        "strokes": [
+          "Đặt bút giữa đường kẻ 1 và 2, lượn xiên lên tạo vòng cung sang trái rồi cong xuống hở phải."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở rộng về hai bên (như đang mỉm cười).",
+        "tonguePosition": "Thân lưỡi nâng vừa phải về phía vòm họng trước.",
+        "vocalAirflow": "Hơi thoát đều, dây thanh rung phát âm sáng và vang 'E'.",
+        "guideTips": "Bảo bé cười xinh rồi phát ra tiếng 'E'."
+      }
+    },
+    {
+      "id": "ee",
+      "letter": "Ê",
+      "upper": "Ê",
+      "lower": "ê",
+      "soundName": "Âm Ê",
+      "cardId": 23,
+      "illustration": {
+        "word": "Búp Bê",
+        "meaning": "Cô búp bê xinh xắn cài nơ hồng đáng yêu."
+      },
+      "writingGuide": {
+        "height": "2 ô ly + dấu mũ nón",
+        "strokes": [
+          "Nét 1: Viết chữ e cao 2 ô ly.",
+          "Nét 2: Viết dấu mũ nón cân đối phía trên đầu chữ e."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Khóe miệng kéo sang hai bên hẹp hơn âm E.",
+        "tonguePosition": "Thân lưỡi nâng cao hơn âm E.",
+        "vocalAirflow": "Dây thanh rung tạo âm sắc trầm và gọn 'Ê'.",
+        "guideTips": "Vừa mỉm cười vừa phát âm 'Ê' thật êm tai."
+      }
+    },
+    {
+      "id": "g",
+      "letter": "G",
+      "upper": "G",
+      "lower": "g",
+      "soundName": "Âm Gờ",
+      "cardId": 24,
+      "illustration": {
+        "word": "Con Gà",
+        "meaning": "Chú gà trống gáy vang ò ó o gọi mặt trời thức giấc."
+      },
+      "writingGuide": {
+        "height": "5 ô ly (2 ô trên dòng kẻ đậm, 3 ô dưới dòng kẻ đậm)",
+        "strokes": [
+          "Nét 1: Nét cong kín cao 2 ô ly trên đường kẻ đậm.",
+          "Nét 2: Nét khuyết dưới cao 5 ô ly kéo dài xuống 3 ô ly rồi hất chéo lên."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở tự nhiên theo chiều ngang.",
+        "tonguePosition": "Gốc lưỡi tiếp cận ngạc mềm tạo khe hẹp để hơi ma sát đi qua.",
+        "vocalAirflow": "Dây thanh rung mạnh, hơi xát qua họng tạo âm 'Gờ'.",
+        "guideTips": "Âm xát cuống họng rung dây thanh, không bật mạnh như âm 'c'."
+      }
+    },
+    {
+      "id": "h",
+      "letter": "H",
+      "upper": "H",
+      "lower": "h",
+      "soundName": "Âm Hờ",
+      "cardId": 25,
+      "illustration": {
+        "word": "Bông Hoa",
+        "meaning": "Bông hoa hồng ngát hương khoe sắc dưới nắng mai."
+      },
+      "writingGuide": {
+        "height": "5 ô ly",
+        "strokes": [
+          "Nét 1: Nét khuyết trên cao 5 ô ly.",
+          "Nét 2: Nét móc hai đầu cao 2 ô ly nối liền từ chân nét khuyết."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở tự nhiên thoải mái.",
+        "tonguePosition": "Lưỡi thả lỏng, không chạm vào bất kỳ điểm nào trong vòm miệng.",
+        "vocalAirflow": "Thở hơi nhẹ nhàng từ họng ra ngoài tạo âm 'Hờ'.",
+        "guideTips": "Bảo bé thở ra êm dịu như một làn gió nhẹ 'Hờ'."
+      }
+    },
+    {
+      "id": "i",
+      "letter": "I",
+      "upper": "I",
+      "lower": "i",
+      "soundName": "Âm I",
+      "cardId": 26,
+      "illustration": {
+        "word": "Hòn Bi",
+        "meaning": "Những viên bi ve tròn lấp lánh đủ màu sắc."
+      },
+      "writingGuide": {
+        "height": "2 ô ly + dấu chấm",
+        "strokes": [
+          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
+          "Nét 2: Nét móc ngược kéo từ đường kẻ 3 xuống đường kẻ 1 rồi hất lên.",
+          "Nét 3: Dấu chấm nhỏ đặt ngay ngắn trên đầu nét móc ở khoảng giữa đường kẻ 3 và 4."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Môi kéo dẹp căng sang hai bên như cười thật tươi.",
+        "tonguePosition": "Thân lưỡi nâng lên sát vòm miệng trên.",
+        "vocalAirflow": "Hơi đi qua khe hẹp phía trên lưỡi, dây thanh rung trong trẻo 'I'.",
+        "guideTips": "Bảo bé cười tươi hết cỡ rồi ngân dài 'I - I - I'."
+      }
+    },
+    {
+      "id": "k",
+      "letter": "K",
+      "upper": "K",
+      "lower": "k",
+      "soundName": "Âm Ca",
+      "cardId": 27,
+      "illustration": {
+        "word": "Cái Kéo",
+        "meaning": "Chiếc kéo thủ công giúp bé cắt giấy làm đồ chơi."
+      },
+      "writingGuide": {
+        "height": "5 ô ly",
+        "strokes": [
+          "Nét 1: Nét khuyết trên cao 5 ô ly.",
+          "Nét 2: Nét thắt giữa cao 2 ô ly nối từ thân nét khuyết rồi hất nhẹ ra."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở tự nhiên như âm C.",
+        "tonguePosition": "Cuống lưỡi ép sát vào vòm họng ngạc mềm rồi bật nhanh.",
+        "vocalAirflow": "Bật mạnh luồng hơi dứt khoát phát ra tiếng 'Cờ / Ca'.",
+        "guideTips": "Chữ K ghép với các âm e, ê, i (quy tắc chính tả chuẩn tiếng Việt)."
+      }
+    },
+    {
+      "id": "l",
+      "letter": "L",
+      "upper": "L",
+      "lower": "l",
+      "soundName": "Âm Lờ",
+      "cardId": 28,
+      "illustration": {
+        "word": "Quả Lê",
+        "meaning": "Quả lê giòn ngọt, mọng nước và mát lành."
+      },
+      "writingGuide": {
+        "height": "5 ô ly",
+        "strokes": [
+          "Nét 1: Đặt bút từ đường kẻ 2, đưa xiên lên viết nét khuyết trên cao 5 ô ly.",
+          "Nét 2: Kéo thẳng xuống dòng kẻ đậm rồi uốn lượn hất lên đường kẻ 2."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng hé mở vừa phải.",
+        "tonguePosition": "Đầu lưỡi uốn cong lên chạm vào vòm miệng phía sau răng cửa trên.",
+        "vocalAirflow": "Luồng hơi thoát ra hai bên cạnh lưỡi, đầu lưỡi bật xuống êm dịu 'Lờ'.",
+        "guideTips": "Rèn phân biệt L và N: Âm L thì đầu lưỡi uốn cong lên vòm miệng."
+      }
+    },
+    {
+      "id": "m",
+      "letter": "M",
+      "upper": "M",
+      "lower": "m",
+      "soundName": "Âm Mờ",
+      "cardId": 29,
+      "illustration": {
+        "word": "Quả Mận",
+        "meaning": "Những quả mận chín đỏ mọng ngọt ngào mùa hè."
+      },
+      "writingGuide": {
+        "height": "2 ô ly (gồm 3 nét móc)",
+        "strokes": [
+          "Nét 1: Nét móc xuôi thứ nhất rộng 1 ô ly.",
+          "Nét 2: Nét móc xuôi thứ hai rộng 1.5 ô ly.",
+          "Nét 3: Nét móc hai đầu rộng 1.5 ô ly, dừng bút ở đường kẻ 2."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Hai môi khép kín tự nhiên.",
+        "tonguePosition": "Lưỡi thả lỏng tự nhiên dưới đáy miệng.",
+        "vocalAirflow": "Luồng hơi thoát qua đường mũi tạo âm vang trầm mũi, rồi mở môi tạo 'Mờ'.",
+        "guideTips": "Âm mũi dịu dàng, khép môi nhẹ nhàng trước khi phát âm."
+      }
+    },
+    {
+      "id": "n",
+      "letter": "N",
+      "upper": "N",
+      "lower": "n",
+      "soundName": "Âm Nờ",
+      "cardId": 30,
+      "illustration": {
+        "word": "Cái Nơ",
+        "meaning": "Chiếc nơ màu đỏ thắm cài trên mái tóc bé xinh."
+      },
+      "writingGuide": {
+        "height": "2 ô ly (gồm 2 nét móc)",
+        "strokes": [
+          "Nét 1: Nét móc xuôi rộng 1 ô ly.",
+          "Nét 2: Nét móc hai đầu rộng 1.5 ô ly, dừng bút ở đường kẻ 2."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng hé mở vừa phải.",
+        "tonguePosition": "Đầu lưỡi ép phẳng vào vòm miệng chân răng trên, không uốn cong.",
+        "vocalAirflow": "Hơi thoát qua mũi, khi lưỡi tách ra tạo âm mũi 'Nờ'.",
+        "guideTips": "Phân biệt với L: N thì đầu lưỡi để thẳng áp chân răng, không uốn cong."
+      }
+    },
+    {
+      "id": "o",
+      "letter": "O",
+      "upper": "O",
+      "lower": "o",
+      "soundName": "Âm O",
+      "cardId": 31,
+      "illustration": {
+        "word": "Con Ong",
+        "meaning": "Chú ong chăm chỉ bay đi tìm hoa làm mật ngọt."
+      },
+      "writingGuide": {
+        "height": "2 ô ly (rộng 1.5 ô ly)",
+        "strokes": [
+          "Nét cong kín tròn đều, đặt bút dưới đường kẻ 3 lượn sang trái rồi xuống đường kẻ 1 khép kín."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Môi tròn đều như hình chữ O, chúm lại phía trước.",
+        "tonguePosition": "Cuống lưỡi lùi nhẹ về phía sau, thân lưỡi hơi lõm.",
+        "vocalAirflow": "Hơi thoát đều qua lỗ tròn của môi, dây thanh rung vang 'O'."
+      }
+    },
+    {
+      "id": "oo",
+      "letter": "Ô",
+      "upper": "Ô",
+      "lower": "ô",
+      "soundName": "Âm Ô",
+      "cardId": 32,
+      "illustration": {
+        "word": "Cái Ô",
+        "meaning": "Chiếc ô che nắng che mưa cho bé đến trường."
+      },
+      "writingGuide": {
+        "height": "2 ô ly + dấu mũ nón",
+        "strokes": [
+          "Nét 1: Viết chữ o cong kín cao 2 ô ly.",
+          "Nét 2: Viết dấu mũ nón cân đối nhô nhẹ trên đầu."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Môi tròn và chúm nhỏ hơn âm O, hơi nhô về phía trước.",
+        "tonguePosition": "Phần sau của lưỡi nâng cao hơn âm O.",
+        "vocalAirflow": "Dây thanh rung tạo âm sắc trầm ấm 'Ô'."
+      }
+    },
+    {
+      "id": "ow",
+      "letter": "Ơ",
+      "upper": "Ơ",
+      "lower": "ơ",
+      "soundName": "Âm Ơ",
+      "cardId": 33,
+      "illustration": {
+        "word": "Lá Cờ",
+        "meaning": "Lá cờ đỏ sao vàng tung bay phấp phới trong gió."
+      },
+      "writingGuide": {
+        "height": "2 ô ly + dấu râu",
+        "strokes": [
+          "Nét 1: Viết chữ o cong kín cao 2 ô ly.",
+          "Nét 2: Viết nét râu nhỏ xinh ở góc trên bên phải chữ o."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở tự nhiên, môi không chúm tròn mà hơi dẹt nhẹ.",
+        "tonguePosition": "Lưỡi nằm ngang ở vị trí trung tâm miệng.",
+        "vocalAirflow": "Hơi thoát nhẹ nhàng thoải mái tạo tiếng 'Ơ'."
+      }
+    },
+    {
+      "id": "p",
+      "letter": "P",
+      "upper": "P",
+      "lower": "p",
+      "soundName": "Âm Pờ",
+      "cardId": 34,
+      "illustration": {
+        "word": "Cây Pin",
+        "meaning": "Cục pin nhỏ cung cấp năng lượng cho chiếc đèn pin phát sáng."
+      },
+      "writingGuide": {
+        "height": "4 ô ly (2 ô trên dòng kẻ đậm, 2 ô dưới)",
+        "strokes": [
+          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
+          "Nét 2: Nét thẳng đứng kéo dài xuống dưới dòng kẻ đậm 2 ô ly.",
+          "Nét 3: Nét móc hai đầu cao 2 ô ly áp sát vào nét thẳng."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Hai môi mím chặt giữ hơi.",
+        "tonguePosition": "Lưỡi hạ thấp tự nhiên.",
+        "vocalAirflow": "Bật mạnh luồng hơi không rung dây thanh (âm bật hơi không thanh) tạo tiếng 'Pờ'."
+      }
+    },
+    {
+      "id": "q",
+      "letter": "Q",
+      "upper": "Q",
+      "lower": "q",
+      "soundName": "Âm Cu",
+      "cardId": 35,
+      "illustration": {
+        "word": "Quả Quýt",
+        "meaning": "Quả quýt chín vàng ươm mọng nước thơm ngon."
+      },
+      "writingGuide": {
+        "height": "4 ô ly (2 ô trên, 2 ô dưới)",
+        "strokes": [
+          "Nét 1: Nét cong kín cao 2 ô ly.",
+          "Nét 2: Nét thẳng đứng cao 4 ô ly từ đường kẻ 3 kéo thẳng xuống dưới dòng kẻ đậm 2 ô ly."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Trong tiếng Việt chữ Q thường đi liền với U thành Qu ('Quờ').",
+        "tonguePosition": "Cuống lưỡi nâng chạm vòm họng rồi tròn môi bật ra.",
+        "vocalAirflow": "Bật dứt khoát kết hợp tròn môi tạo âm 'Quờ'."
+      }
+    },
+    {
+      "id": "r",
+      "letter": "R",
+      "upper": "R",
+      "lower": "r",
+      "soundName": "Âm Rờ",
+      "cardId": 36,
+      "illustration": {
+        "word": "Con Rùa",
+        "meaning": "Chú rùa hiền lành chăm chỉ bò từng bước vững chắc."
+      },
+      "writingGuide": {
+        "height": "2.25 ô ly (nhô nhẹ lên trên đường kẻ 3)",
+        "strokes": [
+          "Nét 1: Đặt bút ở đường kẻ 1, đưa xiên lên qua đường kẻ 3 tạo vòng xoắn nhỏ.",
+          "Nét 2: Kéo ngang nhẹ rồi lượn nét móc ngược kết thúc ở đường kẻ 2."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở vừa phải, hai môi hơi tròn nhẹ.",
+        "tonguePosition": "Đầu lưỡi uốn cong lên hướng về vòm miệng cứng.",
+        "vocalAirflow": "Luồng hơi làm đầu lưỡi rung nhẹ tạo âm rung 'Rờ'."
+      }
+    },
+    {
+      "id": "s",
+      "letter": "S",
+      "upper": "S",
+      "lower": "s",
+      "soundName": "Âm Sờ",
+      "cardId": 37,
+      "illustration": {
+        "word": "Ngôi Sao",
+        "meaning": "Ngôi sao năm cánh lấp lánh trên bầu trời đêm."
+      },
+      "writingGuide": {
+        "height": "2.25 ô ly",
+        "strokes": [
+          "Nét 1: Đặt bút ở đường kẻ 1, xiên lên qua đường kẻ 3 tạo vòng xoắn nhỏ.",
+          "Nét 2: Lượn nét cong sang phải rồi cong ngược vào trong kết thúc ở đường kẻ 1."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng hơi mở, môi hơi chúm nhẹ vểnh ra phía trước.",
+        "tonguePosition": "Đầu lưỡi uốn cong lên chạm vòm lợi trên.",
+        "vocalAirflow": "Hơi ma sát mạnh qua đầu lưỡi uốn cong tạo âm xát quặt lưỡi 'Sờ'."
+      }
+    },
+    {
+      "id": "t",
+      "letter": "T",
+      "upper": "T",
+      "lower": "t",
+      "soundName": "Âm Tờ",
+      "cardId": 38,
+      "illustration": {
+        "word": "Cái Tủ",
+        "meaning": "Chiếc tủ gỗ đựng quần áo và sách vở của bé gọn gàng."
+      },
+      "writingGuide": {
+        "height": "3 ô ly + nét ngang",
+        "strokes": [
+          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
+          "Nét 2: Nét móc ngược cao 3 ô ly kéo từ đường kẻ 4 xuống.",
+          "Nét 3: Nét ngang ngắn trên đường kẻ 3."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng hé mở vừa phải.",
+        "tonguePosition": "Đầu lưỡi ép chặt vào chân răng trên rồi hạ nhanh.",
+        "vocalAirflow": "Chặn luồng hơi rồi bật mạnh không rung dây thanh 'Tờ'."
+      }
+    },
+    {
+      "id": "u",
+      "letter": "U",
+      "upper": "U",
+      "lower": "u",
+      "soundName": "Âm U",
+      "cardId": 39,
+      "illustration": {
+        "word": "Cái Mũ",
+        "meaning": "Chiếc mũ xinh bảo vệ đầu bé dưới trời nắng gió."
+      },
+      "writingGuide": {
+        "height": "2 ô ly",
+        "strokes": [
+          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
+          "Nét 2: Nét móc ngược rộng 1.5 ô ly.",
+          "Nét 3: Nét móc ngược thứ hai hẹp 1 ô ly, kết thúc ở đường kẻ 2."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Môi chúm tròn nhỏ, nhô nhiều ra phía trước.",
+        "tonguePosition": "Cuống lưỡi nâng rất cao về phía ngạc mềm.",
+        "vocalAirflow": "Dây thanh rung, luồng hơi qua lỗ nhỏ của môi tạo âm trầm 'U'."
+      }
+    },
+    {
+      "id": "uw",
+      "letter": "Ư",
+      "upper": "Ư",
+      "lower": "ư",
+      "soundName": "Âm Ư",
+      "cardId": 40,
+      "illustration": {
+        "word": "Con Sư Tử",
+        "meaning": "Chú sư tử dũng mãnh bảo vệ muôn loài trong khu rừng xanh."
+      },
+      "writingGuide": {
+        "height": "2 ô ly + dấu râu",
+        "strokes": [
+          "Nét 1: Viết chữ u cao 2 ô ly.",
+          "Nét 2: Viết nét râu nhỏ xinh ở góc trên bên phải nét móc thứ hai."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Miệng mở dẹt sang hai bên, không chúm môi.",
+        "tonguePosition": "Phần sau của lưỡi nâng cao tương đương âm U nhưng miệng dẹt.",
+        "vocalAirflow": "Dây thanh rung phát âm vang tự nhiên 'Ư'."
+      }
+    },
+    {
+      "id": "v",
+      "letter": "V",
+      "upper": "V",
+      "lower": "v",
+      "soundName": "Âm Vờ",
+      "cardId": 41,
+      "illustration": {
+        "word": "Con Vịt",
+        "meaning": "Chú vịt con lông vàng bơi lội cạp cạp vui vẻ."
+      },
+      "writingGuide": {
+        "height": "2 ô ly",
+        "strokes": [
+          "Nét 1: Nét móc xuôi cao 2 ô ly.",
+          "Nét 2: Lượn tròn đáy rồi đưa lên đường kẻ 3, làm vòng xoắn nhỏ sang phải."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Răng cửa hàm trên chạm nhẹ vào viền môi dưới.",
+        "tonguePosition": "Lưỡi nằm thoải mái dưới đáy miệng.",
+        "vocalAirflow": "Luồng hơi lách qua khe giữa răng trên và môi dưới, dây thanh rung 'Vờ'."
+      }
+    },
+    {
+      "id": "x",
+      "letter": "X",
+      "upper": "X",
+      "lower": "x",
+      "soundName": "Âm Xờ",
+      "cardId": 42,
+      "illustration": {
+        "word": "Xe Đạp",
+        "meaning": "Chiếc xe đạp nhỏ giúp bé rèn luyện đôi chân khỏe mạnh."
+      },
+      "writingGuide": {
+        "height": "2 ô ly (rộng 2 ô ly)",
+        "strokes": [
+          "Nét 1: Nét cong hở phải cao 2 ô ly.",
+          "Nét 2: Nét cong hở trái cao 2 ô ly đặt tựa lưng vào nét thứ nhất tạo sự đối xứng."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Khóe miệng mở nhẹ sang hai bên.",
+        "tonguePosition": "Đầu lưỡi để thẳng tiếp cận mặt sau của răng cửa dưới.",
+        "vocalAirflow": "Hơi ma sát nhẹ nhàng thoát ra qua khe răng, không quặt lưỡi 'Xờ'."
+      }
+    },
+    {
+      "id": "y",
+      "letter": "Y",
+      "upper": "Y",
+      "lower": "y",
+      "soundName": "Âm I Dài",
+      "cardId": 43,
+      "illustration": {
+        "word": "Y Tế",
+        "meaning": "Bác sĩ y tế chăm sóc sức khỏe cho các bé mau lớn."
+      },
+      "writingGuide": {
+        "height": "5 ô ly (2 ô trên dòng kẻ đậm, 3 ô dưới)",
+        "strokes": [
+          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
+          "Nét 2: Nét móc ngược rộng 1.5 ô ly cao 2 ô ly.",
+          "Nét 3: Nét khuyết dưới cao 5 ô ly kéo thẳng xuống dưới 3 ô rồi hất chéo lên."
+        ]
+      },
+      "pronunciation": {
+        "mouthShape": "Môi kéo dẹp căng sang hai bên như âm I.",
+        "tonguePosition": "Thân lưỡi nâng cao sát vòm ngạc cứng.",
+        "vocalAirflow": "Dây thanh rung âm trong trẻo ngân vang 'I'."
+      }
+    }
+  ]
+}
