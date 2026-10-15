@@ -16,6 +16,7 @@ import { SidebarNav } from "@/components/SidebarNav";
 // Các component của phần HỌC CHỮ
 import { LetterFlashcardView } from "@/components/LetterFlashcardView";
 import { StrokesPracticeView } from "@/components/StrokesPracticeView";
+import { DigraphsPracticeView } from "@/components/DigraphsPracticeView";
 import { LetterWritingCanvas } from "@/components/LetterWritingCanvas";
 import { MouthShapeGuideView } from "@/components/MouthShapeGuideView";
 import { LetterQuizGame } from "@/components/LetterQuizGame";
@@ -31,7 +32,11 @@ import { Sparkles, ArrowRight } from "lucide-react";
 import { sound } from "@/utils/speech";
 
 const numbers: NumberCardData[] = rawNumbersData as NumberCardData[];
-const letters: LetterCardData[] = rawLettersData.letters as LetterCardData[];
+const letters: LetterCardData[] = (
+  Array.isArray(rawLettersData)
+    ? rawLettersData
+    : (rawLettersData as { letters: LetterCardData[] }).letters
+) as LetterCardData[];
 
 export default function HomePage() {
   // Trạng thái điều hướng chính
@@ -97,7 +102,7 @@ export default function HomePage() {
         <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3 min-w-0">
             <span className="w-10 h-10 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 text-white font-black text-lg flex items-center justify-center shadow-xs shrink-0">
-              {mainCategory === "letters" ? currentLetter.upper : currentNumber.number}
+              {mainCategory === "letters" ? currentLetter.letter : currentNumber.number}
             </span>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
@@ -106,7 +111,7 @@ export default function HomePage() {
                 </span>
                 <span className="text-xs font-bold text-violet-600">
                   {mainCategory === "letters"
-                    ? `Chữ ${currentLetter.upper} (${currentLetter.soundName})`
+                    ? `Chữ ${currentLetter.letter} (${currentLetter.name})`
                     : `Số ${currentNumber.number} (${currentNumber.word})`}
                 </span>
               </div>
@@ -115,7 +120,9 @@ export default function HomePage() {
                   ? letterMode === "flashcard"
                     ? "Khám phá thẻ chữ cái 3D"
                     : letterMode === "strokes"
-                    ? "Luyện 14 nét viết cơ bản"
+                    ? "Luyện 11 nét viết cơ bản (Thẻ 1 - 11)"
+                    : letterMode === "digraphs"
+                    ? "14 Vần ghép & Âm đôi (Thẻ 41 - 54)"
                     : letterMode === "writing"
                     ? "Bảng luyện viết ô ly 4 dòng kẻ"
                     : letterMode === "mouth"
@@ -161,10 +168,13 @@ export default function HomePage() {
                   currentLetter={currentLetter}
                   onNextLetter={handleNextLetter}
                   onPrevLetter={handlePrevLetter}
+                  onGoToWriting={() => setLetterMode("writing")}
                 />
               )}
 
               {letterMode === "strokes" && <StrokesPracticeView />}
+
+              {letterMode === "digraphs" && <DigraphsPracticeView />}
 
               {letterMode === "writing" && (
                 <LetterWritingCanvas currentLetter={currentLetter} />

@@ -1,0 +1,123 @@
+{
+  "1": {
+    "id": 1,
+    "name": "Nét hất",
+    "slug": "net-hat",
+    "qr_urls": [
+      "https://qr.me-qr.com/PG4GMJJG",
+      "https://q.me-qr.com/3iJfpIpJ"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/a98187a0-383d-4cbf-996e-2ed48defefe2.m4a",
+    "video_url": "https://m.youtube.com/watch?v=t5hYqSBlcpc&feature=youtu.be"
+  },
+  "2": {
+    "id": 2,
+    "name": "Nét móc xuôi",
+    "slug": "net-moc-xuoi",
+    "qr_urls": [
+      "https://qr.me-qr.com/L69SH4fA",
+      "https://q.me-qr.com/ynNwLk2D"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/1ccaaf3d-2355-4c20-8aa2-0dad0254e1e0.m4a",
+    "video_url": "https://m.youtube.com/watch?v=wZcY7LNvX7I&feature=youtu.be"
+  },
+  "3": {
+    "id": 3,
+    "name": "Nét móc ngược",
+    "slug": "net-moc-nguoc",
+    "qr_urls": [
+      "https://qr.me-qr.com/BqPOrlqN",
+      "https://q.me-qr.com/LEy3HCoF"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/90b737a4-a030-4bb5-8e73-4c88bfd35a45.m4a",
+    "video_url": "https://m.youtube.com/watch?v=YPRV5m-dIAY&feature=youtu.be"
+  },
+  "4": {
+    "id": 4,
+    "name": "Nét móc 2 đầu",
+    "slug": "net-moc-2-dau",
+    "qr_urls": [
+      "https://qr.me-qr.com/vmM2LOBy",
+      "https://q.me-qr.com/9eYFurer"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/384930bd-f058-4be5-9ef2-744cf41cbbb3.m4a",
+    "video_url": "https://m.youtube.com/watch?v=WGdH4JTKrF4&feature=youtu.be"
+  },
+  "5": {
+    "id": 5,
+    "name": "Nét khuyết trên",
+    "slug": "net-khuyet-tren",
+    "qr_urls": [
+      "https://qr.me-qr.com/DluRN1lT",
+      "https://q.me-qr.com/6HHw2hzn"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/e189d1b5-8c0a-4e97-924d-30cd3dc631c0.m4a",
+    "video_url": "https://m.youtube.com/watch?v=oVGF9AXpTvM&feature=youtu.be"
+  },
+  "6": {
+    "id": 6,
+    "name": "Nét khuyết dưới",
+    "slug": "net-khuyet-duoi",
+    "qr_urls": [
+      "https://qr.me-qr.com/8gdjIUh5",
+      "https://q.me-qr.com/jDgI4JAm"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/71013ccf-4bad-4fa6-8fac-cf81d29e03f2.m4a",
+    "video_url": "https://m.youtube.com/watch?v=SvZB7gbqYqc&feature=youtu.be"
+  },
+  "7": {
+    "id": 7,
+    "name": "Nét cong kín",
+    "slug": "net-cong-kin",
+    "qr_urls": [
+      "https://qr.me-qr.com/gfn31xsZ",
+      "https://q.me-qr.com/I10j1YO3"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/60a04508-0c08-43d0-a8d8-66950bcb4631.m4a",
+    "video_url": "https://m.youtube.com/watch?v=bCb97mBS5qw&feature=youtu.be"
+  },
+  "8": {
+    "id": 8,
+    "name": "Nét cong hở phải",
+    "slug": "net-cong-ho-phai",
+    "qr_urls": [
+      "https://qr.me-qr.com/L9eTPjow",
+      "https://q.me-qr.com/DfOBqRDd"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/0b835ab5-64b1-4765-9689-2831889f9969.m4a",
+    "video_url": "https://m.youtube.com/watch?v=tbsiS6YJNjM&feature=youtu.be"
+  },
+  "9": {
+    "id": 9,
+    "name": "Nét cong hở trái",
+    "slug": "net-cong-ho-trai",
+    "qr_urls": [
+      "https://qr.me-qr.com/5t5ZEHKN",
+      "https://q.me-qr.com/Q8JA6Eqy"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/f0e3db0e-c729-4b09-8af2-f629e1c694f0.m4a",
+    "video_url": "https://m.youtube.com/watch?v=FjaodpCYNv0&feature=youtu.be"
+  },
+  "10": {
+    "id": 10,
+    "name": "Nét thắt trên",
+    "slug": "net-that-tren",
+    "qr_urls": [
+      "https://qr.me-qr.com/7OcGUK4D",
+      "https://q.me-qr.com/qaZGThTL"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/4ca2d58c-7f0a-4a55-917b-89263585440b.m4a",
+    "video_url": "https://m.youtube.com/watch?v=GIecWcrBCV0&feature=youtu.be"
+  },
+  "11": {
+    "id": 11,
+    "name": "Nét thắt giữa",
+    "slug": "net-that-giua",
+    "qr_urls": [
+      "https://qr.me-qr.com/qJIKH1Ak",
+      "https://q.me-qr.com/Gdn0dYsE"
+    ],
+    "audio_url": "https://storage2.me-qr.com/m4a/757e7759-9837-4740-b0bc-4c85b80d50fd.m4a",
+    "video_url": "https://m.youtube.com/watch?v=ruL9L8eoVwc&feature=youtu.be"
+  }
+}

@@ -36,45 +36,64 @@ async function runAudit() {
     await page.screenshot({ path: letterCardShot, fullPage: false });
     console.log(`   ✓ [Học Chữ] Đã chụp Thẻ Chữ Cái -> ${letterCardShot}`);
 
-    // 2. Chụp mục Học Chữ: 14 Nét Cơ Bản
+    // 2. Chụp mục Học Chữ: 11 Nét Cơ Bản
     try {
       if (vp.isMobile) {
         const menuBtn = page.getByRole("button", { name: /Mở Menu điều hướng/i });
         if (await menuBtn.isVisible()) await menuBtn.click();
         await page.waitForTimeout(400);
       }
-      const strokesBtn = page.getByRole("button", { name: /14 Nét Cơ Bản/i });
+      const strokesBtn = page.getByRole("button", { name: /11 Nét Cơ Bản/i });
       if (await strokesBtn.isVisible()) {
         await strokesBtn.click();
         await page.waitForTimeout(600);
-        const strokeShot = path.join(outputDir, `${vp.name}_2_chu_14_net.png`);
+        const strokeShot = path.join(outputDir, `${vp.name}_2_chu_11_net.png`);
         await page.screenshot({ path: strokeShot, fullPage: false });
-        console.log(`   ✓ [Học Chữ] Đã chụp 14 Nét Cơ Bản -> ${strokeShot}`);
+        console.log(`   ✓ [Học Chữ] Đã chụp 11 Nét Cơ Bản -> ${strokeShot}`);
       }
     } catch (e) {
-      console.warn(`   ⚠ Không chụp được 14 Nét:`, e.message);
+      console.warn(`   ⚠ Không chụp được 11 Nét:`, e.message);
     }
 
-    // 3. Chụp mục Học Chữ: Bé Tập Viết Chữ
+    // 3. Chụp mục Học Chữ: 14 Vần Ghép & Âm Đôi
     try {
       if (vp.isMobile) {
         const menuBtn = page.getByRole("button", { name: /Mở Menu điều hướng/i });
         if (await menuBtn.isVisible()) await menuBtn.click();
         await page.waitForTimeout(400);
       }
-      const writingBtn = page.getByRole("button", { name: /Bé Tập Viết Chữ/i });
+      const digraphsBtn = page.getByRole("button", { name: /14 Vần Ghép/i });
+      if (await digraphsBtn.isVisible()) {
+        await digraphsBtn.click();
+        await page.waitForTimeout(600);
+        const digraphShot = path.join(outputDir, `${vp.name}_3_chu_14_van_ghep.png`);
+        await page.screenshot({ path: digraphShot, fullPage: false });
+        console.log(`   ✓ [Học Chữ] Đã chụp 14 Vần Ghép -> ${digraphShot}`);
+      }
+    } catch (e) {
+      console.warn(`   ⚠ Không chụp được 14 Vần Ghép:`, e.message);
+    }
+
+    // 4. Chụp mục Học Chữ: Bé Tập Viết Ô Ly
+    try {
+      if (vp.isMobile) {
+        const menuBtn = page.getByRole("button", { name: /Mở Menu điều hướng/i });
+        if (await menuBtn.isVisible()) await menuBtn.click();
+        await page.waitForTimeout(400);
+      }
+      const writingBtn = page.getByRole("button", { name: /Bé Tập Viết Ô Ly/i });
       if (await writingBtn.isVisible()) {
         await writingBtn.click();
         await page.waitForTimeout(600);
-        const writingShot = path.join(outputDir, `${vp.name}_3_chu_tap_viet.png`);
+        const writingShot = path.join(outputDir, `${vp.name}_4_chu_tap_viet.png`);
         await page.screenshot({ path: writingShot, fullPage: false });
-        console.log(`   ✓ [Học Chữ] Đã chụp Bé Tập Viết Chữ -> ${writingShot}`);
+        console.log(`   ✓ [Học Chữ] Đã chụp Bé Tập Viết Ô Ly -> ${writingShot}`);
       }
     } catch (e) {
       console.warn(`   ⚠ Không chụp được Viết Chữ:`, e.message);
     }
 
-    // 4. Chụp mục Học Chữ: Khẩu Hình Phát Âm
+    // 5. Chụp mục Học Chữ: Khẩu Hình Phát Âm
     try {
       if (vp.isMobile) {
         const menuBtn = page.getByRole("button", { name: /Mở Menu điều hướng/i });
@@ -85,7 +104,7 @@ async function runAudit() {
       if (await mouthBtn.isVisible()) {
         await mouthBtn.click();
         await page.waitForTimeout(600);
-        const mouthShot = path.join(outputDir, `${vp.name}_4_chu_khau_hinh.png`);
+        const mouthShot = path.join(outputDir, `${vp.name}_5_chu_khau_hinh.png`);
         await page.screenshot({ path: mouthShot, fullPage: false });
         console.log(`   ✓ [Học Chữ] Đã chụp Khẩu Hình Phát Âm -> ${mouthShot}`);
       }
@@ -93,7 +112,7 @@ async function runAudit() {
       console.warn(`   ⚠ Không chụp được Khẩu Hình:`, e.message);
     }
 
-    // 5. Chụp mục Học Chữ: Đố Vui Bắt Chữ
+    // 6. Chụp mục Học Chữ: Đố Vui Bắt Chữ
     try {
       if (vp.isMobile) {
         const menuBtn = page.getByRole("button", { name: /Mở Menu điều hướng/i });
@@ -104,7 +123,7 @@ async function runAudit() {
       if (await quizBtn.isVisible()) {
         await quizBtn.click();
         await page.waitForTimeout(600);
-        const quizShot = path.join(outputDir, `${vp.name}_5_chu_do_vui.png`);
+        const quizShot = path.join(outputDir, `${vp.name}_6_chu_do_vui.png`);
         await page.screenshot({ path: quizShot, fullPage: false });
         console.log(`   ✓ [Học Chữ] Đã chụp Đố Vui Bắt Chữ -> ${quizShot}`);
       }
@@ -112,7 +131,7 @@ async function runAudit() {
       console.warn(`   ⚠ Không chụp được Đố Vui:`, e.message);
     }
 
-    // 6. Chuyển sang mục Lớn 2: HỌC SỐ
+    // 7. Chuyển sang mục Lớn 2: HỌC SỐ
     try {
       if (vp.isMobile) {
         const switchBtn = page.getByRole("button", { name: /Đổi sang 🔢 Học Số/i });
@@ -123,11 +142,11 @@ async function runAudit() {
       }
       await page.waitForTimeout(600);
 
-      const numCardShot = path.join(outputDir, `${vp.name}_6_so_the_hoc.png`);
+      const numCardShot = path.join(outputDir, `${vp.name}_7_so_the_hoc.png`);
       await page.screenshot({ path: numCardShot, fullPage: false });
       console.log(`   ✓ [Học Số] Đã chụp Thẻ Học Số -> ${numCardShot}`);
 
-      // 7. Chụp Tách - Gộp Số
+      // 8. Chụp Tách - Gộp Số
       if (vp.isMobile) {
         const menuBtn = page.getByRole("button", { name: /Mở Menu điều hướng/i });
         if (await menuBtn.isVisible()) await menuBtn.click();
@@ -137,7 +156,7 @@ async function runAudit() {
       if (await bondsBtn.isVisible()) {
         await bondsBtn.click();
         await page.waitForTimeout(600);
-        const bondsShot = path.join(outputDir, `${vp.name}_7_so_tach_gop.png`);
+        const bondsShot = path.join(outputDir, `${vp.name}_8_so_tach_gop.png`);
         await page.screenshot({ path: bondsShot, fullPage: false });
         console.log(`   ✓ [Học Số] Đã chụp Tách - Gộp Số -> ${bondsShot}`);
       }

@@ -1,0 +1,192 @@
+[
+  {
+    "id": 1,
+    "name": "Nét hất",
+    "slug": "net-hat",
+    "desc": "Đặt bút trên dòng kẻ 2, đưa nét xiên nhẹ lên góc trên dòng kẻ 3.",
+    "letters": [
+      "i",
+      "u",
+      "ư",
+      "t",
+      "p"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-hat.m4a",
+    "video_url": "https://m.youtube.com/watch?v=t5hYqSBlcpc&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_1_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_1_back.png"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Nét móc xuôi",
+    "slug": "net-moc-xuoi",
+    "desc": "Đặt bút giữa ô ly, uốn cong lượn tròn chạm dòng kẻ 3 rồi kéo thẳng xuống dòng kẻ 1.",
+    "letters": [
+      "n",
+      "m",
+      "v"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-moc-xuoi.m4a",
+    "video_url": "https://m.youtube.com/watch?v=wZcY7LNvX7I&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_2_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_2_back.png"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Nét móc ngược",
+    "slug": "net-moc-nguoc",
+    "desc": "Kéo thẳng từ trên xuống, chạm dòng kẻ 1 rồi uốn cong móc ngược lên dòng kẻ 2.",
+    "letters": [
+      "i",
+      "t",
+      "u"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-moc-nguoc.m4a",
+    "video_url": "https://m.youtube.com/watch?v=YPRV5m-dIAY&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_3_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_3_back.png"
+    }
+  },
+  {
+    "id": 4,
+    "name": "Nét móc 2 đầu",
+    "slug": "net-moc-2-dau",
+    "desc": "Kết hợp nét móc xuôi ở đầu và nét móc ngược ở cuối, tạo đường lượn mềm mại.",
+    "letters": [
+      "p",
+      "n",
+      "m"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-moc-2-dau.m4a",
+    "video_url": "https://m.youtube.com/watch?v=WGdH4JTKrF4&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_4_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_4_back.png"
+    }
+  },
+  {
+    "id": 5,
+    "name": "Nét khuyết trên",
+    "slug": "net-khuyet-tren",
+    "desc": "Nét xiên lượn tròn qua đường kẻ 6, uốn khuyết rồi kéo thẳng đứng xuống dòng kẻ 1, cao 5 ô ly.",
+    "letters": [
+      "l",
+      "b",
+      "h",
+      "k"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-khuyet-tren.m4a",
+    "video_url": "https://m.youtube.com/watch?v=oVGF9AXpTvM&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_5_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_5_back.png"
+    }
+  },
+  {
+    "id": 6,
+    "name": "Nét khuyết dưới",
+    "slug": "net-khuyet-duoi",
+    "desc": "Kéo thẳng đứng xuống dưới dòng kẻ 1 sâu 3 ô ly, uốn cong khuyết lượn lên dòng kẻ 2.",
+    "letters": [
+      "g",
+      "y"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-khuyet-duoi.m4a",
+    "video_url": "https://m.youtube.com/watch?v=SvZB7gbqYqc&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_6_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_6_back.png"
+    }
+  },
+  {
+    "id": 7,
+    "name": "Nét cong kín",
+    "slug": "net-cong-kin",
+    "desc": "Nét cong tròn khép kín hoàn hảo cao 2 ô ly, rộng 1.5 ô ly.",
+    "letters": [
+      "o",
+      "ô",
+      "ơ",
+      "q",
+      "a",
+      "d",
+      "đ"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-cong-kin.m4a",
+    "video_url": "https://m.youtube.com/watch?v=bCb97mBS5qw&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_7_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_7_back.png"
+    }
+  },
+  {
+    "id": 8,
+    "name": "Nét cong hở phải",
+    "slug": "net-cong-ho-phai",
+    "desc": "Lưng cong sang trái, mở rộng hở về phía bên phải, cao 2 ô ly.",
+    "letters": [
+      "c",
+      "x",
+      "e",
+      "ê"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-cong-ho-phai.m4a",
+    "video_url": "https://m.youtube.com/watch?v=tbsiS6YJNjM&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_8_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_8_back.png"
+    }
+  },
+  {
+    "id": 9,
+    "name": "Nét cong hở trái",
+    "slug": "net-cong-ho-trai",
+    "desc": "Lưng cong sang phải, mở rộng hở về phía bên trái, cao 2 ô ly.",
+    "letters": [
+      "x"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-cong-ho-trai.m4a",
+    "video_url": "https://m.youtube.com/watch?v=FjaodpCYNv0&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_9_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_9_back.png"
+    }
+  },
+  {
+    "id": 10,
+    "name": "Nét thắt trên",
+    "slug": "net-that-tren",
+    "desc": "Đưa bút lên chạm đường kẻ 3, tạo vòng thắt tròn nhỏ ở góc trên rồi lượn ngang.",
+    "letters": [
+      "v",
+      "b",
+      "r"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-that-tren.m4a",
+    "video_url": "https://m.youtube.com/watch?v=GIecWcrBCV0&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_10_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_10_back.png"
+    }
+  },
+  {
+    "id": 11,
+    "name": "Nét thắt giữa",
+    "slug": "net-that-giua",
+    "desc": "Đưa bút vào giữa thân chữ ở đường kẻ 2, tạo vòng xoắn thắt nhỏ rồi móc chân ra.",
+    "letters": [
+      "k"
+    ],
+    "audio_url": "/audio/module_strokes/net_net-that-giua.m4a",
+    "video_url": "https://m.youtube.com/watch?v=ruL9L8eoVwc&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_strokes/cards/card_stroke_11_front.png",
+      "card_back": "/data/module_strokes/cards/card_stroke_11_back.png"
+    }
+  }
+]

@@ -1,0 +1,170 @@
+[
+  {
+    "id": 41,
+    "name": "Ch",
+    "slug": "ch",
+    "sample": "chó",
+    "audio_url": "/audio/module_digraphs/am_ch.m4a",
+    "video_url": "https://m.youtube.com/watch?v=AsGroibeO88&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_41_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_41_back.png"
+    }
+  },
+  {
+    "id": 42,
+    "name": "Kh",
+    "slug": "kh",
+    "sample": "khỉ",
+    "audio_url": "/audio/module_digraphs/am_kh.m4a",
+    "video_url": "https://m.youtube.com/watch?v=dcIZzi9Tyw0&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_42_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_42_back.png"
+    }
+  },
+  {
+    "id": 43,
+    "name": "Nh",
+    "slug": "nh",
+    "sample": "nhà",
+    "audio_url": "/audio/module_digraphs/am_nh.m4a",
+    "video_url": "https://m.youtube.com/watch?v=g2IqBoroSlI&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_43_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_43_back.png"
+    }
+  },
+  {
+    "id": 44,
+    "name": "Th",
+    "slug": "th",
+    "sample": "thỏ",
+    "audio_url": "/audio/module_digraphs/am_th.m4a",
+    "video_url": "https://m.youtube.com/watch?v=GYfbzaNlzgY&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_44_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_44_back.png"
+    }
+  },
+  {
+    "id": 45,
+    "name": "Ph",
+    "slug": "ph",
+    "sample": "phở",
+    "audio_url": "/audio/module_digraphs/am_ph.m4a",
+    "video_url": "https://m.youtube.com/watch?v=-pNYsJypi_o&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_45_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_45_back.png"
+    }
+  },
+  {
+    "id": 46,
+    "name": "Gh",
+    "slug": "gh",
+    "sample": "ghế",
+    "audio_url": "/audio/module_digraphs/am_gh.m4a",
+    "video_url": "https://m.youtube.com/watch?v=H2UIY1GOwTU&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_46_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_46_back.png"
+    }
+  },
+  {
+    "id": 47,
+    "name": "Ng",
+    "slug": "ng",
+    "sample": "ngựa",
+    "audio_url": "/audio/module_digraphs/am_ng.m4a",
+    "video_url": "https://m.youtube.com/watch?v=88943X7BYSQ&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_47_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_47_back.png"
+    }
+  },
+  {
+    "id": 48,
+    "name": "Ngh",
+    "slug": "ngh",
+    "sample": "nghệ",
+    "audio_url": "/audio/module_digraphs/am_ngh.m4a",
+    "video_url": "https://m.youtube.com/watch?v=W7nuFRbGu8M&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_48_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_48_back.png"
+    }
+  },
+  {
+    "id": 49,
+    "name": "Tr",
+    "slug": "tr",
+    "sample": "tre",
+    "audio_url": "/audio/module_digraphs/am_tr.m4a",
+    "video_url": "https://m.youtube.com/watch?v=VIX8EoKEMNQ&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_49_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_49_back.png"
+    }
+  },
+  {
+    "id": 50,
+    "name": "Gi",
+    "slug": "gi",
+    "sample": "giỏ",
+    "audio_url": "/audio/module_digraphs/am_gi.m4a",
+    "video_url": "https://m.youtube.com/watch?v=DtDTj1FQVNs&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_50_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_50_back.png"
+    }
+  },
+  {
+    "id": 51,
+    "name": "Qu",
+    "slug": "qu",
+    "sample": "quà",
+    "audio_url": "/audio/module_digraphs/am_qu.m4a",
+    "video_url": "https://m.youtube.com/watch?v=dNO9wregRdo&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_51_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_51_back.png"
+    }
+  },
+  {
+    "id": 52,
+    "name": "ia",
+    "slug": "ia",
+    "sample": "mía",
+    "audio_url": "/audio/module_digraphs/am_ia.m4a",
+    "video_url": "https://m.youtube.com/watch?v=WzVjCiBUT2o&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_52_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_52_back.png"
+    }
+  },
+  {
+    "id": 53,
+    "name": "ua",
+    "slug": "ua",
+    "sample": "cua",
+    "audio_url": "/audio/module_digraphs/am_ua.m4a",
+    "video_url": "https://m.youtube.com/watch?v=ba_ZIt2dTDo&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_53_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_53_back.png"
+    }
+  },
+  {
+    "id": 54,
+    "name": "ưa",
+    "slug": "ua_moc",
+    "sample": "dừa",
+    "audio_url": "/audio/module_digraphs/am_ua_moc.m4a",
+    "video_url": "https://m.youtube.com/watch?v=vBNmAJ286C4&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_digraphs/cards/card_digraph_54_front.png",
+      "card_back": "/data/module_digraphs/cards/card_digraph_54_back.png"
+    }
+  }
+]

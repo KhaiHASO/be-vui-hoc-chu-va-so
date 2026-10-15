@@ -76,9 +76,10 @@ export function SidebarNav({
   };
 
   const letterSubItems = [
-    { mode: "flashcard" as LetterSubMode, label: "Thẻ Chữ Cái 3D", icon: BookOpen },
-    { mode: "strokes" as LetterSubMode, label: "14 Nét Cơ Bản", icon: Sparkles },
-    { mode: "writing" as LetterSubMode, label: "Bé Tập Viết Chữ", icon: PenTool },
+    { mode: "flashcard" as LetterSubMode, label: "Thẻ Chữ Cái 3D (29 Chữ)", icon: BookOpen },
+    { mode: "strokes" as LetterSubMode, label: "11 Nét Cơ Bản", icon: Sparkles },
+    { mode: "digraphs" as LetterSubMode, label: "14 Vần Ghép & Âm Đôi", icon: Sparkles },
+    { mode: "writing" as LetterSubMode, label: "Bé Tập Viết Ô Ly", icon: PenTool },
     { mode: "mouth" as LetterSubMode, label: "Khẩu Hình Phát Âm", icon: Volume2 },
     { mode: "quiz" as LetterSubMode, label: "Đố Vui Bắt Chữ", icon: Gamepad2 },
   ];
@@ -232,7 +233,7 @@ export function SidebarNav({
                       : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
                   }`}
                 >
-                  {l.upper}
+                  {l.letter}
                 </button>
               ))}
             </div>

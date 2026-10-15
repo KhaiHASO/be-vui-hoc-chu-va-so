@@ -1,39 +1,67 @@
 export interface BasicStroke {
-  id: string;
+  id: number;
   name: string;
-  cardId: number;
-  height: string;
-  description: string;
-  previewSvg?: string;
+  slug: string;
+  desc: string;
+  letters: string[];
+  audio_url: string;
+  video_url?: string;
+  assets: {
+    card_front: string;
+    card_back: string;
+  };
+}
+
+export interface DigraphData {
+  id: number;
+  name: string;
+  slug: string;
+  sample: string;
+  audio_url: string;
+  video_url?: string;
+  assets: {
+    card_front: string;
+    card_back: string;
+  };
 }
 
 export interface LetterCardData {
-  id: string;
+  id: number;
+  card_id: number;
   letter: string;
-  upper: string;
-  lower: string;
-  soundName: string; // Tên âm: "Âm a", "Âm bờ", "Âm cờ"...
-  cardId?: number;
-  illustration: {
-    word: string;
-    image?: string;
-    meaning: string;
+  name: string;
+  slug: string;
+  type: "vowel" | "consonant";
+  illu_word: string;
+  stroke_count: number;
+  writing_steps: string[];
+  mouth_shape: string;
+  parent_tip: string;
+  forms: {
+    upper_print: string;
+    lower_print: string;
+    upper_cursive: string;
+    lower_cursive: string;
   };
-  writingGuide: {
-    height: string; // vd: "2 ô ly" hoặc "5 ô ly"
-    strokes: string[];
-    sampleSvg?: string;
+  back_content: {
+    type: "vowel" | "consonant";
+    vowel_words?: string[];
+    compatible_vowels?: string[];
+    phonics_matrix?: Record<string, string[]>;
+    phrases?: string[];
   };
-  pronunciation: {
-    mouthShape: string; // Mô tả khẩu hình: "Mở rộng miệng tự nhiên"
-    tonguePosition: string; // Vị trí lưỡi: "Lưỡi hạ thấp tự nhiên"
-    vocalAirflow: string; // Luồng hơi: "Dây thanh rung đều, hơi thoát tự nhiên"
-    guideTips?: string; // Lời khuyên phụ huynh khi sửa ngọng
+  audio_url: string;
+  video_url?: string;
+  assets: {
+    card_front: string;
+    card_back: string;
+    writing_guide: string;
+    illustration: string;
   };
 }
 
 export type MainCategory = "letters" | "numbers";
 
-export type LetterSubMode = "flashcard" | "strokes" | "writing" | "mouth" | "quiz";
+export type LetterSubMode = "flashcard" | "strokes" | "digraphs" | "writing" | "mouth" | "quiz";
 
 export type NumberSubMode = "card" | "counting" | "writing" | "bonds" | "guide";

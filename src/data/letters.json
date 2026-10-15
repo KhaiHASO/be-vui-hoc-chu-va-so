@@ -1,819 +1,2517 @@
-{
-  "basicStrokes": [
-    {
-      "id": "net_ngang",
-      "name": "Nét ngang",
-      "cardId": 1,
-      "height": "1 ô ly",
-      "description": "Kéo thẳng từ trái sang phải theo đường kẻ ngang."
+[
+  {
+    "id": 12,
+    "card_id": 12,
+    "letter": "A",
+    "name": "Chữ A",
+    "slug": "a",
+    "type": "vowel",
+    "illu_word": "la",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét cong kín cao 2 ô ly, rộng 1.5 ô ly, đặt bút dưới đường kẻ 3, lia bút sang trái viết nét cong kín.",
+      "Nét 2: Lia bút lên đường kẻ 3, viết nét móc ngược sát vào nét cong kín, dừng bút ở đường kẻ 2."
+    ],
+    "mouth_shape": "Miệng mở rộng tự nhiên, hàm dưới hơi hạ, luồng hơi thoát đều từ cuống họng.",
+    "parent_tip": "Cho bé mở to miệng phát âm 'A - A - A' như khi đi khám bác sĩ, tìm các đồ vật quanh nhà có âm A như: cái ca, quả na, con cá.",
+    "forms": {
+      "upper_print": "A",
+      "lower_print": "a",
+      "upper_cursive": "A",
+      "lower_cursive": "a"
     },
-    {
-      "id": "net_thang_dung",
-      "name": "Nét thẳng đứng",
-      "cardId": 1,
-      "height": "2 đến 4 ô ly",
-      "description": "Đặt bút từ trên kéo thẳng đứng xuống theo đường kẻ dọc."
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "cá",
+        "nhà",
+        "bà",
+        "ngã",
+        "đá",
+        "lá"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
     },
-    {
-      "id": "net_xien_phai",
-      "name": "Nét xiên phải",
-      "cardId": 1,
-      "height": "2 ô ly",
-      "description": "Đặt bút từ dưới xiên lên trên sang bên phải."
-    },
-    {
-      "id": "net_xien_trai",
-      "name": "Nét xiên trái",
-      "cardId": 1,
-      "height": "2 ô ly",
-      "description": "Đặt bút từ trên xiên xuống dưới sang bên trái."
-    },
-    {
-      "id": "net_moc_xuoi",
-      "name": "Nét móc xuôi",
-      "cardId": 2,
-      "height": "2 ô ly",
-      "description": "Đặt bút uốn cong tròn sang phải rồi kéo thẳng đứng xuống."
-    },
-    {
-      "id": "net_moc_nguoc",
-      "name": "Nét móc ngược",
-      "cardId": 3,
-      "height": "2 ô ly",
-      "description": "Kéo thẳng đứng xuống rồi uốn lượn cong sang phải hất lên."
-    },
-    {
-      "id": "net_moc_hai_dau",
-      "name": "Nét móc hai đầu",
-      "cardId": 4,
-      "height": "2 ô ly",
-      "description": "Kết hợp uốn cong trên rồi kéo thẳng và móc ngược hất lên."
-    },
-    {
-      "id": "net_cong_ho_phai",
-      "name": "Nét cong hở phải (Nét c)",
-      "cardId": 5,
-      "height": "2 ô ly",
-      "description": "Đặt bút dưới đường kẻ 3, lượn cong sang trái rồi cong xuống hở bên phải."
-    },
-    {
-      "id": "net_cong_ho_trai",
-      "name": "Nét cong hở trái",
-      "cardId": 6,
-      "height": "2 ô ly",
-      "description": "Lượn tròn cong sang phải rồi cong xuống hở bên trái."
-    },
-    {
-      "id": "net_cong_kin",
-      "name": "Nét cong kín (Nét o)",
-      "cardId": 7,
-      "height": "2 ô ly",
-      "description": "Vẽ vòng tròn khép kín, rộng 1.5 ô ly, cao 2 ô ly cân đối."
-    },
-    {
-      "id": "net_khuyet_tren",
-      "name": "Nét khuyết trên (l, b, h, k)",
-      "cardId": 8,
-      "height": "5 ô ly",
-      "description": "Đưa xiên lên uốn vòng cung qua đường kẻ 6 rồi kéo thẳng đứng xuống đất."
-    },
-    {
-      "id": "net_khuyet_duoi",
-      "name": "Nét khuyết dưới (g, y)",
-      "cardId": 9,
-      "height": "5 ô ly",
-      "description": "Kéo thẳng đứng xuống dưới dòng kẻ đậm 3 ô ly rồi uốn cong hất xiên lên."
-    },
-    {
-      "id": "net_xoan",
-      "name": "Nét xoắn (r, s)",
-      "cardId": 10,
-      "height": "2.25 ô ly",
-      "description": "Lên đỉnh tạo vòng xoắn nhỏ nhô nhẹ trên đường kẻ 3 rồi lượn tiếp."
-    },
-    {
-      "id": "net_that_giua",
-      "name": "Nét thắt giữa (k)",
-      "cardId": 11,
-      "height": "2 ô ly",
-      "description": "Tạo vòng thắt nhỏ ngay tại giao điểm đường kẻ ngang 2."
+    "audio_url": "/audio/module_letters/chu_a.m4a",
+    "video_url": "https://m.youtube.com/watch?v=YPdpUbhmjvM&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_12_front.png",
+      "card_back": "/data/module_letters/cards/card_12_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_a.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_a.png"
     }
-  ],
-  "letters": [
-    {
-      "id": "a",
-      "letter": "A",
-      "upper": "A",
-      "lower": "a",
-      "soundName": "Âm A",
-      "cardId": 15,
-      "illustration": {
-        "word": "Cái Ca",
-        "meaning": "Cái ca dùng để đựng nước mát uống."
-      },
-      "writingGuide": {
-        "height": "2 ô ly (rộng 1.5 ô ly)",
-        "strokes": [
-          "Nét 1: Nét cong kín cao 2 ô ly (như chữ o).",
-          "Nét 2: Nét móc ngược áp sát bên phải nét cong kín, dừng bút ở đường kẻ 2."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Mở rộng miệng tự nhiên theo chiều dọc và ngang.",
-        "tonguePosition": "Lưỡi hạ thấp tự nhiên, nằm phẳng ở đáy miệng.",
-        "vocalAirflow": "Dây thanh rung, luồng hơi thoát ra tự do, không bị cản trở.",
-        "guideTips": "Nhắc bé mở tròn khẩu hình miệng, phát âm to rõ ràng 'A - A - A'."
-      }
+  },
+  {
+    "id": 13,
+    "card_id": 13,
+    "letter": "Ă",
+    "name": "Chữ Ă",
+    "slug": "aw",
+    "type": "vowel",
+    "illu_word": "ăn",
+    "stroke_count": 3,
+    "writing_steps": [
+      "Nét 1: Nét cong kín cao 2 ô ly.",
+      "Nét 2: Nét móc ngược cao 2 ô ly dừng bút ở đường kẻ 2.",
+      "Nét 3: Nét cong dưới nhỏ (dấu á) đặt cân đối phía trên đầu chữ a, dưới đường kẻ 4."
+    ],
+    "mouth_shape": "Miệng mở hơi hẹp hơn âm A một chút, phát âm ngắn, dứt khoát: 'Ă'.",
+    "parent_tip": "Nhắc con: chữ Ă giống chữ A đội một chiếc thuyền cong nhỏ xinh xắn trên đầu.",
+    "forms": {
+      "upper_print": "Ă",
+      "lower_print": "ă",
+      "upper_cursive": "Ă",
+      "lower_cursive": "ă"
     },
-    {
-      "id": "aw",
-      "letter": "Ă",
-      "upper": "Ă",
-      "lower": "ă",
-      "soundName": "Âm Ă",
-      "cardId": 16,
-      "illustration": {
-        "word": "Mặt Trăng",
-        "meaning": "Mặt trăng lưỡi liềm sáng lung linh trên bầu trời đêm."
-      },
-      "writingGuide": {
-        "height": "2 ô ly + dấu mũ cong",
-        "strokes": [
-          "Nét 1: Viết chữ a cao 2 ô ly.",
-          "Nét 2: Viết nét cong nhỏ ngửa lên như hình trăng khuyết đặt trên đầu chữ a."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở vừa phải, hẹp hơn âm A một chút.",
-        "tonguePosition": "Lưỡi hơi nâng nhẹ hơn âm A.",
-        "vocalAirflow": "Âm ngắn, bật gọn gàng, dây thanh rung.",
-        "guideTips": "Phát âm dứt khoát, gọn gàng, không kéo dài như âm A."
-      }
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "khăn",
+        "ăn",
+        "mắt",
+        "nằm",
+        "rắn",
+        "lặn"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
     },
-    {
-      "id": "aa",
-      "letter": "Â",
-      "upper": "Â",
-      "lower": "â",
-      "soundName": "Âm Â",
-      "cardId": 17,
-      "illustration": {
-        "word": "Cái Cây",
-        "meaning": "Cây xanh rợp bóng mát cho chim hót ca."
-      },
-      "writingGuide": {
-        "height": "2 ô ly + dấu mũ nón",
-        "strokes": [
-          "Nét 1: Viết chữ a cao 2 ô ly.",
-          "Nét 2: Viết dấu mũ nón (nét xiên trái nối nét xiên phải) cân đối trên đầu."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở hẹp vừa phải, môi hơi thả lỏng.",
-        "tonguePosition": "Phần cuống lưỡi hơi nâng nhẹ.",
-        "vocalAirflow": "Phát âm ngắn, trầm ấm hơn âm A và Ă.",
-        "guideTips": "Hình dung như chiếc nón che mưa nắng trên đầu chữ a."
-      }
-    },
-    {
-      "id": "b",
-      "letter": "B",
-      "upper": "B",
-      "lower": "b",
-      "soundName": "Âm Bờ",
-      "cardId": 18,
-      "illustration": {
-        "word": "Con Bò",
-        "meaning": "Chú bò vàng chăm chỉ ăn cỏ trên đồng cỏ xanh."
-      },
-      "writingGuide": {
-        "height": "5 ô ly (rộng 2 ô ly)",
-        "strokes": [
-          "Nét 1: Nét khuyết trên cao 5 ô ly.",
-          "Nét 2: Tiếp tục lượn nét móc ngược rồi uốn lượn thắt một vòng nhỏ ở đường kẻ 3."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Hai môi khép chặt lại để giữ hơi.",
-        "tonguePosition": "Lưỡi nằm tự nhiên trong vòm họng.",
-        "vocalAirflow": "Bật mở hai môi đột ngột, dây thanh rung tạo thành tiếng 'Bờ'.",
-        "guideTips": "Nhắc bé mím nhẹ môi rồi bật ra tiếng 'Bờ', không cắn răng."
-      }
-    },
-    {
-      "id": "c",
-      "letter": "C",
-      "upper": "C",
-      "lower": "c",
-      "soundName": "Âm Cờ",
-      "cardId": 19,
-      "illustration": {
-        "word": "Con Cá",
-        "meaning": "Chú cá bơi lội tung tăng dưới dòng nước trong veo."
-      },
-      "writingGuide": {
-        "height": "2 ô ly (rộng 1.5 ô ly)",
-        "strokes": [
-          "Nét 1: Nét cong hở phải cao 2 ô ly, đặt bút dưới đường kẻ 3 lượn tròn mềm mại."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở tự nhiên theo chiều ngang.",
-        "tonguePosition": "Gốc lưỡi nâng cao chạm vào ngạc mềm (vòm họng trên) rồi hạ nhanh.",
-        "vocalAirflow": "Bật luồng hơi từ cuống họng phát ra tiếng 'Cờ'.",
-        "guideTips": "Đây là âm tắc cuống họng, nhắc bé phát âm dứt khoát từ họng."
-      }
-    },
-    {
-      "id": "d",
-      "letter": "D",
-      "upper": "D",
-      "lower": "d",
-      "soundName": "Âm Dờ",
-      "cardId": 20,
-      "illustration": {
-        "word": "Con Dê",
-        "meaning": "Chú dê trắng nhảy nhót trên sườn núi."
-      },
-      "writingGuide": {
-        "height": "4 ô ly",
-        "strokes": [
-          "Nét 1: Nét cong kín cao 2 ô ly bên trái.",
-          "Nét 2: Nét móc ngược cao 4 ô ly từ đường kẻ 5 kéo thẳng xuống áp sát nét cong kín."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở vừa phải, hai khóe môi hơi hé.",
-        "tonguePosition": "Đầu lưỡi nâng nhẹ chạm vào mặt sau của chân răng trên.",
-        "vocalAirflow": "Hơi thoát qua khe hẹp giữa đầu lưỡi và răng, dây thanh rung nhẹ.",
-        "guideTips": "Âm 'd' phát âm như âm 'gi' trong tiếng miền Nam, nhẹ nhàng êm ái."
-      }
-    },
-    {
-      "id": "dd",
-      "letter": "Đ",
-      "upper": "Đ",
-      "lower": "đ",
-      "soundName": "Âm Đờ",
-      "cardId": 21,
-      "illustration": {
-        "word": "Đồng Hồ",
-        "meaning": "Chiếc đồng hồ tích tắc báo giờ bé đi học ngoan."
-      },
-      "writingGuide": {
-        "height": "4 ô ly + nét ngang",
-        "strokes": [
-          "Nét 1: Viết chữ d cao 4 ô ly.",
-          "Nét 2: Viết nét ngang ngắn cắt ngang thân chữ ở đường kẻ 4."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở tự nhiên, răng hơi hé.",
-        "tonguePosition": "Đầu lưỡi áp chặt vào vòm miệng trên chân răng cửa rồi bật mạnh.",
-        "vocalAirflow": "Luồng hơi bị chặn lại rồi bật mạnh dứt khoát tạo tiếng 'Đờ'.",
-        "guideTips": "Nhắc bé dùng đầu lưỡi gõ nhẹ vào chân răng trên rồi bật ra 'Đờ'."
-      }
-    },
-    {
-      "id": "e",
-      "letter": "E",
-      "upper": "E",
-      "lower": "e",
-      "soundName": "Âm E",
-      "cardId": 22,
-      "illustration": {
-        "word": "Em Bé",
-        "meaning": "Em bé đáng yêu mỉm cười chào ngày mới."
-      },
-      "writingGuide": {
-        "height": "2 ô ly",
-        "strokes": [
-          "Đặt bút giữa đường kẻ 1 và 2, lượn xiên lên tạo vòng cung sang trái rồi cong xuống hở phải."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở rộng về hai bên (như đang mỉm cười).",
-        "tonguePosition": "Thân lưỡi nâng vừa phải về phía vòm họng trước.",
-        "vocalAirflow": "Hơi thoát đều, dây thanh rung phát âm sáng và vang 'E'.",
-        "guideTips": "Bảo bé cười xinh rồi phát ra tiếng 'E'."
-      }
-    },
-    {
-      "id": "ee",
-      "letter": "Ê",
-      "upper": "Ê",
-      "lower": "ê",
-      "soundName": "Âm Ê",
-      "cardId": 23,
-      "illustration": {
-        "word": "Búp Bê",
-        "meaning": "Cô búp bê xinh xắn cài nơ hồng đáng yêu."
-      },
-      "writingGuide": {
-        "height": "2 ô ly + dấu mũ nón",
-        "strokes": [
-          "Nét 1: Viết chữ e cao 2 ô ly.",
-          "Nét 2: Viết dấu mũ nón cân đối phía trên đầu chữ e."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Khóe miệng kéo sang hai bên hẹp hơn âm E.",
-        "tonguePosition": "Thân lưỡi nâng cao hơn âm E.",
-        "vocalAirflow": "Dây thanh rung tạo âm sắc trầm và gọn 'Ê'.",
-        "guideTips": "Vừa mỉm cười vừa phát âm 'Ê' thật êm tai."
-      }
-    },
-    {
-      "id": "g",
-      "letter": "G",
-      "upper": "G",
-      "lower": "g",
-      "soundName": "Âm Gờ",
-      "cardId": 24,
-      "illustration": {
-        "word": "Con Gà",
-        "meaning": "Chú gà trống gáy vang ò ó o gọi mặt trời thức giấc."
-      },
-      "writingGuide": {
-        "height": "5 ô ly (2 ô trên dòng kẻ đậm, 3 ô dưới dòng kẻ đậm)",
-        "strokes": [
-          "Nét 1: Nét cong kín cao 2 ô ly trên đường kẻ đậm.",
-          "Nét 2: Nét khuyết dưới cao 5 ô ly kéo dài xuống 3 ô ly rồi hất chéo lên."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở tự nhiên theo chiều ngang.",
-        "tonguePosition": "Gốc lưỡi tiếp cận ngạc mềm tạo khe hẹp để hơi ma sát đi qua.",
-        "vocalAirflow": "Dây thanh rung mạnh, hơi xát qua họng tạo âm 'Gờ'.",
-        "guideTips": "Âm xát cuống họng rung dây thanh, không bật mạnh như âm 'c'."
-      }
-    },
-    {
-      "id": "h",
-      "letter": "H",
-      "upper": "H",
-      "lower": "h",
-      "soundName": "Âm Hờ",
-      "cardId": 25,
-      "illustration": {
-        "word": "Bông Hoa",
-        "meaning": "Bông hoa hồng ngát hương khoe sắc dưới nắng mai."
-      },
-      "writingGuide": {
-        "height": "5 ô ly",
-        "strokes": [
-          "Nét 1: Nét khuyết trên cao 5 ô ly.",
-          "Nét 2: Nét móc hai đầu cao 2 ô ly nối liền từ chân nét khuyết."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở tự nhiên thoải mái.",
-        "tonguePosition": "Lưỡi thả lỏng, không chạm vào bất kỳ điểm nào trong vòm miệng.",
-        "vocalAirflow": "Thở hơi nhẹ nhàng từ họng ra ngoài tạo âm 'Hờ'.",
-        "guideTips": "Bảo bé thở ra êm dịu như một làn gió nhẹ 'Hờ'."
-      }
-    },
-    {
-      "id": "i",
-      "letter": "I",
-      "upper": "I",
-      "lower": "i",
-      "soundName": "Âm I",
-      "cardId": 26,
-      "illustration": {
-        "word": "Hòn Bi",
-        "meaning": "Những viên bi ve tròn lấp lánh đủ màu sắc."
-      },
-      "writingGuide": {
-        "height": "2 ô ly + dấu chấm",
-        "strokes": [
-          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
-          "Nét 2: Nét móc ngược kéo từ đường kẻ 3 xuống đường kẻ 1 rồi hất lên.",
-          "Nét 3: Dấu chấm nhỏ đặt ngay ngắn trên đầu nét móc ở khoảng giữa đường kẻ 3 và 4."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Môi kéo dẹp căng sang hai bên như cười thật tươi.",
-        "tonguePosition": "Thân lưỡi nâng lên sát vòm miệng trên.",
-        "vocalAirflow": "Hơi đi qua khe hẹp phía trên lưỡi, dây thanh rung trong trẻo 'I'.",
-        "guideTips": "Bảo bé cười tươi hết cỡ rồi ngân dài 'I - I - I'."
-      }
-    },
-    {
-      "id": "k",
-      "letter": "K",
-      "upper": "K",
-      "lower": "k",
-      "soundName": "Âm Ca",
-      "cardId": 27,
-      "illustration": {
-        "word": "Cái Kéo",
-        "meaning": "Chiếc kéo thủ công giúp bé cắt giấy làm đồ chơi."
-      },
-      "writingGuide": {
-        "height": "5 ô ly",
-        "strokes": [
-          "Nét 1: Nét khuyết trên cao 5 ô ly.",
-          "Nét 2: Nét thắt giữa cao 2 ô ly nối từ thân nét khuyết rồi hất nhẹ ra."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở tự nhiên như âm C.",
-        "tonguePosition": "Cuống lưỡi ép sát vào vòm họng ngạc mềm rồi bật nhanh.",
-        "vocalAirflow": "Bật mạnh luồng hơi dứt khoát phát ra tiếng 'Cờ / Ca'.",
-        "guideTips": "Chữ K ghép với các âm e, ê, i (quy tắc chính tả chuẩn tiếng Việt)."
-      }
-    },
-    {
-      "id": "l",
-      "letter": "L",
-      "upper": "L",
-      "lower": "l",
-      "soundName": "Âm Lờ",
-      "cardId": 28,
-      "illustration": {
-        "word": "Quả Lê",
-        "meaning": "Quả lê giòn ngọt, mọng nước và mát lành."
-      },
-      "writingGuide": {
-        "height": "5 ô ly",
-        "strokes": [
-          "Nét 1: Đặt bút từ đường kẻ 2, đưa xiên lên viết nét khuyết trên cao 5 ô ly.",
-          "Nét 2: Kéo thẳng xuống dòng kẻ đậm rồi uốn lượn hất lên đường kẻ 2."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng hé mở vừa phải.",
-        "tonguePosition": "Đầu lưỡi uốn cong lên chạm vào vòm miệng phía sau răng cửa trên.",
-        "vocalAirflow": "Luồng hơi thoát ra hai bên cạnh lưỡi, đầu lưỡi bật xuống êm dịu 'Lờ'.",
-        "guideTips": "Rèn phân biệt L và N: Âm L thì đầu lưỡi uốn cong lên vòm miệng."
-      }
-    },
-    {
-      "id": "m",
-      "letter": "M",
-      "upper": "M",
-      "lower": "m",
-      "soundName": "Âm Mờ",
-      "cardId": 29,
-      "illustration": {
-        "word": "Quả Mận",
-        "meaning": "Những quả mận chín đỏ mọng ngọt ngào mùa hè."
-      },
-      "writingGuide": {
-        "height": "2 ô ly (gồm 3 nét móc)",
-        "strokes": [
-          "Nét 1: Nét móc xuôi thứ nhất rộng 1 ô ly.",
-          "Nét 2: Nét móc xuôi thứ hai rộng 1.5 ô ly.",
-          "Nét 3: Nét móc hai đầu rộng 1.5 ô ly, dừng bút ở đường kẻ 2."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Hai môi khép kín tự nhiên.",
-        "tonguePosition": "Lưỡi thả lỏng tự nhiên dưới đáy miệng.",
-        "vocalAirflow": "Luồng hơi thoát qua đường mũi tạo âm vang trầm mũi, rồi mở môi tạo 'Mờ'.",
-        "guideTips": "Âm mũi dịu dàng, khép môi nhẹ nhàng trước khi phát âm."
-      }
-    },
-    {
-      "id": "n",
-      "letter": "N",
-      "upper": "N",
-      "lower": "n",
-      "soundName": "Âm Nờ",
-      "cardId": 30,
-      "illustration": {
-        "word": "Cái Nơ",
-        "meaning": "Chiếc nơ màu đỏ thắm cài trên mái tóc bé xinh."
-      },
-      "writingGuide": {
-        "height": "2 ô ly (gồm 2 nét móc)",
-        "strokes": [
-          "Nét 1: Nét móc xuôi rộng 1 ô ly.",
-          "Nét 2: Nét móc hai đầu rộng 1.5 ô ly, dừng bút ở đường kẻ 2."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng hé mở vừa phải.",
-        "tonguePosition": "Đầu lưỡi ép phẳng vào vòm miệng chân răng trên, không uốn cong.",
-        "vocalAirflow": "Hơi thoát qua mũi, khi lưỡi tách ra tạo âm mũi 'Nờ'.",
-        "guideTips": "Phân biệt với L: N thì đầu lưỡi để thẳng áp chân răng, không uốn cong."
-      }
-    },
-    {
-      "id": "o",
-      "letter": "O",
-      "upper": "O",
-      "lower": "o",
-      "soundName": "Âm O",
-      "cardId": 31,
-      "illustration": {
-        "word": "Con Ong",
-        "meaning": "Chú ong chăm chỉ bay đi tìm hoa làm mật ngọt."
-      },
-      "writingGuide": {
-        "height": "2 ô ly (rộng 1.5 ô ly)",
-        "strokes": [
-          "Nét cong kín tròn đều, đặt bút dưới đường kẻ 3 lượn sang trái rồi xuống đường kẻ 1 khép kín."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Môi tròn đều như hình chữ O, chúm lại phía trước.",
-        "tonguePosition": "Cuống lưỡi lùi nhẹ về phía sau, thân lưỡi hơi lõm.",
-        "vocalAirflow": "Hơi thoát đều qua lỗ tròn của môi, dây thanh rung vang 'O'."
-      }
-    },
-    {
-      "id": "oo",
-      "letter": "Ô",
-      "upper": "Ô",
-      "lower": "ô",
-      "soundName": "Âm Ô",
-      "cardId": 32,
-      "illustration": {
-        "word": "Cái Ô",
-        "meaning": "Chiếc ô che nắng che mưa cho bé đến trường."
-      },
-      "writingGuide": {
-        "height": "2 ô ly + dấu mũ nón",
-        "strokes": [
-          "Nét 1: Viết chữ o cong kín cao 2 ô ly.",
-          "Nét 2: Viết dấu mũ nón cân đối nhô nhẹ trên đầu."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Môi tròn và chúm nhỏ hơn âm O, hơi nhô về phía trước.",
-        "tonguePosition": "Phần sau của lưỡi nâng cao hơn âm O.",
-        "vocalAirflow": "Dây thanh rung tạo âm sắc trầm ấm 'Ô'."
-      }
-    },
-    {
-      "id": "ow",
-      "letter": "Ơ",
-      "upper": "Ơ",
-      "lower": "ơ",
-      "soundName": "Âm Ơ",
-      "cardId": 33,
-      "illustration": {
-        "word": "Lá Cờ",
-        "meaning": "Lá cờ đỏ sao vàng tung bay phấp phới trong gió."
-      },
-      "writingGuide": {
-        "height": "2 ô ly + dấu râu",
-        "strokes": [
-          "Nét 1: Viết chữ o cong kín cao 2 ô ly.",
-          "Nét 2: Viết nét râu nhỏ xinh ở góc trên bên phải chữ o."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở tự nhiên, môi không chúm tròn mà hơi dẹt nhẹ.",
-        "tonguePosition": "Lưỡi nằm ngang ở vị trí trung tâm miệng.",
-        "vocalAirflow": "Hơi thoát nhẹ nhàng thoải mái tạo tiếng 'Ơ'."
-      }
-    },
-    {
-      "id": "p",
-      "letter": "P",
-      "upper": "P",
-      "lower": "p",
-      "soundName": "Âm Pờ",
-      "cardId": 34,
-      "illustration": {
-        "word": "Cây Pin",
-        "meaning": "Cục pin nhỏ cung cấp năng lượng cho chiếc đèn pin phát sáng."
-      },
-      "writingGuide": {
-        "height": "4 ô ly (2 ô trên dòng kẻ đậm, 2 ô dưới)",
-        "strokes": [
-          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
-          "Nét 2: Nét thẳng đứng kéo dài xuống dưới dòng kẻ đậm 2 ô ly.",
-          "Nét 3: Nét móc hai đầu cao 2 ô ly áp sát vào nét thẳng."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Hai môi mím chặt giữ hơi.",
-        "tonguePosition": "Lưỡi hạ thấp tự nhiên.",
-        "vocalAirflow": "Bật mạnh luồng hơi không rung dây thanh (âm bật hơi không thanh) tạo tiếng 'Pờ'."
-      }
-    },
-    {
-      "id": "q",
-      "letter": "Q",
-      "upper": "Q",
-      "lower": "q",
-      "soundName": "Âm Cu",
-      "cardId": 35,
-      "illustration": {
-        "word": "Quả Quýt",
-        "meaning": "Quả quýt chín vàng ươm mọng nước thơm ngon."
-      },
-      "writingGuide": {
-        "height": "4 ô ly (2 ô trên, 2 ô dưới)",
-        "strokes": [
-          "Nét 1: Nét cong kín cao 2 ô ly.",
-          "Nét 2: Nét thẳng đứng cao 4 ô ly từ đường kẻ 3 kéo thẳng xuống dưới dòng kẻ đậm 2 ô ly."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Trong tiếng Việt chữ Q thường đi liền với U thành Qu ('Quờ').",
-        "tonguePosition": "Cuống lưỡi nâng chạm vòm họng rồi tròn môi bật ra.",
-        "vocalAirflow": "Bật dứt khoát kết hợp tròn môi tạo âm 'Quờ'."
-      }
-    },
-    {
-      "id": "r",
-      "letter": "R",
-      "upper": "R",
-      "lower": "r",
-      "soundName": "Âm Rờ",
-      "cardId": 36,
-      "illustration": {
-        "word": "Con Rùa",
-        "meaning": "Chú rùa hiền lành chăm chỉ bò từng bước vững chắc."
-      },
-      "writingGuide": {
-        "height": "2.25 ô ly (nhô nhẹ lên trên đường kẻ 3)",
-        "strokes": [
-          "Nét 1: Đặt bút ở đường kẻ 1, đưa xiên lên qua đường kẻ 3 tạo vòng xoắn nhỏ.",
-          "Nét 2: Kéo ngang nhẹ rồi lượn nét móc ngược kết thúc ở đường kẻ 2."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở vừa phải, hai môi hơi tròn nhẹ.",
-        "tonguePosition": "Đầu lưỡi uốn cong lên hướng về vòm miệng cứng.",
-        "vocalAirflow": "Luồng hơi làm đầu lưỡi rung nhẹ tạo âm rung 'Rờ'."
-      }
-    },
-    {
-      "id": "s",
-      "letter": "S",
-      "upper": "S",
-      "lower": "s",
-      "soundName": "Âm Sờ",
-      "cardId": 37,
-      "illustration": {
-        "word": "Ngôi Sao",
-        "meaning": "Ngôi sao năm cánh lấp lánh trên bầu trời đêm."
-      },
-      "writingGuide": {
-        "height": "2.25 ô ly",
-        "strokes": [
-          "Nét 1: Đặt bút ở đường kẻ 1, xiên lên qua đường kẻ 3 tạo vòng xoắn nhỏ.",
-          "Nét 2: Lượn nét cong sang phải rồi cong ngược vào trong kết thúc ở đường kẻ 1."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng hơi mở, môi hơi chúm nhẹ vểnh ra phía trước.",
-        "tonguePosition": "Đầu lưỡi uốn cong lên chạm vòm lợi trên.",
-        "vocalAirflow": "Hơi ma sát mạnh qua đầu lưỡi uốn cong tạo âm xát quặt lưỡi 'Sờ'."
-      }
-    },
-    {
-      "id": "t",
-      "letter": "T",
-      "upper": "T",
-      "lower": "t",
-      "soundName": "Âm Tờ",
-      "cardId": 38,
-      "illustration": {
-        "word": "Cái Tủ",
-        "meaning": "Chiếc tủ gỗ đựng quần áo và sách vở của bé gọn gàng."
-      },
-      "writingGuide": {
-        "height": "3 ô ly + nét ngang",
-        "strokes": [
-          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
-          "Nét 2: Nét móc ngược cao 3 ô ly kéo từ đường kẻ 4 xuống.",
-          "Nét 3: Nét ngang ngắn trên đường kẻ 3."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng hé mở vừa phải.",
-        "tonguePosition": "Đầu lưỡi ép chặt vào chân răng trên rồi hạ nhanh.",
-        "vocalAirflow": "Chặn luồng hơi rồi bật mạnh không rung dây thanh 'Tờ'."
-      }
-    },
-    {
-      "id": "u",
-      "letter": "U",
-      "upper": "U",
-      "lower": "u",
-      "soundName": "Âm U",
-      "cardId": 39,
-      "illustration": {
-        "word": "Cái Mũ",
-        "meaning": "Chiếc mũ xinh bảo vệ đầu bé dưới trời nắng gió."
-      },
-      "writingGuide": {
-        "height": "2 ô ly",
-        "strokes": [
-          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
-          "Nét 2: Nét móc ngược rộng 1.5 ô ly.",
-          "Nét 3: Nét móc ngược thứ hai hẹp 1 ô ly, kết thúc ở đường kẻ 2."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Môi chúm tròn nhỏ, nhô nhiều ra phía trước.",
-        "tonguePosition": "Cuống lưỡi nâng rất cao về phía ngạc mềm.",
-        "vocalAirflow": "Dây thanh rung, luồng hơi qua lỗ nhỏ của môi tạo âm trầm 'U'."
-      }
-    },
-    {
-      "id": "uw",
-      "letter": "Ư",
-      "upper": "Ư",
-      "lower": "ư",
-      "soundName": "Âm Ư",
-      "cardId": 40,
-      "illustration": {
-        "word": "Con Sư Tử",
-        "meaning": "Chú sư tử dũng mãnh bảo vệ muôn loài trong khu rừng xanh."
-      },
-      "writingGuide": {
-        "height": "2 ô ly + dấu râu",
-        "strokes": [
-          "Nét 1: Viết chữ u cao 2 ô ly.",
-          "Nét 2: Viết nét râu nhỏ xinh ở góc trên bên phải nét móc thứ hai."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Miệng mở dẹt sang hai bên, không chúm môi.",
-        "tonguePosition": "Phần sau của lưỡi nâng cao tương đương âm U nhưng miệng dẹt.",
-        "vocalAirflow": "Dây thanh rung phát âm vang tự nhiên 'Ư'."
-      }
-    },
-    {
-      "id": "v",
-      "letter": "V",
-      "upper": "V",
-      "lower": "v",
-      "soundName": "Âm Vờ",
-      "cardId": 41,
-      "illustration": {
-        "word": "Con Vịt",
-        "meaning": "Chú vịt con lông vàng bơi lội cạp cạp vui vẻ."
-      },
-      "writingGuide": {
-        "height": "2 ô ly",
-        "strokes": [
-          "Nét 1: Nét móc xuôi cao 2 ô ly.",
-          "Nét 2: Lượn tròn đáy rồi đưa lên đường kẻ 3, làm vòng xoắn nhỏ sang phải."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Răng cửa hàm trên chạm nhẹ vào viền môi dưới.",
-        "tonguePosition": "Lưỡi nằm thoải mái dưới đáy miệng.",
-        "vocalAirflow": "Luồng hơi lách qua khe giữa răng trên và môi dưới, dây thanh rung 'Vờ'."
-      }
-    },
-    {
-      "id": "x",
-      "letter": "X",
-      "upper": "X",
-      "lower": "x",
-      "soundName": "Âm Xờ",
-      "cardId": 42,
-      "illustration": {
-        "word": "Xe Đạp",
-        "meaning": "Chiếc xe đạp nhỏ giúp bé rèn luyện đôi chân khỏe mạnh."
-      },
-      "writingGuide": {
-        "height": "2 ô ly (rộng 2 ô ly)",
-        "strokes": [
-          "Nét 1: Nét cong hở phải cao 2 ô ly.",
-          "Nét 2: Nét cong hở trái cao 2 ô ly đặt tựa lưng vào nét thứ nhất tạo sự đối xứng."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Khóe miệng mở nhẹ sang hai bên.",
-        "tonguePosition": "Đầu lưỡi để thẳng tiếp cận mặt sau của răng cửa dưới.",
-        "vocalAirflow": "Hơi ma sát nhẹ nhàng thoát ra qua khe răng, không quặt lưỡi 'Xờ'."
-      }
-    },
-    {
-      "id": "y",
-      "letter": "Y",
-      "upper": "Y",
-      "lower": "y",
-      "soundName": "Âm I Dài",
-      "cardId": 43,
-      "illustration": {
-        "word": "Y Tế",
-        "meaning": "Bác sĩ y tế chăm sóc sức khỏe cho các bé mau lớn."
-      },
-      "writingGuide": {
-        "height": "5 ô ly (2 ô trên dòng kẻ đậm, 3 ô dưới)",
-        "strokes": [
-          "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
-          "Nét 2: Nét móc ngược rộng 1.5 ô ly cao 2 ô ly.",
-          "Nét 3: Nét khuyết dưới cao 5 ô ly kéo thẳng xuống dưới 3 ô rồi hất chéo lên."
-        ]
-      },
-      "pronunciation": {
-        "mouthShape": "Môi kéo dẹp căng sang hai bên như âm I.",
-        "tonguePosition": "Thân lưỡi nâng cao sát vòm ngạc cứng.",
-        "vocalAirflow": "Dây thanh rung âm trong trẻo ngân vang 'I'."
-      }
+    "audio_url": "/audio/module_letters/chu_aw.m4a",
+    "video_url": "https://m.youtube.com/watch?v=lB8zxL3ey7o&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_13_front.png",
+      "card_back": "/data/module_letters/cards/card_13_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_aw.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_aw.png"
     }
-  ]
-}
+  },
+  {
+    "id": 14,
+    "card_id": 14,
+    "letter": "Â",
+    "name": "Chữ Â",
+    "slug": "aa",
+    "type": "vowel",
+    "illu_word": "ấm",
+    "stroke_count": 3,
+    "writing_steps": [
+      "Nét 1: Nét cong kín cao 2 ô ly.",
+      "Nét 2: Nét móc ngược cao 2 ô ly dừng ở đường kẻ 2.",
+      "Nét 3: Dấu nón (gồm nét xiên trái và xiên phải ngắn nhọn) đặt cân đối trên đầu chữ a."
+    ],
+    "mouth_shape": "Miệng mở vừa, hai môi hơi tròn nhẹ, luồng hơi phát âm gọn: 'Â'.",
+    "parent_tip": "Chữ Â giống như bạn A đang đội chiếc nón lá che nắng mưa!",
+    "forms": {
+      "upper_print": "Â",
+      "lower_print": "â",
+      "upper_cursive": "Â",
+      "lower_cursive": "â"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "phấn",
+        "cấm",
+        "ấm",
+        "nhẫn",
+        "nấm",
+        "cân"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_aa.m4a",
+    "video_url": "https://m.youtube.com/watch?v=h-ihnvOE5J4&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_14_front.png",
+      "card_back": "/data/module_letters/cards/card_14_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_aa.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_aa.png"
+    }
+  },
+  {
+    "id": 15,
+    "card_id": 15,
+    "letter": "B",
+    "name": "Chữ B",
+    "slug": "b",
+    "type": "consonant",
+    "illu_word": "bà",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Nét liền kết hợp nét khuyết trên và nét thắt trên cao 5 ô ly, uốn lượn thắt nhỏ ở đường kẻ 3 rồi dừng bút."
+    ],
+    "mouth_shape": "Hai môi mím chặt nhẹ chặn luồng hơi, sau đó mở bật môi phát âm 'bờ' trầm ấm.",
+    "parent_tip": "Cho bé sờ nhẹ lên môi khi phát âm 'bờ' để cảm nhận hai môi mím lại rồi mở bật ra.",
+    "forms": {
+      "upper_print": "B",
+      "lower_print": "b",
+      "upper_cursive": "B",
+      "lower_cursive": "b"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "ba",
+          "bà",
+          "bá",
+          "bả",
+          "bã",
+          "bạ"
+        ],
+        "o": [
+          "bo",
+          "bò",
+          "bó",
+          "bỏ",
+          "bõ",
+          "bọ"
+        ],
+        "ô": [
+          "bô",
+          "bồ",
+          "bố",
+          "bổ",
+          "bỗ",
+          "bộ"
+        ],
+        "ơ": [
+          "bơ",
+          "bờ",
+          "bớ",
+          "bở",
+          "bỡ",
+          "bợ"
+        ],
+        "e": [
+          "be",
+          "bè",
+          "bé",
+          "bẻ",
+          "bẽ",
+          "bẹ"
+        ],
+        "ê": [
+          "bê",
+          "bề",
+          "bế",
+          "bể",
+          "bễ",
+          "bệ"
+        ],
+        "i": [
+          "bi",
+          "bì",
+          "bí",
+          "bỉ",
+          "bĩ",
+          "bị"
+        ],
+        "u": [
+          "bu",
+          "bù",
+          "bú",
+          "bủ",
+          "bũ",
+          "bụ"
+        ],
+        "ư": [
+          "bư",
+          "bừ",
+          "bứ",
+          "bử",
+          "bữ",
+          "bự"
+        ]
+      },
+      "phrases": [
+        "bà ba",
+        "bò bê",
+        "bề bề",
+        "bế bé"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_b.m4a",
+    "video_url": "https://m.youtube.com/watch?v=gNmRPdLokgU&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_15_front.png",
+      "card_back": "/data/module_letters/cards/card_15_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_b.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_b.png"
+    }
+  },
+  {
+    "id": 16,
+    "card_id": 16,
+    "letter": "C",
+    "name": "Chữ C",
+    "slug": "c",
+    "type": "consonant",
+    "illu_word": "cá",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Đặt bút dưới đường kẻ 3 một chút, viết nét cong hở phải cao 2 ô ly, dừng bút ở giữa đường kẻ 1 và 2."
+    ],
+    "mouth_shape": "Cuống lưỡi nâng lên chạm ngạc mềm chặn hơi, bật nhẹ âm 'cờ'.",
+    "parent_tip": "Chữ C chỉ đi với a, o, ô, ơ, u, ư; không đi với e, ê, i (khi đó phải dùng chữ K).",
+    "forms": {
+      "upper_print": "C",
+      "lower_print": "c",
+      "upper_cursive": "C",
+      "lower_cursive": "c"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "ca",
+          "cà",
+          "cá",
+          "cả",
+          "cã",
+          "cạ"
+        ],
+        "o": [
+          "co",
+          "cò",
+          "có",
+          "cỏ",
+          "cõ",
+          "cọ"
+        ],
+        "ô": [
+          "cô",
+          "cồ",
+          "cố",
+          "cổ",
+          "cỗ",
+          "cộ"
+        ],
+        "ơ": [
+          "cơ",
+          "cờ",
+          "cớ",
+          "cở",
+          "cỡ",
+          "cợ"
+        ],
+        "u": [
+          "cu",
+          "cù",
+          "cú",
+          "củ",
+          "cũ",
+          "cụ"
+        ],
+        "ư": [
+          "cư",
+          "cừ",
+          "cứ",
+          "cử",
+          "cữ",
+          "cự"
+        ]
+      },
+      "phrases": [
+        "cô giáo",
+        "lọ cà",
+        "con công",
+        "cà tím"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_c.m4a",
+    "video_url": "https://m.youtube.com/watch?v=m_c67mK2rG0&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_16_front.png",
+      "card_back": "/data/module_letters/cards/card_16_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_c.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_c.png"
+    }
+  },
+  {
+    "id": 17,
+    "card_id": 17,
+    "letter": "D",
+    "name": "Chữ D",
+    "slug": "d",
+    "type": "consonant",
+    "illu_word": "dê",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét cong kín cao 2 ô ly.",
+      "Nét 2: Từ đường kẻ 5 kéo nét móc ngược dài 4 ô ly sát nét cong kín, dừng bút ở đường kẻ 2."
+    ],
+    "mouth_shape": "Đầu lưỡi chạm vào chân răng hàm trên, bật luồng hơi ra tạo âm 'dờ'.",
+    "parent_tip": "Phân biệt D và Đ: Chữ D chưa có que gạch ngang, đọc là 'dờ' như con dê.",
+    "forms": {
+      "upper_print": "D",
+      "lower_print": "d",
+      "upper_cursive": "D",
+      "lower_cursive": "d"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "da",
+          "dà",
+          "dá",
+          "dả",
+          "dã",
+          "dạ"
+        ],
+        "o": [
+          "do",
+          "dò",
+          "dó",
+          "dỏ",
+          "dõ",
+          "dọ"
+        ],
+        "ô": [
+          "dô",
+          "dồ",
+          "dố",
+          "dổ",
+          "dỗ",
+          "dộ"
+        ],
+        "ơ": [
+          "dơ",
+          "dờ",
+          "dớ",
+          "dở",
+          "dỡ",
+          "dợ"
+        ],
+        "e": [
+          "de",
+          "dè",
+          "dé",
+          "dẻ",
+          "dẽ",
+          "dẹ"
+        ],
+        "ê": [
+          "dê",
+          "dề",
+          "dế",
+          "dể",
+          "dễ",
+          "dệ"
+        ],
+        "i": [
+          "di",
+          "dì",
+          "dí",
+          "dỉ",
+          "dĩ",
+          "dị"
+        ],
+        "u": [
+          "du",
+          "dù",
+          "dú",
+          "dủ",
+          "dũ",
+          "dụ"
+        ],
+        "ư": [
+          "dư",
+          "dừ",
+          "dứ",
+          "dử",
+          "dữ",
+          "dự"
+        ]
+      },
+      "phrases": [
+        "da dẻ",
+        "dễ dãi",
+        "dế mèn",
+        "du mục"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_d.m4a",
+    "video_url": "https://m.youtube.com/watch?v=Kxs6w8LsWJo&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_17_front.png",
+      "card_back": "/data/module_letters/cards/card_17_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_d.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_d.png"
+    }
+  },
+  {
+    "id": 18,
+    "card_id": 18,
+    "letter": "Đ",
+    "name": "Chữ Đ",
+    "slug": "dd",
+    "type": "consonant",
+    "illu_word": "đỗ",
+    "stroke_count": 3,
+    "writing_steps": [
+      "Nét 1: Nét cong kín cao 2 ô ly.",
+      "Nét 2: Nét móc ngược dài 4 ô ly từ đường kẻ 5.",
+      "Nét 3: Nét gạch ngang ngắn ở đường kẻ 4 cắt ngang thân nét móc."
+    ],
+    "mouth_shape": "Đầu lưỡi áp sát chặt chân răng hàm trên, bật dứt khoát âm 'đờ'.",
+    "parent_tip": "Chữ Đ giống chữ D nhưng có thêm chiếc thắt lưng ngang bụng ở đường kẻ 4.",
+    "forms": {
+      "upper_print": "Đ",
+      "lower_print": "đ",
+      "upper_cursive": "Đ",
+      "lower_cursive": "đ"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "đa",
+          "đà",
+          "đá",
+          "đả",
+          "đã",
+          "đạ"
+        ],
+        "o": [
+          "đo",
+          "đò",
+          "đó",
+          "đỏ",
+          "đõ",
+          "đọ"
+        ],
+        "ô": [
+          "đô",
+          "đồ",
+          "đố",
+          "đổ",
+          "đỗ",
+          "độ"
+        ],
+        "ơ": [
+          "đơ",
+          "đờ",
+          "đớ",
+          "đở",
+          "đỡ",
+          "đợ"
+        ],
+        "e": [
+          "đe",
+          "đè",
+          "đé",
+          "đẻ",
+          "đẽ",
+          "đẹ"
+        ],
+        "ê": [
+          "đê",
+          "đề",
+          "đế",
+          "để",
+          "đễ",
+          "đệ"
+        ],
+        "i": [
+          "đi",
+          "đì",
+          "đí",
+          "đỉ",
+          "đĩ",
+          "đị"
+        ],
+        "u": [
+          "đu",
+          "đù",
+          "đú",
+          "đủ",
+          "đũ",
+          "đụ"
+        ],
+        "ư": [
+          "đư",
+          "đừ",
+          "đứ",
+          "đử",
+          "đữ",
+          "đự"
+        ]
+      },
+      "phrases": [
+        "đi bộ",
+        "đò đầy",
+        "đu đủ",
+        "đỏ đắn"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_dd.m4a",
+    "video_url": "https://m.youtube.com/watch?v=yts1H9LETtQ&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_18_front.png",
+      "card_back": "/data/module_letters/cards/card_18_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_dd.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_dd.png"
+    }
+  },
+  {
+    "id": 19,
+    "card_id": 19,
+    "letter": "E",
+    "name": "Chữ E",
+    "slug": "e",
+    "type": "vowel",
+    "illu_word": "be",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Đặt bút trên đường kẻ 1, viết nét xiên lượn cong sang phải lên đường kẻ 3 rồi uốn cong hở phải xuống đường kẻ 1, cao 2 ô ly."
+    ],
+    "mouth_shape": "Miệng bẹt sang hai bên, khóe môi kéo nhẹ sang hai tai, lưỡi nâng nhẹ: 'E'.",
+    "parent_tip": "Cho bé nhoẻn miệng cười thật tươi khi phát âm âm E!",
+    "forms": {
+      "upper_print": "E",
+      "lower_print": "e",
+      "upper_cursive": "E",
+      "lower_cursive": "e"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "mẹ",
+        "nghe",
+        "me",
+        "vẽ",
+        "tre",
+        "bé"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_e.m4a",
+    "video_url": "https://m.youtube.com/shorts/ccavOBCV3A0?feature=share",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_19_front.png",
+      "card_back": "/data/module_letters/cards/card_19_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_e.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_e.png"
+    }
+  },
+  {
+    "id": 20,
+    "card_id": 20,
+    "letter": "Ê",
+    "name": "Chữ Ê",
+    "slug": "ee",
+    "type": "vowel",
+    "illu_word": "bê",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Viết chữ e cao 2 ô ly.",
+      "Nét 2: Lia bút lên trên đường kẻ 3, viết dấu nón cân đối đỉnh nón nhọn."
+    ],
+    "mouth_shape": "Miệng mở hơi hẹp hơn âm E, luồng hơi dồn về phía vòm họng: 'Ê'.",
+    "parent_tip": "Chữ Ê chính là chữ E được đội chiếc nón xinh xắn.",
+    "forms": {
+      "upper_print": "Ê",
+      "lower_print": "ê",
+      "upper_cursive": "Ê",
+      "lower_cursive": "ê"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "lê",
+        "bê",
+        "bế",
+        "nhện",
+        "nến",
+        "nệm"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_ee.m4a",
+    "video_url": "https://m.youtube.com/watch?v=5argipEQRlc&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_20_front.png",
+      "card_back": "/data/module_letters/cards/card_20_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_ee.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_ee.png"
+    }
+  },
+  {
+    "id": 21,
+    "card_id": 21,
+    "letter": "G",
+    "name": "Chữ G",
+    "slug": "g",
+    "type": "consonant",
+    "illu_word": "gà",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét cong kín cao 2 ô ly.",
+      "Nét 2: Nét khuyết dưới kéo từ đường kẻ 3 xuống dưới dòng kẻ 1 sâu 3 ô ly (tổng cao 5 ô ly), dừng bút ở đường kẻ 2."
+    ],
+    "mouth_shape": "Cuống lưỡi chạm ngạc mềm, hạ cuống lưỡi xuống tạo âm xát thanh quản 'gờ'.",
+    "parent_tip": "Chữ G có cái bụng tròn và chiếc đuôi khuyết dài thon thả như đuôi gà.",
+    "forms": {
+      "upper_print": "G",
+      "lower_print": "g",
+      "upper_cursive": "G",
+      "lower_cursive": "g"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "ga",
+          "gà",
+          "gá",
+          "gả",
+          "gã",
+          "gạ"
+        ],
+        "o": [
+          "go",
+          "gò",
+          "gó",
+          "gỏ",
+          "gõ",
+          "gọ"
+        ],
+        "ô": [
+          "gô",
+          "gồ",
+          "gố",
+          "gổ",
+          "gỗ",
+          "gộ"
+        ],
+        "ơ": [
+          "gơ",
+          "gờ",
+          "gớ",
+          "gở",
+          "gỡ",
+          "gợ"
+        ],
+        "u": [
+          "gu",
+          "gù",
+          "gú",
+          "gủ",
+          "gũ",
+          "gụ"
+        ],
+        "ư": [
+          "gư",
+          "gừ",
+          "gứ",
+          "gử",
+          "gữ",
+          "gự"
+        ]
+      },
+      "phrases": [
+        "gà con",
+        "cửa gỗ",
+        "ổ gà",
+        "gấu trúc"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_g.m4a",
+    "video_url": "https://m.youtube.com/watch?v=_D6i2fO7fQc&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_21_front.png",
+      "card_back": "/data/module_letters/cards/card_21_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_g.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_g.png"
+    }
+  },
+  {
+    "id": 22,
+    "card_id": 22,
+    "letter": "H",
+    "name": "Chữ H",
+    "slug": "h",
+    "type": "consonant",
+    "illu_word": "hổ",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét khuyết trên cao 5 ô ly, dừng bút ở dòng kẻ 1.",
+      "Nét 2: Rê bút lên gần đường kẻ 2, viết nét móc hai đầu cao 2 ô ly, dừng bút ở đường kẻ 2."
+    ],
+    "mouth_shape": "Miệng mở tự nhiên, luồng hơi đi nhẹ nhàng qua thanh môn tạo âm 'hờ'.",
+    "parent_tip": "Lưu ý bé viết nét khuyết trên thẳng lưng, không bị gù hay cong vẹo.",
+    "forms": {
+      "upper_print": "H",
+      "lower_print": "h",
+      "upper_cursive": "H",
+      "lower_cursive": "h"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "ha",
+          "hà",
+          "há",
+          "hả",
+          "hã",
+          "hạ"
+        ],
+        "o": [
+          "ho",
+          "hò",
+          "hó",
+          "hỏ",
+          "hõ",
+          "họ"
+        ],
+        "ô": [
+          "hô",
+          "hồ",
+          "hố",
+          "hổ",
+          "hỗ",
+          "hộ"
+        ],
+        "ơ": [
+          "hơ",
+          "hờ",
+          "hớ",
+          "hở",
+          "hỡ",
+          "hợ"
+        ],
+        "e": [
+          "he",
+          "hè",
+          "hé",
+          "hẻ",
+          "hẽ",
+          "hẹ"
+        ],
+        "ê": [
+          "hê",
+          "hề",
+          "hế",
+          "hể",
+          "hễ",
+          "hệ"
+        ],
+        "i": [
+          "hi",
+          "hì",
+          "hí",
+          "hỉ",
+          "hĩ",
+          "hị"
+        ],
+        "u": [
+          "hu",
+          "hù",
+          "hú",
+          "hủ",
+          "hũ",
+          "hụ"
+        ],
+        "ư": [
+          "hư",
+          "hừ",
+          "hứ",
+          "hử",
+          "hữ",
+          "hự"
+        ]
+      },
+      "phrases": [
+        "hoa hồng",
+        "hồ hởi",
+        "hạ hồi",
+        "hú hí"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_h.m4a",
+    "video_url": "https://m.youtube.com/watch?v=sDQQmGlzYic&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_22_front.png",
+      "card_back": "/data/module_letters/cards/card_22_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_h.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_h.png"
+    }
+  },
+  {
+    "id": 23,
+    "card_id": 23,
+    "letter": "I",
+    "name": "Chữ I",
+    "slug": "i",
+    "type": "vowel",
+    "illu_word": "bí",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
+      "Nét 2: Kéo thẳng xuống dòng kẻ 1 rồi uốn móc ngược lên đường kẻ 2; chấm một chấm nhỏ trên đầu."
+    ],
+    "mouth_shape": "Khóe miệng bè sang hai bên, mặt lưỡi nâng cao gần chạm ngạc cứng: 'I'.",
+    "parent_tip": "Chữ I ngắn có chấm nhỏ xinh trên đầu, phát âm trong trẻo như tiếng chim hót.",
+    "forms": {
+      "upper_print": "I",
+      "lower_print": "i",
+      "upper_cursive": "I",
+      "lower_cursive": "i"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "bi",
+        "chỉ",
+        "đi",
+        "mì",
+        "ca sĩ",
+        "bí đỏ"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_i.m4a",
+    "video_url": "https://m.youtube.com/watch?v=rYi9AffvybY&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_23_front.png",
+      "card_back": "/data/module_letters/cards/card_23_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_i.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_i.png"
+    }
+  },
+  {
+    "id": 24,
+    "card_id": 24,
+    "letter": "K",
+    "name": "Chữ K",
+    "slug": "k",
+    "type": "consonant",
+    "illu_word": "kem",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét khuyết trên cao 5 ô ly.",
+      "Nét 2: Nét thắt giữa cao 2 ô ly, tạo vòng thắt tròn nhỏ ở giữa đường kẻ 2 rồi móc ngược ra đường kẻ 2."
+    ],
+    "mouth_shape": "Cuống lưỡi nâng cao chạm vòm họng mềm, phát âm 'cờ' (viết là K khi đi với e, ê, i, y).",
+    "parent_tip": "Quy tắc chính tả: K luôn luôn đi với e, ê, i, y (như que kem, cái kệ, cây kim).",
+    "forms": {
+      "upper_print": "K",
+      "lower_print": "k",
+      "upper_cursive": "K",
+      "lower_cursive": "k"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "e",
+        "ê",
+        "i",
+        "y"
+      ],
+      "phonics_matrix": {
+        "e": [
+          "ke",
+          "kè",
+          "ké",
+          "kẻ",
+          "kẽ",
+          "kẹ"
+        ],
+        "ê": [
+          "kê",
+          "kề",
+          "kế",
+          "kể",
+          "kễ",
+          "kệ"
+        ],
+        "i": [
+          "ki",
+          "kì",
+          "kí",
+          "kỉ",
+          "kĩ",
+          "kị"
+        ],
+        "y": [
+          "ky",
+          "kỳ",
+          "ký",
+          "kỷ",
+          "kỹ",
+          "kỵ"
+        ]
+      },
+      "phrases": [
+        "kì cọ",
+        "kệ gỗ",
+        "kẻ ô",
+        "kì đà"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_k.m4a",
+    "video_url": "https://m.youtube.com/watch?v=h52fP4Z5m-M&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_24_front.png",
+      "card_back": "/data/module_letters/cards/card_24_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_k.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_k.png"
+    }
+  },
+  {
+    "id": 25,
+    "card_id": 25,
+    "letter": "L",
+    "name": "Chữ L",
+    "slug": "l",
+    "type": "consonant",
+    "illu_word": "lê",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Đặt bút ở đường kẻ 2, viết nét khuyết trên cao 5 ô ly, uốn chân mở rộng tạo nét móc ngược dừng ở đường kẻ 2."
+    ],
+    "mouth_shape": "Đầu lưỡi cong lên chạm vòm lợi trên, luồng hơi thoát ra hai bên tạo âm rung 'lờ'.",
+    "parent_tip": "Rèn cho bé uốn đầu lưỡi lên chạm vòm họng để không bị ngọng giữa L và N.",
+    "forms": {
+      "upper_print": "L",
+      "lower_print": "l",
+      "upper_cursive": "L",
+      "lower_cursive": "l"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "la",
+          "là",
+          "lá",
+          "lả",
+          "lã",
+          "lạ"
+        ],
+        "o": [
+          "lo",
+          "lò",
+          "ló",
+          "lỏ",
+          "lõ",
+          "lọ"
+        ],
+        "ô": [
+          "lô",
+          "lồ",
+          "lố",
+          "lổ",
+          "lỗ",
+          "lộ"
+        ],
+        "ơ": [
+          "lơ",
+          "lờ",
+          "lớ",
+          "lở",
+          "lỡ",
+          "lợ"
+        ],
+        "e": [
+          "le",
+          "lè",
+          "lé",
+          "lẻ",
+          "lẽ",
+          "lẹ"
+        ],
+        "ê": [
+          "lê",
+          "lề",
+          "lế",
+          "lể",
+          "lễ",
+          "lệ"
+        ],
+        "i": [
+          "li",
+          "lì",
+          "lí",
+          "lỉ",
+          "lĩ",
+          "lị"
+        ],
+        "u": [
+          "lu",
+          "lù",
+          "lú",
+          "lủ",
+          "lũ",
+          "lụ"
+        ],
+        "ư": [
+          "lư",
+          "lừ",
+          "lứ",
+          "lử",
+          "lữ",
+          "lự"
+        ]
+      },
+      "phrases": [
+        "lá lốt",
+        "lo lắng",
+        "lũy tre",
+        "lễ hội"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_l.m4a",
+    "video_url": "https://m.youtube.com/watch?v=OClMvrERipY&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_25_front.png",
+      "card_back": "/data/module_letters/cards/card_25_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_l.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_l.png"
+    }
+  },
+  {
+    "id": 26,
+    "card_id": 26,
+    "letter": "M",
+    "name": "Chữ M",
+    "slug": "m",
+    "type": "consonant",
+    "illu_word": "me",
+    "stroke_count": 3,
+    "writing_steps": [
+      "Nét 1: Nét móc xuôi cao 2 ô ly.",
+      "Nét 2: Rê bút lên đường kẻ 2, viết nét móc xuôi thứ hai rộng 1.5 ô ly.",
+      "Nét 3: Nét móc hai đầu cao 2 ô ly, dừng bút ở đường kẻ 2."
+    ],
+    "mouth_shape": "Hai môi khép kín lại, luồng hơi thoát lên khoang mũi tạo âm vang 'mờ'.",
+    "parent_tip": "Chữ M có 3 cái chân (3 nét móc), giống như ba ngọn đồi nhỏ nhấp nhô.",
+    "forms": {
+      "upper_print": "M",
+      "lower_print": "m",
+      "upper_cursive": "M",
+      "lower_cursive": "m"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "ma",
+          "mà",
+          "má",
+          "mả",
+          "mã",
+          "mạ"
+        ],
+        "o": [
+          "mo",
+          "mò",
+          "mó",
+          "mỏ",
+          "mõ",
+          "mọ"
+        ],
+        "ô": [
+          "mô",
+          "mồ",
+          "mố",
+          "mổ",
+          "mỗ",
+          "mộ"
+        ],
+        "ơ": [
+          "mơ",
+          "mờ",
+          "mớ",
+          "mở",
+          "mỡ",
+          "mợ"
+        ],
+        "e": [
+          "me",
+          "mè",
+          "mé",
+          "mẻ",
+          "mẽ",
+          "mẹ"
+        ],
+        "ê": [
+          "mê",
+          "mề",
+          "mế",
+          "mể",
+          "mễ",
+          "mệ"
+        ],
+        "i": [
+          "mi",
+          "mì",
+          "mí",
+          "mỉ",
+          "mĩ",
+          "mị"
+        ],
+        "u": [
+          "mu",
+          "mù",
+          "mú",
+          "mủ",
+          "mũ",
+          "mụ"
+        ],
+        "ư": [
+          "mư",
+          "mừ",
+          "mứ",
+          "mử",
+          "mữ",
+          "mự"
+        ]
+      },
+      "phrases": [
+        "mẹ bế",
+        "mơ màng",
+        "mùa màng",
+        "mỡ màng"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_m.m4a",
+    "video_url": "https://m.youtube.com/watch?v=V-M86LPwiIc&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_26_front.png",
+      "card_back": "/data/module_letters/cards/card_26_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_m.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_m.png"
+    }
+  },
+  {
+    "id": 27,
+    "card_id": 27,
+    "letter": "N",
+    "name": "Chữ N",
+    "slug": "n",
+    "type": "consonant",
+    "illu_word": "nơ",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét móc xuôi cao 2 ô ly, dừng ở dòng kẻ 1.",
+      "Nét 2: Rê bút lên đường kẻ 2, viết nét móc hai đầu rộng 1.5 ô ly, dừng ở đường kẻ 2."
+    ],
+    "mouth_shape": "Đầu lưỡi áp sát vòm lợi phía trên chặn hơi, luồng hơi thoát qua mũi: 'nờ'.",
+    "parent_tip": "Chữ N có 2 chân nét móc, đọc thẳng lưỡi không cong môi.",
+    "forms": {
+      "upper_print": "N",
+      "lower_print": "n",
+      "upper_cursive": "N",
+      "lower_cursive": "n"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "na",
+          "nà",
+          "ná",
+          "nả",
+          "nã",
+          "nạ"
+        ],
+        "o": [
+          "no",
+          "nò",
+          "nó",
+          "nỏ",
+          "nõ",
+          "nọ"
+        ],
+        "ô": [
+          "nô",
+          "nồ",
+          "nố",
+          "nổ",
+          "nỗ",
+          "nộ"
+        ],
+        "ơ": [
+          "nơ",
+          "nờ",
+          "nớ",
+          "nở",
+          "nỡ",
+          "nợ"
+        ],
+        "e": [
+          "ne",
+          "nè",
+          "né",
+          "nẻ",
+          "nẽ",
+          "nẹ"
+        ],
+        "ê": [
+          "nê",
+          "nề",
+          "nế",
+          "nể",
+          "nễ",
+          "nệ"
+        ],
+        "i": [
+          "ni",
+          "nì",
+          "ní",
+          "nỉ",
+          "nĩ",
+          "nị"
+        ],
+        "u": [
+          "nu",
+          "nù",
+          "nú",
+          "nủ",
+          "nũ",
+          "nụ"
+        ],
+        "ư": [
+          "nư",
+          "nừ",
+          "nứ",
+          "nử",
+          "nữ",
+          "nự"
+        ]
+      },
+      "phrases": [
+        "nụ cười",
+        "nơ đỏ",
+        "nắng nôi",
+        "nô đùa"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_n.m4a",
+    "video_url": "https://m.youtube.com/watch?v=QxPHL0PWNRM&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_27_front.png",
+      "card_back": "/data/module_letters/cards/card_27_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_n.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_n.png"
+    }
+  },
+  {
+    "id": 28,
+    "card_id": 28,
+    "letter": "O",
+    "name": "Chữ O",
+    "slug": "o",
+    "type": "vowel",
+    "illu_word": "co",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Đặt bút dưới đường kẻ 3, lia bút sang trái viết nét cong kín tròn đều cao 2 ô ly rộng 1.5 ô ly."
+    ],
+    "mouth_shape": "Hai môi mở tròn to tự nhiên như quả trứng gà, luồng hơi thoát đều: 'O'.",
+    "parent_tip": "Câu vè kinh điển: 'O tròn như quả trứng gà - Ô thì đội mũ - Ơ thì có râu'!",
+    "forms": {
+      "upper_print": "O",
+      "lower_print": "o",
+      "upper_cursive": "O",
+      "lower_cursive": "o"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "ong",
+        "võng",
+        "cõng",
+        "nóng",
+        "bóng",
+        "bò"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_o.m4a",
+    "video_url": "https://m.youtube.com/watch?v=gPuvRxb72HY&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_28_front.png",
+      "card_back": "/data/module_letters/cards/card_28_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_o.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_o.png"
+    }
+  },
+  {
+    "id": 29,
+    "card_id": 29,
+    "letter": "Ô",
+    "name": "Chữ Ô",
+    "slug": "oo",
+    "type": "vowel",
+    "illu_word": "cô",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Viết chữ o tròn đều cao 2 ô ly.",
+      "Nét 2: Lia bút lên trên đường kẻ 3, viết dấu nón cân đối ở giữa đỉnh đầu."
+    ],
+    "mouth_shape": "Hai môi chúm tròn nhỏ hơn âm O, hơi nhô về phía trước: 'Ô'.",
+    "parent_tip": "Chữ O đội thêm chiếc mũ nón lá xinh xắn thành chữ Ô.",
+    "forms": {
+      "upper_print": "Ô",
+      "lower_print": "ô",
+      "upper_cursive": "Ô",
+      "lower_cursive": "ô"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "cô",
+        "ô tô",
+        "ông",
+        "hồ",
+        "cổng",
+        "cổ"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_oo.m4a",
+    "video_url": "https://m.youtube.com/watch?v=xkyEz4D6_Pk&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_29_front.png",
+      "card_back": "/data/module_letters/cards/card_29_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_oo.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_oo.png"
+    }
+  },
+  {
+    "id": 30,
+    "card_id": 30,
+    "letter": "Ơ",
+    "name": "Chữ Ơ",
+    "slug": "ow",
+    "type": "vowel",
+    "illu_word": "bơ",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Viết chữ o cao 2 ô ly.",
+      "Nét 2: Đặt bút trên đường kẻ 3 góc trên bên phải, viết nét râu cong nhỏ nhắn."
+    ],
+    "mouth_shape": "Môi mở dẹt tự nhiên không chúm tròn, hàm dưới hơi đưa ra: 'Ơ'.",
+    "parent_tip": "Chữ O có thêm chiếc râu mép bên phải sẽ biến thành chữ Ơ.",
+    "forms": {
+      "upper_print": "Ơ",
+      "lower_print": "ơ",
+      "upper_cursive": "Ơ",
+      "lower_cursive": "ơ"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "vở",
+        "bơ",
+        "cờ",
+        "thở",
+        "nơ",
+        "mơ"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_ow.m4a",
+    "video_url": "https://m.youtube.com/watch?v=_bCW-l0pcGc&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_30_front.png",
+      "card_back": "/data/module_letters/cards/card_30_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_ow.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_ow.png"
+    }
+  },
+  {
+    "id": 31,
+    "card_id": 31,
+    "letter": "P",
+    "name": "Chữ P",
+    "slug": "p",
+    "type": "consonant",
+    "illu_word": "pin",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3, rồi kéo thẳng đứng xuống dưới dòng kẻ 1 sâu 2 ô ly (tổng cao 4 ô ly).",
+      "Nét 2: Rê bút lên đường kẻ 2, viết nét móc hai đầu dừng ở đường kẻ 2."
+    ],
+    "mouth_shape": "Hai môi mím chặt chặn hơi rồi bật luồng hơi mạnh ra ngoài tạo âm 'pờ'.",
+    "parent_tip": "Chữ P thường kết hợp với H để tạo thành PH (như bát phở, bông hoa phượng).",
+    "forms": {
+      "upper_print": "P",
+      "lower_print": "p",
+      "upper_cursive": "P",
+      "lower_cursive": "p"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "pa",
+          "pà",
+          "pá",
+          "pả",
+          "pã",
+          "pạ"
+        ],
+        "o": [
+          "po",
+          "pò",
+          "pó",
+          "pỏ",
+          "põ",
+          "pọ"
+        ],
+        "ô": [
+          "pô",
+          "pồ",
+          "pố",
+          "pổ",
+          "pỗ",
+          "pộ"
+        ],
+        "ơ": [
+          "pơ",
+          "pờ",
+          "pớ",
+          "pở",
+          "pỡ",
+          "pợ"
+        ],
+        "e": [
+          "pe",
+          "pè",
+          "pé",
+          "pẻ",
+          "pẽ",
+          "pẹ"
+        ],
+        "ê": [
+          "pê",
+          "pề",
+          "pế",
+          "pể",
+          "pễ",
+          "pệ"
+        ],
+        "i": [
+          "pi",
+          "pì",
+          "pí",
+          "pỉ",
+          "pĩ",
+          "pị"
+        ],
+        "u": [
+          "pu",
+          "pù",
+          "pú",
+          "pủ",
+          "pũ",
+          "pụ"
+        ],
+        "ư": [
+          "pư",
+          "pừ",
+          "pứ",
+          "pử",
+          "pữ",
+          "pự"
+        ]
+      },
+      "phrases": [
+        "pa nô",
+        "đèn pin",
+        "pi a nô",
+        "pa tê"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_p.m4a",
+    "video_url": "https://m.youtube.com/watch?v=Z6L8jff5OzQ&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_31_front.png",
+      "card_back": "/data/module_letters/cards/card_31_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_p.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_p.png"
+    }
+  },
+  {
+    "id": 32,
+    "card_id": 32,
+    "letter": "Q",
+    "name": "Chữ Q",
+    "slug": "q",
+    "type": "consonant",
+    "illu_word": "quà",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét cong kín cao 2 ô ly.",
+      "Nét 2: Lia bút lên đường kẻ 3, kéo nét thẳng đứng sát nét cong xuống dưới đường kẻ 1 sâu 2 ô ly (tổng cao 4 ô ly)."
+    ],
+    "mouth_shape": "Môi chúm lại, chữ Q luôn đi liền với chữ U tạo thành cụm 'quờ'.",
+    "parent_tip": "Chữ Q luôn luôn có bạn thân U đi cùng, tạo thành 'qu' như món quà, quê hương.",
+    "forms": {
+      "upper_print": "Q",
+      "lower_print": "q",
+      "upper_cursive": "Q",
+      "lower_cursive": "q"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "e",
+        "ê",
+        "i",
+        "o"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "qa",
+          "qà",
+          "qá",
+          "qả",
+          "qã",
+          "qạ"
+        ],
+        "e": [
+          "qe",
+          "qè",
+          "qé",
+          "qẻ",
+          "qẽ",
+          "qẹ"
+        ],
+        "ê": [
+          "qê",
+          "qề",
+          "qế",
+          "qể",
+          "qễ",
+          "qệ"
+        ],
+        "i": [
+          "qi",
+          "qì",
+          "qí",
+          "qỉ",
+          "qĩ",
+          "qị"
+        ],
+        "o": [
+          "qo",
+          "qò",
+          "qó",
+          "qỏ",
+          "qõ",
+          "qọ"
+        ]
+      },
+      "phrases": [
+        "quê hương",
+        "quả ngọt",
+        "quần áo",
+        "quạt mát"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_q.m4a",
+    "video_url": "https://m.youtube.com/watch?v=fl1uMnpWbLE&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_32_front.png",
+      "card_back": "/data/module_letters/cards/card_32_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_q.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_q.png"
+    }
+  },
+  {
+    "id": 33,
+    "card_id": 33,
+    "letter": "R",
+    "name": "Chữ R",
+    "slug": "r",
+    "type": "consonant",
+    "illu_word": "rổ",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Đặt bút ở dòng kẻ 1, viết nét xiên phải lên quá đường kẻ 3, thắt xoắn nhỏ rồi đưa ngang sang phải, uốn cong kéo móc ngược xuống dòng kẻ 1 dừng ở đường kẻ 2."
+    ],
+    "mouth_shape": "Đầu lưỡi cong lên chạm sát ngạc cứng, luồng hơi làm rung nhẹ đầu lưỡi tạo âm rung 'rờ'.",
+    "parent_tip": "Hướng dẫn con rung nhẹ đầu lưỡi khi phát âm 'rờ' như tiếng gầm chú hổ con.",
+    "forms": {
+      "upper_print": "R",
+      "lower_print": "r",
+      "upper_cursive": "R",
+      "lower_cursive": "r"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "ra",
+          "rà",
+          "rá",
+          "rả",
+          "rã",
+          "rạ"
+        ],
+        "o": [
+          "ro",
+          "rò",
+          "ró",
+          "rỏ",
+          "rõ",
+          "rọ"
+        ],
+        "ô": [
+          "rô",
+          "rồ",
+          "rố",
+          "rổ",
+          "rỗ",
+          "rộ"
+        ],
+        "ơ": [
+          "rơ",
+          "rờ",
+          "rớ",
+          "rở",
+          "rỡ",
+          "rợ"
+        ],
+        "e": [
+          "re",
+          "rè",
+          "ré",
+          "rẻ",
+          "rẽ",
+          "rẹ"
+        ],
+        "ê": [
+          "rê",
+          "rề",
+          "rế",
+          "rể",
+          "rễ",
+          "rệ"
+        ],
+        "i": [
+          "ri",
+          "rì",
+          "rí",
+          "rỉ",
+          "rĩ",
+          "rị"
+        ],
+        "u": [
+          "ru",
+          "rù",
+          "rú",
+          "rủ",
+          "rũ",
+          "rụ"
+        ],
+        "ư": [
+          "rư",
+          "rừ",
+          "rứ",
+          "rử",
+          "rữ",
+          "rự"
+        ]
+      },
+      "phrases": [
+        "ra vào",
+        "rổ rá",
+        "rủ rỉ",
+        "rực rỡ"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_r.m4a",
+    "video_url": "https://m.youtube.com/watch?v=VABY-ULNwOk&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_33_front.png",
+      "card_back": "/data/module_letters/cards/card_33_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_r.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_r.png"
+    }
+  },
+  {
+    "id": 34,
+    "card_id": 34,
+    "letter": "S",
+    "name": "Chữ S",
+    "slug": "s",
+    "type": "consonant",
+    "illu_word": "sâu",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Đặt bút trên đường kẻ 1, viết nét xiên lên quá đường kẻ 3, tạo thắt nhỏ ở đỉnh rồi uốn nét cong hở trái xuống đường kẻ 1 lượn vào trong."
+    ],
+    "mouth_shape": "Mặt lưỡi uốn cong về phía sau ngạc cứng, luồng hơi ma sát thoát qua khe lưỡi tạo âm xát 'sờ' nặng.",
+    "parent_tip": "Phân biệt S (sờ cong, sờ nặng - uốn lưỡi) và X (xờ xe - lưỡi thẳng nhẹ).",
+    "forms": {
+      "upper_print": "S",
+      "lower_print": "s",
+      "upper_cursive": "S",
+      "lower_cursive": "s"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "sa",
+          "sà",
+          "sá",
+          "sả",
+          "sã",
+          "sạ"
+        ],
+        "o": [
+          "so",
+          "sò",
+          "só",
+          "sỏ",
+          "sõ",
+          "sọ"
+        ],
+        "ô": [
+          "sô",
+          "sồ",
+          "số",
+          "sổ",
+          "sỗ",
+          "sộ"
+        ],
+        "ơ": [
+          "sơ",
+          "sờ",
+          "sớ",
+          "sở",
+          "sỡ",
+          "sợ"
+        ],
+        "e": [
+          "se",
+          "sè",
+          "sé",
+          "sẻ",
+          "sẽ",
+          "sẹ"
+        ],
+        "ê": [
+          "sê",
+          "sề",
+          "sế",
+          "sể",
+          "sễ",
+          "sệ"
+        ],
+        "i": [
+          "si",
+          "sì",
+          "sí",
+          "sỉ",
+          "sĩ",
+          "sị"
+        ],
+        "u": [
+          "su",
+          "sù",
+          "sú",
+          "sủ",
+          "sũ",
+          "sụ"
+        ],
+        "ư": [
+          "sư",
+          "sừ",
+          "sứ",
+          "sử",
+          "sữ",
+          "sự"
+        ]
+      },
+      "phrases": [
+        "sứ sở",
+        "su su",
+        "sen hồng",
+        "sóng biếc"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_s.m4a",
+    "video_url": "https://m.youtube.com/watch?v=vhyQ2TD8RPQ&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_34_front.png",
+      "card_back": "/data/module_letters/cards/card_34_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_s.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_s.png"
+    }
+  },
+  {
+    "id": 35,
+    "card_id": 35,
+    "letter": "T",
+    "name": "Chữ T",
+    "slug": "t",
+    "type": "consonant",
+    "illu_word": "táo",
+    "stroke_count": 3,
+    "writing_steps": [
+      "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3.",
+      "Nét 2: Lia bút lên đường kẻ 4, kéo thẳng đứng xuống dòng kẻ 1 rồi uốn móc ngược lên đường kẻ 2 (cao 3 ô ly).",
+      "Nét 3: Nét gạch ngang ngắn trên đường kẻ 3."
+    ],
+    "mouth_shape": "Đầu lưỡi chạm chặt vào mặt sau của răng hàm trên, bật mạnh luồng hơi tạo âm 'tờ'.",
+    "parent_tip": "Chữ T cao 3 ô ly, có chiếc tay dang ngang ở đường kẻ 3.",
+    "forms": {
+      "upper_print": "T",
+      "lower_print": "t",
+      "upper_cursive": "T",
+      "lower_cursive": "t"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "ta",
+          "tà",
+          "tá",
+          "tả",
+          "tã",
+          "tạ"
+        ],
+        "o": [
+          "to",
+          "tò",
+          "tó",
+          "tỏ",
+          "tõ",
+          "tọ"
+        ],
+        "ô": [
+          "tô",
+          "tồ",
+          "tố",
+          "tổ",
+          "tỗ",
+          "tộ"
+        ],
+        "ơ": [
+          "tơ",
+          "tờ",
+          "tớ",
+          "tở",
+          "tỡ",
+          "tợ"
+        ],
+        "e": [
+          "te",
+          "tè",
+          "té",
+          "tẻ",
+          "tẽ",
+          "tẹ"
+        ],
+        "ê": [
+          "tê",
+          "tề",
+          "tế",
+          "tể",
+          "tễ",
+          "tệ"
+        ],
+        "i": [
+          "ti",
+          "tì",
+          "tí",
+          "tỉ",
+          "tĩ",
+          "tị"
+        ],
+        "u": [
+          "tu",
+          "tù",
+          "tú",
+          "tủ",
+          "tũ",
+          "tụ"
+        ],
+        "ư": [
+          "tư",
+          "từ",
+          "tứ",
+          "tử",
+          "tữ",
+          "tự"
+        ]
+      },
+      "phrases": [
+        "tổ chim",
+        "tà áo",
+        "tủ kính",
+        "tươi tốt"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_t.m4a",
+    "video_url": "https://m.youtube.com/watch?v=I5jRU3d8NrU&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_35_front.png",
+      "card_back": "/data/module_letters/cards/card_35_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_t.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_t.png"
+    }
+  },
+  {
+    "id": 36,
+    "card_id": 36,
+    "letter": "U",
+    "name": "Chữ U",
+    "slug": "u",
+    "type": "vowel",
+    "illu_word": "tủ",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3 kết hợp nét móc ngược to rộng 1.5 ô ly.",
+      "Nét 2: Lia bút lên đường kẻ 3, viết nét móc ngược thứ hai rộng 1 ô ly, dừng ở đường kẻ 2 (cao 2 ô ly)."
+    ],
+    "mouth_shape": "Môi chúm tròn nhỏ nhô ra phía trước nhiều nhất, cuống lưỡi nâng cao: 'U'.",
+    "parent_tip": "Chữ U giống như một chiếc thuyền buồm êm ả lướt sóng.",
+    "forms": {
+      "upper_print": "U",
+      "lower_print": "u",
+      "upper_cursive": "U",
+      "lower_cursive": "u"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "lúa",
+        "lu",
+        "cú",
+        "ru",
+        "su su",
+        "nụ"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_u.m4a",
+    "video_url": "https://m.youtube.com/watch?v=9lX4IuArd6I&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_36_front.png",
+      "card_back": "/data/module_letters/cards/card_36_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_u.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_u.png"
+    }
+  },
+  {
+    "id": 37,
+    "card_id": 37,
+    "letter": "Ư",
+    "name": "Chữ Ư",
+    "slug": "uw",
+    "type": "vowel",
+    "illu_word": "củ từ",
+    "stroke_count": 3,
+    "writing_steps": [
+      "Nét 1: Viết chữ u cao 2 ô ly.",
+      "Nét 2: Đặt bút trên đường kẻ 3 góc trên bên phải, viết nét râu móc nhỏ nhắn."
+    ],
+    "mouth_shape": "Môi mở dẹt tự nhiên không chúm, hàm dưới hơi đưa ra nhẹ, phát âm 'Ư'.",
+    "parent_tip": "Chữ U có thêm nét râu móc xinh xắn bên phải sẽ biến thành chữ Ư.",
+    "forms": {
+      "upper_print": "Ư",
+      "lower_print": "ư",
+      "upper_cursive": "Ư",
+      "lower_cursive": "ư"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "mực",
+        "gừng",
+        "sư tử",
+        "thư",
+        "trứng",
+        "lưng"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_uw.m4a",
+    "video_url": "https://m.youtube.com/watch?v=2ZuV-3WoG40&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_37_front.png",
+      "card_back": "/data/module_letters/cards/card_37_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_uw.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_uw.png"
+    }
+  },
+  {
+    "id": 38,
+    "card_id": 38,
+    "letter": "V",
+    "name": "Chữ V",
+    "slug": "v",
+    "type": "consonant",
+    "illu_word": "vẽ",
+    "stroke_count": 1,
+    "writing_steps": [
+      "Nét 1: Đặt bút ở đường kẻ 2, viết nét móc hai đầu uốn lượn xuống đường kẻ 1 rồi vòng lên đường kẻ 3, tạo thắt nhỏ dừng ở đường kẻ 3."
+    ],
+    "mouth_shape": "Răng cửa hàm trên chạm nhẹ vào môi dưới, luồng hơi xát qua khe hở tạo âm 'vờ'.",
+    "parent_tip": "Cho bé quan sát răng trên chạm khẽ vào môi dưới khi phát âm 'vờ'.",
+    "forms": {
+      "upper_print": "V",
+      "lower_print": "v",
+      "upper_cursive": "V",
+      "lower_cursive": "v"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "va",
+          "và",
+          "vá",
+          "vả",
+          "vã",
+          "vạ"
+        ],
+        "o": [
+          "vo",
+          "vò",
+          "vó",
+          "vỏ",
+          "võ",
+          "vọ"
+        ],
+        "ô": [
+          "vô",
+          "vồ",
+          "vố",
+          "vổ",
+          "vỗ",
+          "vộ"
+        ],
+        "ơ": [
+          "vơ",
+          "vờ",
+          "vớ",
+          "vở",
+          "vỡ",
+          "vợ"
+        ],
+        "e": [
+          "ve",
+          "vè",
+          "vé",
+          "vẻ",
+          "vẽ",
+          "vẹ"
+        ],
+        "ê": [
+          "vê",
+          "về",
+          "vế",
+          "vể",
+          "vễ",
+          "vệ"
+        ],
+        "i": [
+          "vi",
+          "vì",
+          "ví",
+          "vỉ",
+          "vĩ",
+          "vị"
+        ],
+        "u": [
+          "vu",
+          "vù",
+          "vú",
+          "vủ",
+          "vũ",
+          "vụ"
+        ],
+        "ư": [
+          "vư",
+          "vừ",
+          "vứ",
+          "vử",
+          "vữ",
+          "vự"
+        ]
+      },
+      "phrases": [
+        "vở vẽ",
+        "vỏ sò",
+        "vui vẻ",
+        "vé xe"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_v.m4a",
+    "video_url": "https://m.youtube.com/watch?v=ewQu2g2K3qs&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_38_front.png",
+      "card_back": "/data/module_letters/cards/card_38_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_v.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_v.png"
+    }
+  },
+  {
+    "id": 39,
+    "card_id": 39,
+    "letter": "X",
+    "name": "Chữ X",
+    "slug": "x",
+    "type": "consonant",
+    "illu_word": "xe",
+    "stroke_count": 2,
+    "writing_steps": [
+      "Nét 1: Nét cong hở trái cao 2 ô ly.",
+      "Nét 2: Nét cong hở phải cao 2 ô ly tựa lưng vào nét cong thứ nhất."
+    ],
+    "mouth_shape": "Đầu lưỡi duỗi thẳng đặt gần chân răng hàm dưới, luồng hơi ma sát nhẹ thoát ra tạo âm 'xờ' nhẹ.",
+    "parent_tip": "Chữ X giống như hai bạn cong đang tựa lưng vào nhau cùng ngắm sao trời.",
+    "forms": {
+      "upper_print": "X",
+      "lower_print": "x",
+      "upper_cursive": "X",
+      "lower_cursive": "x"
+    },
+    "back_content": {
+      "type": "consonant",
+      "vowel_words": [],
+      "compatible_vowels": [
+        "a",
+        "o",
+        "ô",
+        "ơ",
+        "e",
+        "ê",
+        "i",
+        "u",
+        "ư"
+      ],
+      "phonics_matrix": {
+        "a": [
+          "xa",
+          "xà",
+          "xá",
+          "xả",
+          "xã",
+          "xạ"
+        ],
+        "o": [
+          "xo",
+          "xò",
+          "xó",
+          "xỏ",
+          "xõ",
+          "xọ"
+        ],
+        "ô": [
+          "xô",
+          "xồ",
+          "xố",
+          "xổ",
+          "xỗ",
+          "xộ"
+        ],
+        "ơ": [
+          "xơ",
+          "xờ",
+          "xớ",
+          "xở",
+          "xỡ",
+          "xợ"
+        ],
+        "e": [
+          "xe",
+          "xè",
+          "xé",
+          "xẻ",
+          "xẽ",
+          "xẹ"
+        ],
+        "ê": [
+          "xê",
+          "xề",
+          "xế",
+          "xể",
+          "xễ",
+          "xệ"
+        ],
+        "i": [
+          "xi",
+          "xì",
+          "xí",
+          "xỉ",
+          "xĩ",
+          "xị"
+        ],
+        "u": [
+          "xu",
+          "xù",
+          "xú",
+          "xủ",
+          "xũ",
+          "xụ"
+        ],
+        "ư": [
+          "xư",
+          "xừ",
+          "xứ",
+          "xử",
+          "xữ",
+          "xự"
+        ]
+      },
+      "phrases": [
+        "xe lu",
+        "xù xì",
+        "xứ sở",
+        "lì xì"
+      ]
+    },
+    "audio_url": "/audio/module_letters/chu_x.m4a",
+    "video_url": "https://m.youtube.com/watch?v=cuaz8k06t9I&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_39_front.png",
+      "card_back": "/data/module_letters/cards/card_39_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_x.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_x.png"
+    }
+  },
+  {
+    "id": 40,
+    "card_id": 40,
+    "letter": "Y",
+    "name": "Chữ Y",
+    "slug": "y",
+    "type": "vowel",
+    "illu_word": "y tá",
+    "stroke_count": 3,
+    "writing_steps": [
+      "Nét 1: Nét hất từ đường kẻ 2 lên đường kẻ 3 kết hợp nét móc ngược to.",
+      "Nét 2: Lia bút lên đường kẻ 3, viết nét khuyết dưới dài 5 ô ly kéo sâu xuống dưới đường kẻ 1 ba ô ly, dừng ở đường kẻ 2."
+    ],
+    "mouth_shape": "Miệng bè nhẹ sang hai bên tương tự âm I, phát âm 'i dài'.",
+    "parent_tip": "Chữ Y dài có đuôi khuyết dài 5 ô ly, khác chữ I ngắn chỉ cao 2 ô ly.",
+    "forms": {
+      "upper_print": "Y",
+      "lower_print": "y",
+      "upper_cursive": "Y",
+      "lower_cursive": "y"
+    },
+    "back_content": {
+      "type": "vowel",
+      "vowel_words": [
+        "y sĩ",
+        "kỵ sĩ",
+        "vật lý",
+        "y tá",
+        "yếm",
+        "yên xe"
+      ],
+      "compatible_vowels": [],
+      "phonics_matrix": {},
+      "phrases": []
+    },
+    "audio_url": "/audio/module_letters/chu_y.m4a",
+    "video_url": "https://m.youtube.com/watch?v=v2CCNYJDO-M&feature=youtu.be",
+    "assets": {
+      "card_front": "/data/module_letters/cards/card_40_front.png",
+      "card_back": "/data/module_letters/cards/card_40_back.png",
+      "writing_guide": "/data/module_letters/writing_guides/writing_chu_y.png",
+      "illustration": "/data/module_letters/illustrations/illu_chu_y.png"
+    }
+  }
+]
