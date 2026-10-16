@@ -57,6 +57,16 @@ export function LetterFlashcardView({
     }
   }, [currentLetter]);
 
+  // Dọn dẹp âm thanh khi unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
   const toggleAudio = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     if (!audioRef.current) return;
@@ -314,10 +324,10 @@ export function LetterFlashcardView({
                       sound.playTone(440, 0.05);
                       setSelectedVowel(v);
                     }}
-                    className={`min-h-[44px] min-w-[44px] px-3 py-1.5 rounded-xl font-black text-sm sm:text-base transition-all active:scale-95 ${
+                    className={`min-h-[44px] min-w-[44px] px-3.5 py-1.5 rounded-xl font-black text-sm sm:text-base transition-all active:scale-95 flex items-center justify-center gap-1 shrink-0 border ${
                       selectedVowel === v
-                        ? "bg-violet-600 text-white shadow-md scale-105"
-                        : "bg-slate-100 hover:bg-slate-200 text-slate-700"
+                        ? "bg-violet-600 text-white border-violet-600 shadow-md ring-2 ring-violet-400 ring-offset-1"
+                        : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-transparent shadow-xs"
                     }`}
                   >
                     {currentLetter.letter.toLowerCase()} + {v}

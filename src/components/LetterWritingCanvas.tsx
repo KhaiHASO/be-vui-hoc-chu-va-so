@@ -51,6 +51,16 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
     handleClear();
   }, [currentLetter]);
 
+  // Dọn dẹp âm thanh khi unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
   // 1. Vẽ nền lưới ô ly 4 dòng kẻ chuẩn tiểu học Việt Nam
   const drawGrid = useCallback(
     (ctx: CanvasRenderingContext2D, width: number, height: number) => {

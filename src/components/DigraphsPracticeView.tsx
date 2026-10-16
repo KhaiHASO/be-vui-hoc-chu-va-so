@@ -17,12 +17,24 @@ import {
 import { sound } from "@/utils/speech";
 import confetti from "canvas-confetti";
 
-export function DigraphsPracticeView() {
+interface DigraphsPracticeViewProps {
+  selectedDigraph?: DigraphData;
+  onSelectDigraph?: (digraph: DigraphData) => void;
+}
+
+export function DigraphsPracticeView({
+  selectedDigraph: propDigraph,
+  onSelectDigraph: propOnSelect,
+}: DigraphsPracticeViewProps = {}) {
   const digraphs: DigraphData[] = rawDigraphsData as DigraphData[];
-  const [selectedDigraph, setSelectedDigraph] = useState<DigraphData>(digraphs[0]);
+  const [internalDigraph, setInternalDigraph] = useState<DigraphData>(digraphs[0]);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const buttonRefs = useRef<{ [key: number]: HTMLButtonElement | null }>({});
+
+  const selectedDigraph = propDigraph || internalDigraph;
+  const setSelectedDigraph = propOnSelect || setInternalDigraph;
 
   useEffect(() => {
     setIsFlipped(false);
@@ -32,7 +44,27 @@ export function DigraphsPracticeView() {
       audioRef.current.load();
     }
     setIsPlaying(false);
+
+    // Tự động cuộn button đang chọn vào giữa tầm nhìn
+    const activeBtn = buttonRefs.current[selectedDigraph.id];
+    if (activeBtn) {
+      activeBtn.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
   }, [selectedDigraph]);
+
+  // Dọn dẹp âm thanh khi component unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
 
   const toggleAudio = () => {
     if (!audioRef.current) return;
@@ -106,22 +138,28 @@ export function DigraphsPracticeView() {
       {/* Dải chọn 14 âm ghép */}
       <div className="w-full max-w-4xl mb-4">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none px-1">
-          {digraphs.map((dg) => (
-            <button
-              key={dg.id}
-              onClick={() => handleSelect(dg)}
-              className={`min-h-[44px] px-3.5 py-2 rounded-2xl font-bold text-xs sm:text-sm shrink-0 flex items-center gap-1.5 border transition-all active:scale-95 ${
-                selectedDigraph.id === dg.id
-                  ? "bg-indigo-600 text-white border-indigo-600 shadow-md scale-105"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 shadow-xs"
-              }`}
-            >
-              <span className="text-sm font-black">{dg.name}</span>
-              <span className={`text-[11px] ${selectedDigraph.id === dg.id ? "text-indigo-200" : "text-slate-400"}`}>
-                ({dg.sample})
-              </span>
-            </button>
-          ))}
+          {digraphs.map((dg) => {
+            const isSelected = selectedDigraph.id === dg.id;
+            return (
+              <button
+                key={dg.id}
+                ref={(el) => {
+                  buttonRefs.current[dg.id] = el;
+                }}
+                onClick={() => handleSelect(dg)}
+                className={`min-h-[44px] px-3.5 py-2 rounded-2xl font-bold text-xs sm:text-sm shrink-0 flex items-center gap-1.5 border transition-all active:scale-95 ${
+                  isSelected
+                    ? "bg-indigo-600 text-white border-indigo-600 shadow-md ring-2 ring-indigo-400 ring-offset-1 font-black"
+                    : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 shadow-xs"
+                }`}
+              >
+                <span className="text-sm font-black">{dg.name}</span>
+                <span className={`text-[11px] ${isSelected ? "text-indigo-200" : "text-slate-400"}`}>
+                  ({dg.sample})
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

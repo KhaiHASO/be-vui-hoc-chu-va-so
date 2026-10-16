@@ -18,12 +18,24 @@ import {
 import { sound } from "@/utils/speech";
 import confetti from "canvas-confetti";
 
-export function StrokesPracticeView() {
+interface StrokesPracticeViewProps {
+  selectedStroke?: BasicStroke;
+  onSelectStroke?: (stroke: BasicStroke) => void;
+}
+
+export function StrokesPracticeView({
+  selectedStroke: propStroke,
+  onSelectStroke: propOnSelect,
+}: StrokesPracticeViewProps = {}) {
   const strokes: BasicStroke[] = rawStrokesData as BasicStroke[];
-  const [selectedStroke, setSelectedStroke] = useState<BasicStroke>(strokes[0]);
+  const [internalStroke, setInternalStroke] = useState<BasicStroke>(strokes[0]);
   const [isFlipped, setIsFlipped] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const buttonRefs = useRef<{ [key: number]: HTMLButtonElement | null }>({});
+
+  const selectedStroke = propStroke || internalStroke;
+  const setSelectedStroke = propOnSelect || setInternalStroke;
 
   useEffect(() => {
     setIsFlipped(false);
@@ -33,7 +45,27 @@ export function StrokesPracticeView() {
       audioRef.current.load();
     }
     setIsPlaying(false);
+
+    // Tự động cuộn button đang chọn vào giữa tầm nhìn
+    const activeBtn = buttonRefs.current[selectedStroke.id];
+    if (activeBtn) {
+      activeBtn.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
   }, [selectedStroke]);
+
+  // Dọn dẹp âm thanh khi component unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
 
   const toggleAudio = () => {
     if (!audioRef.current) return;
@@ -107,28 +139,34 @@ export function StrokesPracticeView() {
       {/* Dải 11 nét viết (Touch-friendly ngang) */}
       <div className="w-full max-w-4xl mb-4">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none px-1">
-          {strokes.map((st, idx) => (
-            <button
-              key={st.id}
-              onClick={() => handleSelect(st)}
-              className={`min-h-[44px] px-3.5 py-2 rounded-2xl font-bold text-xs sm:text-sm shrink-0 flex items-center gap-2 border transition-all active:scale-95 ${
-                selectedStroke.id === st.id
-                  ? "bg-violet-600 text-white border-violet-600 shadow-md scale-105"
-                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 shadow-xs"
-              }`}
-            >
-              <span
-                className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-black ${
-                  selectedStroke.id === st.id
-                    ? "bg-white/20 text-white"
-                    : "bg-slate-100 text-slate-600"
+          {strokes.map((st, idx) => {
+            const isSelected = selectedStroke.id === st.id;
+            return (
+              <button
+                key={st.id}
+                ref={(el) => {
+                  buttonRefs.current[st.id] = el;
+                }}
+                onClick={() => handleSelect(st)}
+                className={`min-h-[44px] px-3.5 py-2 rounded-2xl font-bold text-xs sm:text-sm shrink-0 flex items-center gap-2 border transition-all active:scale-95 ${
+                  isSelected
+                    ? "bg-violet-600 text-white border-violet-600 shadow-md ring-2 ring-violet-400 ring-offset-1 font-black"
+                    : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50 shadow-xs"
                 }`}
               >
-                {idx + 1}
-              </span>
-              <span>{st.name}</span>
-            </button>
-          ))}
+                <span
+                  className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-black ${
+                    isSelected
+                      ? "bg-white/20 text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  {idx + 1}
+                </span>
+                <span>{st.name}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 

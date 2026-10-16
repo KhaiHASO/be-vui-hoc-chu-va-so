@@ -26,6 +26,20 @@ export function MouthShapeGuideView({ currentLetter }: MouthShapeGuideViewProps)
     setIsPlayingAudio(false);
   }, [currentLetter]);
 
+  // Dọn dẹp máy ảnh và âm thanh khi unmount
+  useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
   const toggleCamera = async () => {
     sound.playTone(493.88, 0.1);
     if (cameraActive) {

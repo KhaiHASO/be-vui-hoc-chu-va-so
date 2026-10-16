@@ -6,6 +6,8 @@ import {
   LetterSubMode,
   NumberSubMode,
   LetterCardData,
+  BasicStroke,
+  DigraphData,
 } from "@/types/letter";
 import { NumberCardData } from "@/types/number";
 import {
@@ -40,6 +42,12 @@ interface SidebarNavProps {
   numbers: NumberCardData[];
   currentNumber: NumberCardData;
   onSelectNumber: (num: NumberCardData) => void;
+  strokes?: BasicStroke[];
+  currentStroke?: BasicStroke;
+  onSelectStroke?: (stroke: BasicStroke) => void;
+  digraphs?: DigraphData[];
+  currentDigraph?: DigraphData;
+  onSelectDigraph?: (digraph: DigraphData) => void;
 }
 
 export function SidebarNav({
@@ -55,6 +63,12 @@ export function SidebarNav({
   numbers,
   currentNumber,
   onSelectNumber,
+  strokes,
+  currentStroke,
+  onSelectStroke,
+  digraphs,
+  currentDigraph,
+  onSelectDigraph,
 }: SidebarNavProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -215,28 +229,77 @@ export function SidebarNav({
         {/* 4. Dải Chọn Nhanh Phần Tử Đang Học */}
         <div className="pt-4 border-t border-slate-800/80">
           <div className="px-3 py-1 text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
-            {mainCategory === "letters" ? "Chọn Nhanh Chữ Cái:" : "Chọn Nhanh Số Học:"}
+            {mainCategory === "letters"
+              ? letterMode === "strokes"
+                ? "Chọn Nhanh 11 Nét:"
+                : letterMode === "digraphs"
+                ? "Chọn Nhanh 14 Vần Ghép:"
+                : "Chọn Nhanh Chữ Cái:"
+              : "Chọn Nhanh Số Học:"}
           </div>
 
           {mainCategory === "letters" ? (
-            <div className="grid grid-cols-6 sm:grid-cols-7 gap-1.5 px-2">
-              {letters.map((l) => (
-                <button
-                  key={l.id}
-                  onClick={() => {
-                    sound.playTone(500, 0.05);
-                    onSelectLetter(l);
-                  }}
-                  className={`min-h-[40px] rounded-xl font-black text-xs transition-all active:scale-95 ${
-                    currentLetter.id === l.id
-                      ? "bg-amber-400 text-slate-900 shadow-md font-black scale-105"
-                      : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
-                  }`}
-                >
-                  {l.letter}
-                </button>
-              ))}
-            </div>
+            letterMode === "strokes" && strokes ? (
+              <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5 px-2">
+                {strokes.map((st, idx) => (
+                  <button
+                    key={st.id}
+                    onClick={() => {
+                      sound.playTone(500, 0.05);
+                      onSelectStroke?.(st);
+                    }}
+                    className={`min-h-[40px] px-1 py-1 rounded-xl font-bold text-xs transition-all active:scale-95 flex flex-col items-center justify-center ${
+                      currentStroke?.id === st.id
+                        ? "bg-amber-400 text-slate-900 shadow-md font-black ring-2 ring-amber-300 ring-offset-1 ring-offset-slate-900"
+                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+                    }`}
+                    title={st.name}
+                  >
+                    <span className="text-[10px] opacity-75">Nét {idx + 1}</span>
+                    <span className="truncate max-w-[50px] font-black">{st.name.replace("Nét ", "")}</span>
+                  </button>
+                ))}
+              </div>
+            ) : letterMode === "digraphs" && digraphs ? (
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5 px-2">
+                {digraphs.map((dg) => (
+                  <button
+                    key={dg.id}
+                    onClick={() => {
+                      sound.playTone(500, 0.05);
+                      onSelectDigraph?.(dg);
+                    }}
+                    className={`min-h-[40px] px-2 py-1 rounded-xl font-bold text-xs transition-all active:scale-95 flex items-center justify-center ${
+                      currentDigraph?.id === dg.id
+                        ? "bg-amber-400 text-slate-900 shadow-md font-black ring-2 ring-amber-300 ring-offset-1 ring-offset-slate-900"
+                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+                    }`}
+                    title={`${dg.name} (${dg.sample})`}
+                  >
+                    <span className="font-black text-sm">{dg.name}</span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-6 sm:grid-cols-7 gap-1.5 px-2">
+                {letters.map((l) => (
+                  <button
+                    key={l.id}
+                    onClick={() => {
+                      sound.playTone(500, 0.05);
+                      onSelectLetter(l);
+                    }}
+                    className={`min-h-[40px] rounded-xl font-black text-xs transition-all active:scale-95 ${
+                      currentLetter.id === l.id
+                        ? "bg-amber-400 text-slate-900 shadow-md font-black ring-2 ring-amber-300 ring-offset-1 ring-offset-slate-900"
+                        : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
+                    }`}
+                  >
+                    {l.letter}
+                  </button>
+                ))}
+              </div>
+            )
           ) : (
             <div className="grid grid-cols-5 gap-2 px-2">
               {numbers.map((n) => (
@@ -248,7 +311,7 @@ export function SidebarNav({
                   }}
                   className={`min-h-[44px] rounded-xl font-black text-sm transition-all active:scale-95 ${
                     currentNumber.id === n.id
-                      ? "bg-amber-400 text-slate-900 shadow-md font-black scale-105"
+                      ? "bg-amber-400 text-slate-900 shadow-md font-black ring-2 ring-amber-300 ring-offset-1 ring-offset-slate-900"
                       : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
                   }`}
                 >

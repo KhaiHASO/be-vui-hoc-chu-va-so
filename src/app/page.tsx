@@ -3,9 +3,13 @@
 import React, { useState } from "react";
 import rawNumbersData from "@/data/numbers.json";
 import rawLettersData from "@/data/letters.json";
+import rawStrokesData from "@/data/strokes.json";
+import rawDigraphsData from "@/data/digraphs.json";
 import { NumberCardData } from "@/types/number";
 import {
   LetterCardData,
+  BasicStroke,
+  DigraphData,
   MainCategory,
   LetterSubMode,
   NumberSubMode,
@@ -37,6 +41,8 @@ const letters: LetterCardData[] = (
     ? rawLettersData
     : (rawLettersData as { letters: LetterCardData[] }).letters
 ) as LetterCardData[];
+const strokes: BasicStroke[] = rawStrokesData as BasicStroke[];
+const digraphs: DigraphData[] = rawDigraphsData as DigraphData[];
 
 export default function HomePage() {
   // Trạng thái điều hướng chính
@@ -44,9 +50,11 @@ export default function HomePage() {
   const [letterMode, setLetterMode] = useState<LetterSubMode>("flashcard");
   const [numberMode, setNumberMode] = useState<NumberSubMode>("card");
 
-  // Phần tử đang được chọn
+  // Phần tử đang được chọn - lưu giữ trạng thái xuyên suốt quá trình chuyển đổi giữa các tab
   const [currentLetter, setCurrentLetter] = useState<LetterCardData>(letters[0]);
   const [currentNumber, setCurrentNumber] = useState<NumberCardData>(numbers[0]);
+  const [currentStroke, setCurrentStroke] = useState<BasicStroke>(strokes[0]);
+  const [currentDigraph, setCurrentDigraph] = useState<DigraphData>(digraphs[0]);
 
   // Điều hướng qua lại chữ cái tiếp theo/trước đó
   const handleNextLetter = () => {
@@ -63,6 +71,36 @@ export default function HomePage() {
     setCurrentLetter(letters[prevIdx]);
   };
 
+  // Điều hướng 11 nét viết
+  const handleNextStroke = () => {
+    sound.playTone(523.25, 0.05);
+    const currIdx = strokes.findIndex((s) => s.id === currentStroke.id);
+    const nextIdx = (currIdx + 1) % strokes.length;
+    setCurrentStroke(strokes[nextIdx]);
+  };
+
+  const handlePrevStroke = () => {
+    sound.playTone(440, 0.05);
+    const currIdx = strokes.findIndex((s) => s.id === currentStroke.id);
+    const prevIdx = (currIdx - 1 + strokes.length) % strokes.length;
+    setCurrentStroke(strokes[prevIdx]);
+  };
+
+  // Điều hướng 14 vần ghép
+  const handleNextDigraph = () => {
+    sound.playTone(523.25, 0.05);
+    const currIdx = digraphs.findIndex((d) => d.id === currentDigraph.id);
+    const nextIdx = (currIdx + 1) % digraphs.length;
+    setCurrentDigraph(digraphs[nextIdx]);
+  };
+
+  const handlePrevDigraph = () => {
+    sound.playTone(440, 0.05);
+    const currIdx = digraphs.findIndex((d) => d.id === currentDigraph.id);
+    const prevIdx = (currIdx - 1 + digraphs.length) % digraphs.length;
+    setCurrentDigraph(digraphs[prevIdx]);
+  };
+
   // Điều hướng qua lại số tiếp theo/trước đó
   const handleNextNumber = () => {
     sound.playTone(587.33, 0.08);
@@ -76,6 +114,35 @@ export default function HomePage() {
     const currIdx = numbers.findIndex((n) => n.id === currentNumber.id);
     const prevIdx = (currIdx - 1 + numbers.length) % numbers.length;
     setCurrentNumber(numbers[prevIdx]);
+  };
+
+  // Handler hợp nhất cho nút Trước / Tiếp theo trên thanh Header
+  const handleTopPrev = () => {
+    if (mainCategory === "numbers") {
+      handlePrevNumber();
+    } else {
+      if (letterMode === "strokes") {
+        handlePrevStroke();
+      } else if (letterMode === "digraphs") {
+        handlePrevDigraph();
+      } else {
+        handlePrevLetter();
+      }
+    }
+  };
+
+  const handleTopNext = () => {
+    if (mainCategory === "numbers") {
+      handleNextNumber();
+    } else {
+      if (letterMode === "strokes") {
+        handleNextStroke();
+      } else if (letterMode === "digraphs") {
+        handleNextDigraph();
+      } else {
+        handleNextLetter();
+      }
+    }
   };
 
   return (
@@ -94,6 +161,12 @@ export default function HomePage() {
         numbers={numbers}
         currentNumber={currentNumber}
         onSelectNumber={(n) => setCurrentNumber(n)}
+        strokes={strokes}
+        currentStroke={currentStroke}
+        onSelectStroke={(st) => setCurrentStroke(st)}
+        digraphs={digraphs}
+        currentDigraph={currentDigraph}
+        onSelectDigraph={(dg) => setCurrentDigraph(dg)}
       />
 
       {/* 2. KHÔNG GIAN TƯƠNG TÁC CHÍNH (MAIN PLAYGROUND AREA) */}
@@ -102,7 +175,13 @@ export default function HomePage() {
         <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3 min-w-0">
             <span className="w-10 h-10 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 text-white font-black text-lg flex items-center justify-center shadow-xs shrink-0">
-              {mainCategory === "letters" ? currentLetter.letter : currentNumber.number}
+              {mainCategory === "numbers"
+                ? currentNumber.number
+                : letterMode === "strokes"
+                ? currentStroke.id
+                : letterMode === "digraphs"
+                ? currentDigraph.name
+                : currentLetter.letter}
             </span>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
@@ -110,9 +189,13 @@ export default function HomePage() {
                   {mainCategory === "letters" ? "Tiếng Việt Tiểu Học" : "Toán Học Lớp 1"}
                 </span>
                 <span className="text-xs font-bold text-violet-600">
-                  {mainCategory === "letters"
-                    ? `Chữ ${currentLetter.letter} (${currentLetter.name})`
-                    : `Số ${currentNumber.number} (${currentNumber.word})`}
+                  {mainCategory === "numbers"
+                    ? `Số ${currentNumber.number} (${currentNumber.word})`
+                    : letterMode === "strokes"
+                    ? `Nét ${currentStroke.id}: ${currentStroke.name}`
+                    : letterMode === "digraphs"
+                    ? `Âm ${currentDigraph.name} (${currentDigraph.sample})`
+                    : `Chữ ${currentLetter.letter} (${currentLetter.name})`}
                 </span>
               </div>
               <h2 className="text-sm sm:text-base font-black text-slate-800 truncate">
@@ -120,9 +203,9 @@ export default function HomePage() {
                   ? letterMode === "flashcard"
                     ? "Khám phá thẻ chữ cái 3D"
                     : letterMode === "strokes"
-                    ? "Luyện 11 nét viết cơ bản (Thẻ 1 - 11)"
+                    ? `Luyện 11 nét viết cơ bản (Nét ${currentStroke.id}/11)`
                     : letterMode === "digraphs"
-                    ? "14 Vần ghép & Âm đôi (Thẻ 41 - 54)"
+                    ? `14 Vần ghép & Âm đôi (Âm ${currentDigraph.id - 40}/14)`
                     : letterMode === "writing"
                     ? "Bảng luyện viết ô ly 4 dòng kẻ"
                     : letterMode === "mouth"
@@ -144,13 +227,13 @@ export default function HomePage() {
           {/* Nút lùi / tới nhanh */}
           <div className="flex items-center gap-2 ml-auto">
             <button
-              onClick={mainCategory === "letters" ? handlePrevLetter : handlePrevNumber}
+              onClick={handleTopPrev}
               className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs sm:text-sm font-bold text-slate-700 transition-all"
             >
               ← Trước
             </button>
             <button
-              onClick={mainCategory === "letters" ? handleNextLetter : handleNextNumber}
+              onClick={handleTopNext}
               className="min-h-[44px] px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 active:scale-95 text-xs sm:text-sm font-black text-white shadow-xs transition-all flex items-center gap-1.5"
             >
               <span>Tiếp theo</span>
@@ -172,9 +255,19 @@ export default function HomePage() {
                 />
               )}
 
-              {letterMode === "strokes" && <StrokesPracticeView />}
+              {letterMode === "strokes" && (
+                <StrokesPracticeView
+                  selectedStroke={currentStroke}
+                  onSelectStroke={setCurrentStroke}
+                />
+              )}
 
-              {letterMode === "digraphs" && <DigraphsPracticeView />}
+              {letterMode === "digraphs" && (
+                <DigraphsPracticeView
+                  selectedDigraph={currentDigraph}
+                  onSelectDigraph={setCurrentDigraph}
+                />
+              )}
 
               {letterMode === "writing" && (
                 <LetterWritingCanvas currentLetter={currentLetter} />
