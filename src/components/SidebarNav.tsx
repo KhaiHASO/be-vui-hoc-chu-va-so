@@ -236,6 +236,8 @@ export function SidebarNav({
                 ? "Chọn Nhanh 11 Nét:"
                 : letterMode === "digraphs"
                 ? "Chọn Nhanh 14 Vần Ghép:"
+                : letterMode === "writing"
+                ? "Chọn Chữ Thường Tập Viết:"
                 : "Chọn Nhanh Chữ Cái:"
               : "Chọn Nhanh Số Học:"}
           </div>
@@ -297,7 +299,7 @@ export function SidebarNav({
                         : "bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white"
                     }`}
                   >
-                    {l.letter}
+                    {letterMode === "writing" ? l.letter.toLowerCase() : l.letter}
                   </button>
                 ))}
               </div>

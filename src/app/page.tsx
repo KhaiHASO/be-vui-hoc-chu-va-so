@@ -184,6 +184,8 @@ export default function HomePage() {
                 ? currentDigraph.name
                 : letterMode === "grader"
                 ? "AI"
+                : letterMode === "writing"
+                ? currentLetter.letter.toLowerCase()
                 : currentLetter.letter}
             </span>
             <div className="min-w-0 flex-1">
@@ -200,6 +202,8 @@ export default function HomePage() {
                     ? `Âm ${currentDigraph.name} (${currentDigraph.sample})`
                     : letterMode === "grader"
                     ? "Trí Tuệ Nhân Tạo Lớp 1"
+                    : letterMode === "writing"
+                    ? `Chữ "${currentLetter.letter.toLowerCase()}" thường (${currentLetter.name})`
                     : `Chữ ${currentLetter.letter} (${currentLetter.name})`}
                 </span>
               </div>
@@ -212,7 +216,7 @@ export default function HomePage() {
                     : letterMode === "digraphs"
                     ? `14 Vần ghép & Âm đôi (Âm ${currentDigraph.id - 40}/14)`
                     : letterMode === "writing"
-                    ? "Bảng luyện viết ô ly 4 dòng kẻ"
+                    ? `Tập viết chữ thường ô ly: chữ "${currentLetter.letter.toLowerCase()}"`
                     : letterMode === "grader"
                     ? "AI Chấm & Nhận Xét Bài Viết Chữ Đẹp"
                     : letterMode === "mouth"

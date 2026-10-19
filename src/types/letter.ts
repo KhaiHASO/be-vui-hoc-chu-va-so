@@ -57,6 +57,7 @@ export interface LetterCardData {
     card_back: string;
     writing_guide: string;
     illustration: string;
+    forms_guide?: string;
   };
 }
 
