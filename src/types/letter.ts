@@ -62,6 +62,39 @@ export interface LetterCardData {
 
 export type MainCategory = "letters" | "numbers";
 
-export type LetterSubMode = "flashcard" | "strokes" | "digraphs" | "writing" | "mouth" | "quiz";
+export type LetterSubMode =
+  | "flashcard"
+  | "strokes"
+  | "digraphs"
+  | "writing"
+  | "grader"
+  | "mouth"
+  | "quiz";
 
 export type NumberSubMode = "card" | "counting" | "writing" | "bonds" | "guide";
+
+export interface HandwritingEvaluationResult {
+  anh_hop_le: boolean;
+  ly_do?: string;
+  tong_diem: number;
+  xep_loai: string;
+  tieu_chi: {
+    dung_mau_chu: number;
+    do_deu_net: number;
+    khoang_cach: number;
+    do_thang_hang: number;
+    trinh_bay: number;
+    net_co_ban: number;
+  };
+  nhan_xet_chung: string;
+  diem_tot: string[];
+  loi_can_cai_thien: string[];
+  goi_y_luyen_tap: string[];
+  vi_du_minh_hoa: Array<{
+    chu: string;
+    nhan_xet: string;
+    sai_o_dau: string;
+    can_cai_thien: string;
+  }>;
+  nhan_xet_phu_huynh: string;
+}

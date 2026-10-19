@@ -24,6 +24,7 @@ import { DigraphsPracticeView } from "@/components/DigraphsPracticeView";
 import { LetterWritingCanvas } from "@/components/LetterWritingCanvas";
 import { MouthShapeGuideView } from "@/components/MouthShapeGuideView";
 import { LetterQuizGame } from "@/components/LetterQuizGame";
+import { AiHandwritingGrader } from "@/components/AiHandwritingGrader";
 
 // Các component của phần HỌC SỐ (Kế thừa trọn vẹn từ bản cũ)
 import { FlashcardView } from "@/components/FlashcardView";
@@ -173,7 +174,7 @@ export default function HomePage() {
       <main className="flex-1 min-w-0 h-auto lg:h-screen lg:overflow-y-auto flex flex-col bg-gradient-to-b from-white via-slate-50 to-amber-50/20">
         {/* Top Header thanh không gian chơi */}
         <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-3 min-w-0">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             <span className="w-10 h-10 rounded-2xl bg-linear-to-br from-violet-500 to-indigo-600 text-white font-black text-lg flex items-center justify-center shadow-xs shrink-0">
               {mainCategory === "numbers"
                 ? currentNumber.number
@@ -181,20 +182,24 @@ export default function HomePage() {
                 ? currentStroke.id
                 : letterMode === "digraphs"
                 ? currentDigraph.name
+                : letterMode === "grader"
+                ? "AI"
                 : currentLetter.letter}
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 shrink-0 hidden sm:inline-block">
                   {mainCategory === "letters" ? "Tiếng Việt Tiểu Học" : "Toán Học Lớp 1"}
                 </span>
-                <span className="text-xs font-bold text-violet-600">
+                <span className="text-xs font-bold text-violet-600 truncate">
                   {mainCategory === "numbers"
                     ? `Số ${currentNumber.number} (${currentNumber.word})`
                     : letterMode === "strokes"
                     ? `Nét ${currentStroke.id}: ${currentStroke.name}`
                     : letterMode === "digraphs"
                     ? `Âm ${currentDigraph.name} (${currentDigraph.sample})`
+                    : letterMode === "grader"
+                    ? "Trí Tuệ Nhân Tạo Lớp 1"
                     : `Chữ ${currentLetter.letter} (${currentLetter.name})`}
                 </span>
               </div>
@@ -208,6 +213,8 @@ export default function HomePage() {
                     ? `14 Vần ghép & Âm đôi (Âm ${currentDigraph.id - 40}/14)`
                     : letterMode === "writing"
                     ? "Bảng luyện viết ô ly 4 dòng kẻ"
+                    : letterMode === "grader"
+                    ? "AI Chấm & Nhận Xét Bài Viết Chữ Đẹp"
                     : letterMode === "mouth"
                     ? "Luyện khẩu hình & Gương soi camera"
                     : "Đố vui bắt chữ thông minh"
@@ -225,25 +232,27 @@ export default function HomePage() {
           </div>
 
           {/* Nút lùi / tới nhanh */}
-          <div className="flex items-center gap-2 ml-auto">
-            <button
-              onClick={handleTopPrev}
-              className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs sm:text-sm font-bold text-slate-700 transition-all"
-            >
-              ← Trước
-            </button>
-            <button
-              onClick={handleTopNext}
-              className="min-h-[44px] px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 active:scale-95 text-xs sm:text-sm font-black text-white shadow-xs transition-all flex items-center gap-1.5"
-            >
-              <span>Tiếp theo</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
+          {letterMode !== "grader" && (
+            <div className="flex items-center gap-2 ml-auto shrink-0">
+              <button
+                onClick={handleTopPrev}
+                className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs sm:text-sm font-bold text-slate-700 transition-all"
+              >
+                ← Trước
+              </button>
+              <button
+                onClick={handleTopNext}
+                className="min-h-[44px] px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 active:scale-95 text-xs sm:text-sm font-black text-white shadow-xs transition-all flex items-center gap-1.5"
+              >
+                <span>Tiếp theo</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          )}
         </header>
 
         {/* Nội dung tương tác chính (Dynamic Playground) */}
-        <section className="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex flex-col justify-center">
+        <section className="flex-1 w-full max-w-6xl mx-auto px-3 sm:px-6 py-4 sm:py-6 flex flex-col justify-start">
           {mainCategory === "letters" && (
             <>
               {letterMode === "flashcard" && (
@@ -272,6 +281,8 @@ export default function HomePage() {
               {letterMode === "writing" && (
                 <LetterWritingCanvas currentLetter={currentLetter} />
               )}
+
+              {letterMode === "grader" && <AiHandwritingGrader />}
 
               {letterMode === "mouth" && (
                 <MouthShapeGuideView currentLetter={currentLetter} />
