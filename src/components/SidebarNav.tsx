@@ -96,7 +96,6 @@ export function SidebarNav({
     { mode: "digraphs" as LetterSubMode, label: "14 Vần Ghép & Âm Đôi", icon: Sparkles },
     { mode: "writing" as LetterSubMode, label: "Bé Tập Viết Ô Ly", icon: PenTool },
     { mode: "grader" as LetterSubMode, label: "AI Chấm Bài Viết ⭐", icon: Award },
-    { mode: "mouth" as LetterSubMode, label: "Khẩu Hình Phát Âm", icon: Volume2 },
     { mode: "quiz" as LetterSubMode, label: "Đố Vui Bắt Chữ", icon: Gamepad2 },
   ];
 

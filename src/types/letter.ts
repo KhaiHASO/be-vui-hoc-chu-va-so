@@ -69,7 +69,6 @@ export type LetterSubMode =
   | "digraphs"
   | "writing"
   | "grader"
-  | "mouth"
   | "quiz";
 
 export type NumberSubMode = "card" | "counting" | "writing" | "bonds" | "guide";

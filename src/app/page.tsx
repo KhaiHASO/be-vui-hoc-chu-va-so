@@ -22,7 +22,6 @@ import { LetterFlashcardView } from "@/components/LetterFlashcardView";
 import { StrokesPracticeView } from "@/components/StrokesPracticeView";
 import { DigraphsPracticeView } from "@/components/DigraphsPracticeView";
 import { LetterWritingCanvas } from "@/components/LetterWritingCanvas";
-import { MouthShapeGuideView } from "@/components/MouthShapeGuideView";
 import { LetterQuizGame } from "@/components/LetterQuizGame";
 import { AiHandwritingGrader } from "@/components/AiHandwritingGrader";
 
@@ -219,9 +218,7 @@ export default function HomePage() {
                     ? `Tập viết chữ thường ô ly: chữ "${currentLetter.letter.toLowerCase()}"`
                     : letterMode === "grader"
                     ? "AI Chấm & Nhận Xét Bài Viết Chữ Đẹp"
-                    : letterMode === "mouth"
-                    ? "Luyện khẩu hình & Gương soi camera"
-                    : "Đố vui bắt chữ thông minh"
+                    : "Đố Vui Bắt Chữ Thông Minh"
                   : numberMode === "card"
                   ? "Thẻ học số 3D độ nét cao"
                   : numberMode === "counting"
@@ -287,10 +284,6 @@ export default function HomePage() {
               )}
 
               {letterMode === "grader" && <AiHandwritingGrader />}
-
-              {letterMode === "mouth" && (
-                <MouthShapeGuideView currentLetter={currentLetter} />
-              )}
 
               {letterMode === "quiz" && <LetterQuizGame />}
             </>
