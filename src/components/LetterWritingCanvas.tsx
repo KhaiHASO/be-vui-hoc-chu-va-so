@@ -15,11 +15,81 @@ import {
   EyeOff,
   PenTool,
   Volume2,
+  BookOpen,
+  Info,
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { sound } from "@/utils/speech";
 
 export type LetterFormType = "upper_print" | "upper_cursive" | "lower_print" | "lower_cursive";
+
+// Tỉ lệ kích thước thật của ảnh khung ô ly cắt trực tiếp từ tài liệu BỘ THẺ.pdf
+export const LETTER_WRITING_ASPECTS: Record<string, number> = {
+  a: 434 / 389,
+  aw: 435 / 384,
+  aa: 435 / 388,
+  b: 435 / 469,
+  c: 435 / 386,
+  d: 435 / 480,
+  dd: 435 / 481,
+  e: 434 / 387,
+  ee: 435 / 388,
+  g: 435 / 510,
+  h: 434 / 571,
+  i: 435 / 390,
+  k: 430 / 571,
+  l: 435 / 574,
+  m: 609 / 390,
+  n: 608 / 388,
+  o: 434 / 386,
+  oo: 435 / 386,
+  ow: 434 / 389,
+  p: 429 / 478,
+  q: 475 / 520,
+  r: 434 / 430,
+  s: 435 / 389,
+  t: 416 / 386,
+  u: 403 / 385,
+  uw: 435 / 386,
+  v: 434 / 387,
+  x: 435 / 389,
+  y: 435 / 494,
+};
+
+// Cấu hình số hàng & cột ô ly chuẩn tiểu học tương ứng từng dạng chữ cái
+export function getLetterGridConfig(slug: string, form: LetterFormType): {
+  cols: number;
+  rows: number;
+  baselineRow: number;
+  heightLy: string;
+} {
+  if (form === "upper_print" || form === "lower_print") {
+    return { cols: 4, rows: 4, baselineRow: 4, heightLy: form === "upper_print" ? "2.5 ô ly" : "2 ô ly" };
+  }
+  if (form === "upper_cursive") {
+    return { cols: 4, rows: 5, baselineRow: 5, heightLy: "2.5 ô ly" };
+  }
+  // lower_cursive
+  if (slug === "m" || slug === "n") {
+    return { cols: 6, rows: 4, baselineRow: 4, heightLy: "2 ô ly (rộng 5 ô ly)" };
+  }
+  if (slug === "h" || slug === "k" || slug === "l") {
+    return { cols: 4, rows: 6, baselineRow: 6, heightLy: "5 ô ly (khuyết trên)" };
+  }
+  if (slug === "b" || slug === "d" || slug === "dd" || slug === "p" || slug === "q") {
+    return { cols: 4, rows: 5, baselineRow: 5, heightLy: slug === "p" || slug === "q" ? "4 ô ly" : "4 - 5 ô ly" };
+  }
+  if (slug === "g" || slug === "y") {
+    return { cols: 4, rows: 5.5, baselineRow: 3, heightLy: "5 ô ly (khuyết dưới 3 ly)" };
+  }
+  if (slug === "t") {
+    return { cols: 4, rows: 4, baselineRow: 4, heightLy: "3 ô ly" };
+  }
+  if (slug === "r" || slug === "s") {
+    return { cols: 4, rows: 4, baselineRow: 4, heightLy: "2.25 ô ly" };
+  }
+  return { cols: 4, rows: 4, baselineRow: 4, heightLy: "2 ô ly" };
+}
 
 interface LetterWritingCanvasProps {
   currentLetter: LetterCardData;
@@ -31,7 +101,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
   const drawCanvasRef = useRef<HTMLCanvasElement>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const [strokeColor, setStrokeColor] = useState<string>("#2563eb"); // Xanh mực học sinh
+  const [strokeColor, setStrokeColor] = useState<string>("#7c3aed"); // Tím mực học sinh
   const [lineWidth, setLineWidth] = useState<number>(8);
   const [hasDrawn, setHasDrawn] = useState<boolean>(false);
   const [ghostMode, setGhostMode] = useState<"card" | "cursive" | "none">("card");
@@ -44,6 +114,16 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
   const lastPointRef = useRef<{ x: number; y: number } | null>(null);
 
   const lowerChar = currentLetter.forms?.lower_cursive || currentLetter.letter.toLowerCase();
+  const writingGuideImg = `/data/module_letters/writing_guides/writing_chu_${currentLetter.slug}.png`;
+  const gridConfig = getLetterGridConfig(currentLetter.slug, activeForm);
+
+  // Tỉ lệ aspect ratio chuẩn cho từng dạng
+  const currentAspect =
+    activeForm === "lower_cursive"
+      ? LETTER_WRITING_ASPECTS[currentLetter.slug] || 1.12
+      : activeForm === "upper_cursive"
+      ? 0.92
+      : 1.0;
 
   // Reset khi đổi chữ
   useEffect(() => {
@@ -54,6 +134,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
     }
     setIsPlayingAudio(false);
     setActiveForm("lower_cursive");
+    setGhostMode("card");
     handleClear();
   }, [currentLetter]);
 
@@ -95,40 +176,50 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
     }
   };
 
-  // 1. Vẽ nền lưới ô ly 4 dòng kẻ chuẩn tiểu học Việt Nam
-  const drawGrid = useCallback(
-    (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+  // 1. Vẽ lưới ô ly tiểu học chuẩn Bộ GD&ĐT (chỉ vẽ khi không dùng ảnh thẻ gốc trực tiếp)
+  const drawPrimaryGrid = useCallback(
+    (
+      ctx: CanvasRenderingContext2D,
+      width: number,
+      height: number,
+      cols: number,
+      rows: number,
+      baselineRow: number
+    ) => {
       ctx.clearRect(0, 0, width, height);
 
-      // Nền trắng tinh
+      // Nền trắng tinh khôi
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, width, height);
 
-      const gridSize = 36; // Kích thước ô ly vuông
-      const numCols = Math.floor(width / gridSize);
-      const numRows = Math.floor(height / gridSize);
+      const cellW = width / cols;
+      const cellH = height / rows;
+
+      // Khung viền ngoài màu xanh tiểu học
+      ctx.strokeStyle = "#93c5fd";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(1.5, 1.5, width - 3, height - 3);
 
       // Đường kẻ ô ly dọc
-      for (let c = 0; c <= numCols; c++) {
-        const x = c * gridSize;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "rgba(147, 197, 253, 0.75)";
+      for (let c = 1; c < cols; c++) {
+        const x = Math.round(c * cellW);
         ctx.beginPath();
-        ctx.lineWidth = c % 4 === 0 ? 1.5 : 0.8;
-        ctx.strokeStyle =
-          c % 4 === 0 ? "rgba(99, 102, 241, 0.4)" : "rgba(226, 232, 240, 0.85)";
         ctx.moveTo(x, 0);
         ctx.lineTo(x, height);
         ctx.stroke();
       }
 
       // Đường kẻ ô ly ngang
-      for (let r = 0; r <= numRows; r++) {
-        const y = r * gridSize;
-        const isBaseline = r % 4 === 0;
+      for (let r = 1; r < rows; r++) {
+        const y = Math.round(r * cellH);
+        const isBaseline = r === baselineRow;
         ctx.beginPath();
-        ctx.lineWidth = isBaseline ? 2 : 0.8;
+        ctx.lineWidth = isBaseline ? 2.5 : 1;
         ctx.strokeStyle = isBaseline
-          ? "rgba(37, 99, 235, 0.55)" // Đường kẻ chính đậm
-          : "rgba(226, 232, 240, 0.85)";
+          ? "rgba(37, 99, 235, 0.95)" // Đường kẻ đậm chân chữ (Baseline)
+          : "rgba(147, 197, 253, 0.75)";
         ctx.moveTo(0, y);
         ctx.lineTo(width, y);
         ctx.stroke();
@@ -156,10 +247,23 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
     drawCanvas.height = height;
 
     const bgCtx = bgCanvas.getContext("2d");
-    if (bgCtx) {
-      drawGrid(bgCtx, width, height);
+    if (!bgCtx) return;
+
+    // Nếu đang ở dạng viết thường và chế độ "card":
+    // Ta để ảnh gốc từ tài liệu BỘ THẺ.pdf làm background 100% full viền, KHÔNG vẽ đè lưới nhân tạo để tránh xung đột lưới kép
+    if (activeForm === "lower_cursive" && ghostMode === "card") {
+      bgCtx.clearRect(0, 0, width, height);
+    } else {
+      drawPrimaryGrid(
+        bgCtx,
+        width,
+        height,
+        gridConfig.cols,
+        gridConfig.rows,
+        gridConfig.baselineRow
+      );
     }
-  }, [drawGrid]);
+  }, [activeForm, ghostMode, gridConfig, drawPrimaryGrid]);
 
   useEffect(() => {
     resizeCanvases();
@@ -168,13 +272,8 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
   }, [resizeCanvases]);
 
   useEffect(() => {
-    const bgCanvas = bgCanvasRef.current;
-    if (!bgCanvas) return;
-    const ctx = bgCanvas.getContext("2d");
-    if (ctx) {
-      drawGrid(ctx, bgCanvas.width, bgCanvas.height);
-    }
-  }, [drawGrid]);
+    resizeCanvases();
+  }, [currentLetter, activeForm, ghostMode, resizeCanvases]);
 
   // Lưu lịch sử nét vẽ
   const saveState = useCallback(() => {
@@ -340,6 +439,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     strokeHistoryRef.current = [];
     setHasDrawn(false);
@@ -347,35 +447,41 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
 
   // Khen bé hoàn thành
   const handleComplete = () => {
-    sound.playSuccessSound();
     confetti({
-      particleCount: 90,
-      spread: 75,
+      particleCount: 100,
+      spread: 70,
       origin: { y: 0.6 },
     });
+    sound.playSuccessSound();
+
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      const msg = new SpeechSynthesisUtterance(
+        `Hoan hô bé! Bé viết chữ ${currentLetter.letter} rất đẹp và chuẩn ô ly!`
+      );
+      msg.lang = "vi-VN";
+      msg.rate = 0.9;
+      window.speechSynthesis.speak(msg);
+    }
   };
 
-  // Nghe giảng audio
+  // Bật/tắt nghe cô giảng
   const toggleTeacherAudio = () => {
     if (!audioRef.current) return;
     if (isPlayingAudio) {
       audioRef.current.pause();
       setIsPlayingAudio(false);
     } else {
-      audioRef.current.currentTime = 0;
-      audioRef.current
-        .play()
-        .then(() => setIsPlayingAudio(true))
-        .catch((e) => console.warn("Lỗi phát audio:", e));
+      audioRef.current.play();
+      setIsPlayingAudio(true);
     }
   };
 
   const colors = [
-    { name: "Mực Xanh", value: "#2563eb" },
-    { name: "Mực Tím", value: "#7c3aed" },
-    { name: "Bút Đỏ", value: "#dc2626" },
-    { name: "Bút Xanh Lá", value: "#059669" },
-    { name: "Bút Cam", value: "#ea580c" },
+    { name: "Tím Mực Học Sinh", value: "#7c3aed" },
+    { name: "Xanh Dương Chuẩn", value: "#2563eb" },
+    { name: "Đỏ Sửa Bài", value: "#dc2626" },
+    { name: "Xanh Lá Cây", value: "#16a34a" },
+    { name: "Cam Rực Rỡ", value: "#ea580c" },
   ];
 
   // Tiêu đề và nhãn theo dạng chữ đang chọn
@@ -424,7 +530,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
         onError={() => setIsPlayingAudio(false)}
       />
 
-      {/* Header */}
+      {/* Header trang tập viết */}
       <div className="w-full max-w-5xl flex flex-wrap items-center justify-between gap-3 mb-4">
         <div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-xs mb-1">
@@ -482,9 +588,9 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
         </div>
       </div>
 
-      {/* Layout 2 cột: Bên Trái = Mẫu Sách Giáo Khoa Thẻ Học, Bên Phải = Bảng Vẽ Ô Ly */}
+      {/* Layout 2 cột chuẩn: Cột Trái = Sổ Tay Hướng Dẫn Sư Phạm, Cột Phải = Bảng Viết Ô Ly Tương Tác */}
       <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* CỘT TRÁI (5 cols): KHUNG HƯỚNG DẪN VIẾT CHUẨN TỪ BỘ THẺ */}
+        {/* CỘT TRÁI (5 cols): BỘ CHỌN 4 DẠNG CHỮ & THÔNG SỐ SƯ PHẠM */}
         <div className="lg:col-span-5 bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/90 shadow-md space-y-4">
           <div className="flex items-center justify-between border-b pb-2.5">
             <div>
@@ -520,27 +626,31 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                 <Volume2 className="w-3.5 h-3.5 text-violet-600" />
-                4 Dạng Chữ "{currentLetter.name}":
+                4 Dạng Chữ &quot;{currentLetter.name}&quot;:
               </span>
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-800">
                 Chạm để chuyển đổi
               </span>
             </div>
 
-            {/* Ảnh banner 4 dạng chữ gốc trích từ thẻ */}
-            <div className="relative w-full aspect-[4/1] rounded-xl overflow-hidden bg-white border border-slate-200 shadow-xs">
-              <Image
-                src={`/data/module_letters/writing_guides/forms_chu_${currentLetter.slug}.png`}
-                alt={`4 dạng chữ cái ${currentLetter.name}`}
-                fill
-                className="object-contain p-1"
-                priority
-                unoptimized
-              />
+            {/* Dải 4 chữ cái lớn trực quan từ thẻ gốc */}
+            <div className="p-2.5 rounded-xl bg-white border border-slate-200 flex items-center justify-around">
+              <span className="text-2xl sm:text-3xl font-black text-red-600 font-sans" title="In hoa">
+                {currentLetter.forms.upper_print}
+              </span>
+              <span className="text-2xl sm:text-3xl font-cursive-vn text-amber-600" title="Viết hoa">
+                {currentLetter.forms.upper_cursive}
+              </span>
+              <span className="text-2xl sm:text-3xl font-black text-emerald-600 font-sans" title="In thường">
+                {currentLetter.forms.lower_print}
+              </span>
+              <span className="text-2xl sm:text-3xl font-cursive-vn text-violet-600" title="Tập viết thường">
+                {lowerChar}
+              </span>
             </div>
 
-            {/* 4 NÚT TƯƠNG TÁC CHUYỂN ĐỔI CHỮ */}
-            <div className="grid grid-cols-4 gap-1.5 text-center text-[10px] sm:text-xs">
+            {/* 4 Nút tương tác chọn dạng chữ */}
+            <div className="grid grid-cols-4 gap-1.5 pt-1">
               {/* 1. In hoa */}
               <button
                 type="button"
@@ -575,7 +685,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
                 title="Bấm để tập viết chữ viết hoa"
               >
                 <span className="text-[10px] opacity-80">Viết hoa</span>
-                <span className="font-black text-base font-cursive-vn leading-tight mt-0.5">
+                <span className="font-black text-lg font-cursive-vn leading-tight">
                   {currentLetter.forms.upper_cursive}
                 </span>
                 {activeForm === "upper_cursive" && (
@@ -633,71 +743,33 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
             </div>
           </div>
 
-          {/* 2. KHUNG HƯỚNG DẪN TƯƠNG ỨNG VỚI DẠNG CHỮ ĐANG CHỌN */}
-          {activeForm === "lower_cursive" ? (
-            /* Chữ viết thường chuẩn ô ly từ thẻ gốc */
-            <div className="space-y-1.5 animate-in fade-in duration-300">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-slate-700 uppercase flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-violet-600"></span>
-                  Khung Ô Ly Nét Viết Chữ Thường:
-                </h4>
-                <span className="text-[11px] font-bold text-violet-600">
-                  Nét đứt & Số thứ tự
-                </span>
+          {/* 2. THẺ THÔNG SỐ KỸ THUẬT Ô LY CHUẨN LỚP 1 */}
+          <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2">
+            <h4 className="text-xs font-black text-indigo-900 uppercase flex items-center gap-1.5">
+              <BookOpen className="w-3.5 h-3.5 text-indigo-600" />
+              Quy Chuẩn Kỹ Thuật Ô Ly Lớp 1:
+            </h4>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="bg-white p-2 rounded-xl border border-indigo-100">
+                <span className="text-slate-400 text-[10px] block font-bold">Chiều cao chữ:</span>
+                <span className="font-black text-indigo-700 text-sm">{gridConfig.heightLy}</span>
               </div>
-              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs">
-                <Image
-                  src={`/data/module_letters/writing_guides/writing_chu_${currentLetter.slug}.png`}
-                  alt={`Khung hướng dẫn viết chữ thường ${lowerChar}`}
-                  fill
-                  className="object-contain p-2"
-                  priority
-                  unoptimized
-                />
+              <div className="bg-white p-2 rounded-xl border border-indigo-100">
+                <span className="text-slate-400 text-[10px] block font-bold">Số nét cấu thành:</span>
+                <span className="font-black text-indigo-700 text-sm">{currentLetter.stroke_count} nét cơ bản</span>
               </div>
             </div>
-          ) : (
-            /* Xem mẫu chữ hoa / in hoa / in thường */
-            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 animate-in fade-in duration-300">
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-bold text-slate-700 uppercase">
-                  Mẫu {currentFormInfo.title.replace("Tập Viết ", "")}:
-                </h4>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
-                  Đã tải mẫu lên bảng vẽ 👉
-                </span>
-              </div>
-              <div className="py-6 flex flex-col items-center justify-center rounded-xl bg-white border border-slate-200 shadow-2xs">
-                <span
-                  className={`text-6xl sm:text-7xl ${
-                    currentFormInfo.isCursive ? "font-cursive-vn" : "font-sans font-black"
-                  } ${
-                    activeForm === "upper_cursive"
-                      ? "text-amber-600"
-                      : activeForm === "upper_print"
-                      ? "text-red-600"
-                      : "text-emerald-600"
-                  }`}
-                >
-                  {currentFormInfo.activeChar}
-                </span>
-                <span className="text-xs text-slate-500 font-medium mt-2">
-                  {currentFormInfo.desc}
-                </span>
-              </div>
-              <button
-                onClick={() => handleSelectForm("lower_cursive")}
-                className="w-full py-2 px-3 rounded-xl bg-violet-100 hover:bg-violet-200 text-violet-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95"
-              >
-                <span>👉 Quay về Chữ Viết Thường (Chuẩn Lớp 1)</span>
-              </button>
+            <div className="bg-white p-2.5 rounded-xl border border-indigo-100 text-xs text-slate-700 leading-relaxed">
+              <span className="font-bold text-indigo-600">📌 Hướng dẫn tô nét:</span> Chạm vào điểm chấm đỏ số 1, di chuyển bút đều tay theo chiều mũi tên đỏ đến điểm dừng nét.
             </div>
-          )}
+          </div>
 
-          {/* 3. CÁC BƯỚC VIẾT CHI TIẾT */}
+          {/* 3. CÁC BƯỚC VIẾT CHI TIẾT THEO CHUẨN GIÁO KHOA */}
           <div className="space-y-2">
-            <h4 className="text-xs font-bold text-slate-500 uppercase">Quy trình viết từng nét:</h4>
+            <h4 className="text-xs font-bold text-slate-500 uppercase flex items-center gap-1.5">
+              <Info className="w-3.5 h-3.5 text-slate-400" />
+              Quy trình viết từng nét:
+            </h4>
             {currentLetter.writing_steps.map((step, idx) => (
               <div
                 key={idx}
@@ -717,7 +789,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
           </div>
         </div>
 
-        {/* CỘT PHẢI (7 cols): DUAL-CANVAS ENGINE ĐỂ BÉ TẬP VIẾT */}
+        {/* CỘT PHẢI (7 cols): BẢNG VIẾT Ô LY CHUẨN TÀI LIỆU (KHÔNG LỆCH LƯỚI) */}
         <div className="lg:col-span-7 flex flex-col items-center bg-white p-4 sm:p-5 rounded-3xl border border-slate-200/90 shadow-md">
           {/* Thanh công cụ vẽ */}
           <div className="w-full flex flex-wrap items-center justify-between gap-2.5 mb-3">
@@ -765,11 +837,11 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
                   else setGhostMode("card");
                 }}
                 className="min-h-[38px] px-2.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all border bg-violet-50 text-violet-700 border-violet-200 active:scale-95"
-                title="Đổi chế độ mẫu đè mờ (Mẫu nét đứt ô ly / Chữ mẫu mờ / Tự viết)"
+                title="Đổi chế độ mẫu đè mờ (Mẫu tài liệu / Chữ mờ / Tự viết)"
               >
                 {ghostMode !== "none" ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
                 <span>
-                  {ghostMode === "card" && "Mẫu nét đứt"}
+                  {ghostMode === "card" && "Mẫu tài liệu"}
                   {ghostMode === "cursive" && "Chữ mẫu mờ"}
                   {ghostMode === "none" && "Tự viết"}
                 </span>
@@ -800,72 +872,97 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
             </div>
           </div>
 
-          {/* VÙNG DUAL-CANVAS CHÍNH (4/3 aspect, touchAction: none) */}
-          <div
-            ref={containerRef}
-            className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden border-2 border-indigo-200 shadow-inner bg-white select-none"
-            style={{
-              touchAction: "none",
-              userSelect: "none",
-              WebkitUserSelect: "none",
-            }}
-          >
-            {/* Lớp 1: Lưới ô ly tiểu học tĩnh (Background Canvas) */}
-            <canvas ref={bgCanvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
+          {/* VÙNG BẢNG VIẾT Ô LY: TỰ THÍCH ỨNG THEO TỈ LỆ THỰC CỦA CHỮ CÁI (KHÔNG BỊ LỆCH LƯỚI) */}
+          <div className="w-full flex items-center justify-center p-1 sm:p-2">
+            <div
+              ref={containerRef}
+              className="relative w-full max-w-[460px] rounded-3xl overflow-hidden border-2 border-indigo-300/80 shadow-lg bg-white select-none transition-all duration-300"
+              style={{
+                aspectRatio: `${currentAspect}`,
+                touchAction: "none",
+                userSelect: "none",
+                WebkitUserSelect: "none",
+              }}
+            >
+              {/* Lớp 1: Lưới ô ly tiểu học tĩnh (Background Canvas) */}
+              <canvas
+                ref={bgCanvasRef}
+                className="absolute inset-0 w-full h-full pointer-events-none"
+              />
 
-            {/* Lớp 2: Mẫu mờ đè trên lưới (Ghost Overlay tương thích với activeForm) */}
-            {ghostMode !== "none" && (
-              <div className="absolute inset-0 pointer-events-none flex items-center justify-center p-4 sm:p-8 select-none">
-                {activeForm === "lower_cursive" ? (
-                  ghostMode === "card" ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={`/data/module_letters/writing_guides/writing_chu_${currentLetter.slug}.png`}
-                      alt={`Mẫu chữ thường ${lowerChar}`}
-                      className="w-full h-full object-contain mix-blend-multiply opacity-45 select-none"
-                    />
-                  ) : (
-                    <span className="font-cursive-vn text-[180px] sm:text-[230px] md:text-[270px] text-violet-900 leading-none select-none opacity-30">
-                      {lowerChar}
-                    </span>
-                  )
-                ) : activeForm === "upper_cursive" ? (
-                  <span className="font-cursive-vn text-[170px] sm:text-[220px] md:text-[260px] text-amber-900 leading-none select-none opacity-30">
-                    {currentLetter.forms.upper_cursive}
-                  </span>
-                ) : activeForm === "upper_print" ? (
-                  <span className="font-sans font-black text-[170px] sm:text-[220px] md:text-[260px] text-red-900 leading-none select-none opacity-30">
-                    {currentLetter.forms.upper_print}
-                  </span>
-                ) : (
-                  <span className="font-sans font-black text-[170px] sm:text-[220px] md:text-[260px] text-emerald-900 leading-none select-none opacity-30">
-                    {currentLetter.forms.lower_print}
-                  </span>
-                )}
-              </div>
-            )}
+              {/* Lớp 2: Khi ở dạng Chữ Thường và chế độ "card": Hiển thị 100% full viền mẫu chuẩn gốc từ BỘ THẺ.pdf (KHÔNG BỊ ĐÈ 2 LƯỚI) */}
+              {activeForm === "lower_cursive" && ghostMode === "card" && (
+                <div className="absolute inset-0 pointer-events-none select-none">
+                  <Image
+                    src={writingGuideImg}
+                    alt={`Mẫu chữ thường ${lowerChar}`}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 460px"
+                    className="object-cover select-none pointer-events-none"
+                    priority
+                    unoptimized
+                  />
+                </div>
+              )}
 
-            {/* Lớp 3: Canvas tương tác hứng nét vẽ của bé */}
-            <canvas
-              ref={drawCanvasRef}
-              className="absolute inset-0 w-full h-full cursor-crosshair"
-              onMouseDown={(e) => startDrawing(e.clientX, e.clientY)}
-              onMouseMove={(e) => draw(e.clientX, e.clientY)}
-              onMouseUp={stopDrawing}
-              onMouseLeave={stopDrawing}
-            />
+              {/* Lớp 2b: Chế độ Chữ Mẫu Mờ hoặc Chữ In Hoa / Viết Hoa */}
+              {ghostMode === "cursive" && (
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center select-none">
+                  <span
+                    className={`leading-none select-none opacity-30 ${
+                      activeForm === "upper_print"
+                        ? "font-sans font-black text-[170px] sm:text-[220px] text-red-900"
+                        : activeForm === "upper_cursive"
+                        ? "font-cursive-vn text-[180px] sm:text-[230px] text-amber-900"
+                        : activeForm === "lower_print"
+                        ? "font-sans font-black text-[170px] sm:text-[220px] text-emerald-900"
+                        : "font-cursive-vn text-[190px] sm:text-[240px] text-violet-900"
+                    }`}
+                  >
+                    {currentFormInfo.activeChar}
+                  </span>
+                </div>
+              )}
+
+              {/* Lớp 2c: Mẫu mờ khi chọn In Hoa / Viết Hoa / In Thường ở chế độ card */}
+              {activeForm !== "lower_cursive" && ghostMode === "card" && (
+                <div className="absolute inset-0 pointer-events-none flex items-center justify-center select-none">
+                  <span
+                    className={`leading-none select-none opacity-35 ${
+                      activeForm === "upper_print"
+                        ? "font-sans font-black text-[170px] sm:text-[220px] text-red-900"
+                        : activeForm === "upper_cursive"
+                        ? "font-cursive-vn text-[180px] sm:text-[230px] text-amber-900"
+                        : "font-sans font-black text-[170px] sm:text-[220px] text-emerald-900"
+                    }`}
+                  >
+                    {currentFormInfo.activeChar}
+                  </span>
+                </div>
+              )}
+
+              {/* Lớp 3: Canvas tương tác hứng nét vẽ của bé (ZERO lag, tọa độ 1:1 chuẩn xác) */}
+              <canvas
+                ref={drawCanvasRef}
+                className="absolute inset-0 w-full h-full cursor-crosshair z-10"
+                onMouseDown={(e) => startDrawing(e.clientX, e.clientY)}
+                onMouseMove={(e) => draw(e.clientX, e.clientY)}
+                onMouseUp={stopDrawing}
+                onMouseLeave={stopDrawing}
+              />
+            </div>
           </div>
 
-          {/* Footer nút nộp bài */}
+          {/* Footer nút nộp bài & Lời nhắc sư phạm */}
           <div className="w-full flex items-center justify-between gap-3 mt-4">
             <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5">
               <PenTool className="w-3.5 h-3.5 text-violet-600" />
-              Tô theo mẫu {currentFormInfo.title.toLowerCase()} trên dòng kẻ ô ly nhé!
+              Bé chấm vào điểm đỏ số 1 và lia bút theo mũi tên nhé!
             </span>
 
             <button
               onClick={handleComplete}
-              className="min-h-[44px] px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-black text-sm flex items-center gap-2 shadow-md transition-all"
+              className="min-h-[44px] px-5 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-black text-sm flex items-center gap-2 shadow-md transition-all cursor-pointer"
             >
               <CheckCircle className="w-4 h-4" />
               <span>Khen Bé Hoàn Thành</span>
