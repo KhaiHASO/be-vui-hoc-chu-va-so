@@ -113,19 +113,57 @@ export function AiHandwritingGrader() {
     }
   };
 
-  // Chọn ảnh từ máy tính / thư viện
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Hàm nén ảnh tự động trên Canvas để upload siêu nhanh và không vượt quá giới hạn
+  const compressImage = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new window.Image();
+        img.onload = () => {
+          const maxDim = 1600;
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            resolve(event.target?.result as string);
+            return;
+          }
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL("image/jpeg", 0.85));
+        };
+        img.onerror = () => resolve(event.target?.result as string);
+        img.src = event.target?.result as string;
+      };
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Chọn ảnh từ máy tính / thư viện (nén tự động chống lỗi dung lượng)
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       sound.playTone(440, 0.08);
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setSelectedImage(event.target?.result as string);
+      try {
+        const optimized = await compressImage(file);
+        setSelectedImage(optimized);
         setSelectedPresetId(null);
         setResult(null);
         setActiveBoxId(null);
-      };
-      reader.readAsDataURL(file);
+      } catch (err) {
+        console.error("Lỗi xử lý ảnh:", err);
+      }
     }
   };
 

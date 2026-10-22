@@ -184,6 +184,20 @@ export async function POST(req: NextRequest) {
 
     const maxTokens = isDeepSeek ? 6000 : 2500;
 
+    // Chuyển đổi đường dẫn ảnh local sang base64 nếu cần
+    let finalImageUrl = image;
+    if (typeof image === "string" && image.startsWith("/")) {
+      try {
+        const localPath = path.join(process.cwd(), "public", image.replace(/^\//, ""));
+        if (fs.existsSync(localPath)) {
+          const fileBuf = fs.readFileSync(localPath);
+          finalImageUrl = `data:image/jpeg;base64,${fileBuf.toString("base64")}`;
+        }
+      } catch (err) {
+        console.warn("Could not read local image file:", err);
+      }
+    }
+
     const systemPrompt = `Bạn là giáo viên tiểu học lớp 1 có trên 20 năm kinh nghiệm luyện chữ đẹp và chấm thi chữ viết tiểu học Việt Nam.
 Nhiệm vụ của bạn là phân tích ảnh bài tập viết ô ly của học sinh lớp 1 và đưa ra nhận xét bằng tiếng Việt chuẩn sư phạm.
 
@@ -256,7 +270,7 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không k�
             role: "user",
             content: [
               { type: "text", text: "Hãy phân tích, xác định các vị trí nét chữ và chấm điểm bài tập viết ô ly này:" },
-              { type: "image_url", image_url: { url: image } },
+              { type: "image_url", image_url: { url: finalImageUrl } },
             ],
           },
         ],
