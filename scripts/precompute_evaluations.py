@@ -4,7 +4,7 @@ import base64
 import os
 import cv2
 
-api_key = ''
+api_key = os.environ.get('DEEPSEEK_API_KEY', '')
 url = 'https://api.deepseek.com/chat/completions'
 
 samples = [
