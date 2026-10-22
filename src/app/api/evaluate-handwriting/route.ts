@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
       : process.env.OPENAI_API_BASE || "https://api.openai.com/v1";
 
     const model = isDeepSeek
-      ? process.env.DEEPSEEK_MODEL || "deepseek-chat"
+      ? process.env.DEEPSEEK_MODEL || "deepseek-flash"
       : process.env.OPENAI_MODEL || "gpt-4o-mini";
 
     const maxTokens = isDeepSeek ? 4000 : 2500;
