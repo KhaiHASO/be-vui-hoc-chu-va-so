@@ -73,6 +73,16 @@ export type LetterSubMode =
 
 export type NumberSubMode = "card" | "counting" | "writing" | "bonds" | "guide";
 
+export interface HandwritingBoundingBox {
+  id: string;
+  box_2d: [number, number, number, number]; // [ymin, xmin, ymax, xmax] theo tỷ lệ 0 - 1000
+  loai: "loi" | "chuan" | "chu_y"; // 'loi' = đỏ, 'chuan' = xanh lá, 'chu_y' = vàng cam
+  chu: string;
+  tieu_de: string;
+  nhan_xet: string;
+  huong_dan_sua?: string;
+}
+
 export interface HandwritingEvaluationResult {
   anh_hop_le: boolean;
   ly_do?: string;
@@ -96,5 +106,6 @@ export interface HandwritingEvaluationResult {
     sai_o_dau: string;
     can_cai_thien: string;
   }>;
+  bounding_boxes?: HandwritingBoundingBox[];
   nhan_xet_phu_huynh: string;
 }

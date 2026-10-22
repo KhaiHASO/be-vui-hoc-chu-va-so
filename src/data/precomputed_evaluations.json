@@ -1,0 +1,411 @@
+{
+  "bai_thi_viet_mau.jpg": {
+    "anh_hop_le": true,
+    "tong_diem": 94,
+    "xep_loai": "⭐ Xuất sắc (Bài thi luyện chữ đẹp)",
+    "tieu_chi": {
+      "dung_mau_chu": 9.5,
+      "do_deu_net": 9.5,
+      "khoang_cach": 9.0,
+      "do_thang_hang": 9.5,
+      "trinh_bay": 9.5,
+      "net_co_ban": 9.0
+    },
+    "nhan_xet_chung": "Bài viết của học sinh đạt trình độ rất xuất sắc! Nét chữ nghiêng đều đặn, đúng chuẩn ô ly quy định của Bộ Giáo dục. Độ cao các con chữ khuyết và dấu thanh đặt chính xác, thể hiện tính cẩn thận và năng khiếu luyện chữ đẹp.",
+    "diem_tot": [
+      "Các con chữ 'v', 'ua', 'xe ngựa' viết đúng độ cao chuẩn 2 ô ly và thẳng thớm trên dòng kẻ ngang 1.",
+      "Câu ứng dụng 'Bà cho bé khế và chà là' có nét chữ mềm mại, chữ hoa 'B' viết đúng quy chuẩn 2.5 ly.",
+      "Vở sạch sẽ, không có vết tẩy xóa lem nhem, khoảng cách giữa các chữ cái tương đối đều tay.",
+      "Dấu thanh (sắc, huyền) được đặt ngay ngắn trên đầu con chữ chính."
+    ],
+    "loi_can_cai_thien": [
+      "Nét thắt của con chữ 'v' ở hàng đầu tiên đôi chỗ hơi hẹp, cần mở rộng nhẹ để điểm nối sang chữ tiếp theo được thanh thoát hơn.",
+      "Khoảng cách giữa hai tiếng 'xe' và 'ngựa' hơi sát nhau một chút (chuẩn là 1 con chữ 'o')."
+    ],
+    "goi_y_luyen_tap": [
+      "Mỗi ngày dành 10 - 15 phút rèn thêm nét móc hai đầu và nét thắt con chữ 'v', 'r', 's'.",
+      "Nhắc bé giữ khoảng cách giữa các tiếng đều đặn bằng một con chữ 'o' tưởng tượng.",
+      "Duy trì thói quen cầm bút 3 ngón thả lỏng, không tì quá mạnh cổ tay xuống mặt bàn."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "v",
+        "nhan_xet": "Nét uốn cong xuôi và móc ngược đều đẹp, chuẩn 2 ô ly.",
+        "sai_o_dau": "Nét thắt ở cuối thân chữ hơi bé.",
+        "can_cai_thien": "Uốn nét xoắn thắt nhẹ nhàng ngang dòng kẻ 2 trước khi nối nét."
+      },
+      {
+        "chu": "ua",
+        "nhan_xet": "Khoảng cách giữa hai con chữ 'u' và 'a' nối nét liền mạch.",
+        "sai_o_dau": "Điểm nối nét giữa 'u' sang 'a' hơi hẹp.",
+        "can_cai_thien": "Đưa nét móc dưới của chữ 'u' rộng thêm một chút rồi mới lia bút viết chữ 'a'."
+      },
+      {
+        "chu": "xe ngựa",
+        "nhan_xet": "Chữ 'x' gồm hai nét cong cân đối, chữ 'ng' viết liền nét rất khéo.",
+        "sai_o_dau": "Khoảng cách giữa hai tiếng 'xe' và 'ngựa' hơi hẹp hơn 1 ô ly.",
+        "can_cai_thien": "Cách rộng thêm nửa ô ly để tạo sự thoáng đãng cho bài viết."
+      },
+      {
+        "chu": "Bà cho bé khế và chà là",
+        "nhan_xet": "Chữ viết đều tăm tắp, độ cao các chữ khuyết 'b', 'h', 'k' vươn chuẩn 2.5 ly.",
+        "sai_o_dau": "Dấu huyền ở chữ 'chà' hơi sát vào thân chữ 'a'.",
+        "can_cai_thien": "Đặt dấu thanh cao hơn đầu chữ một khoảng ngắn nửa ô ly."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "b1",
+        "box_2d": [385, 210, 485, 340],
+        "loai": "chuan",
+        "chu": "v",
+        "tieu_de": "Chữ 'v' mẫu",
+        "nhan_xet": "Nét uốn cong chuẩn mực, độ cao 2 ô ly rất chuẩn.",
+        "huong_dan_sua": "Giữ vững nét cong tròn và độ nghiêng chuẩn này con nhé!"
+      },
+      {
+        "id": "b2",
+        "box_2d": [385, 590, 485, 710],
+        "loai": "chu_y",
+        "chu": "v",
+        "tieu_de": "Nét thắt chữ 'v'",
+        "nhan_xet": "Nét thắt hơi thót lại ở đường kẻ ngang 2.",
+        "huong_dan_sua": "Vòng nét thắt rộng thêm một chút trước khi dừng bút."
+      },
+      {
+        "id": "b3",
+        "box_2d": [505, 180, 605, 360],
+        "loai": "chuan",
+        "chu": "ua",
+        "tieu_de": "Vần 'ua' liền mạch",
+        "nhan_xet": "Khoảng cách nối nét giữa u và a rất khéo léo.",
+        "huong_dan_sua": "Nét móc ngược đạt chuẩn độ cao 2 ly."
+      },
+      {
+        "id": "b4",
+        "box_2d": [625, 410, 745, 620],
+        "loai": "loi",
+        "chu": "xe ngựa",
+        "tieu_de": "Khoảng cách giữa hai tiếng",
+        "nhan_xet": "Tiếng 'xe' và 'ngựa' viết hơi sát nhau.",
+        "huong_dan_sua": "Nhắc con cách đều đúng bằng 1 con chữ 'o' tưởng tượng (khoảng 1 ô ly)."
+      },
+      {
+        "id": "b5",
+        "box_2d": [770, 100, 890, 240],
+        "loai": "chuan",
+        "chu": "Bà",
+        "tieu_de": "Chữ hoa 'B'",
+        "nhan_xet": "Nét lượn lưng chữ B rất mềm mại, vươn chuẩn 2.5 ly.",
+        "huong_dan_sua": "Dấu huyền đặt cân đối ngay ngắn trên đầu con chữ a."
+      },
+      {
+        "id": "b6",
+        "box_2d": [770, 460, 890, 590],
+        "loai": "chu_y",
+        "chu": "khế",
+        "tieu_de": "Dấu sắc chữ 'khế'",
+        "nhan_xet": "Dấu sắc hơi cao hơn dòng kẻ chuẩn.",
+        "huong_dan_sua": "Hạ nhẹ dấu sắc xuống cách đầu chữ 'e' nửa ô ly."
+      }
+    ],
+    "nhan_xet_phu_huynh": "Bé đã đạt trình độ rất cao trong môn Tập Viết lớp 1. Ba mẹ hãy tiếp tục động viên, khen thưởng con và chú ý cho con ngồi thẳng lưng, ánh sáng phòng học đầy đủ để giữ gìn mắt nhé!"
+  },
+  "trang_01.jpg": {
+    "anh_hop_le": true,
+    "tong_diem": 90,
+    "xep_loai": "⭐ Tốt (Bảng rèn các nét cơ bản)",
+    "tieu_chi": {
+      "dung_mau_chu": 9.0,
+      "do_deu_net": 9.0,
+      "khoang_cach": 9.0,
+      "do_thang_hang": 9.0,
+      "trinh_bay": 9.5,
+      "net_co_ban": 9.0
+    },
+    "nhan_xet_chung": "Bài luyện các nét cơ bản rất đều đặn và sạch sẽ. Bé tô đè theo nét chấm mờ rất chuẩn, các nét tự viết tay (nét sổ, nét xiên, nét móc) đều đứng nét và ngay ngắn trên lưới ô ly.",
+    "diem_tot": [
+      "Nét thẳng đứng (sổ) kéo thẳng tắp từ dòng kẻ ngang 3 xuống dòng kẻ 1, độ cao 2 ô ly chuẩn mực.",
+      "Nét móc xuôi và móc ngược uốn cong mềm mại, chạm chuẩn đường kẻ ngang 3.",
+      "Nét khuyết trên của trang phải vươn cao đúng 2.5 ô ly (chạm đường kẻ ngang 6), điểm giao nhau đúng đường kẻ 2.",
+      "Vở sạch sẽ, có dấu sao chấm đỏ khen ngợi của cô giáo ở giữa gáy vở."
+    ],
+    "loi_can_cai_thien": [
+      "Nét móc hai đầu ở dòng cuối trang trái cần mở rộng thêm độ cong nửa ô ly ở phần chuyển nét dưới.",
+      "Nét thắt ở hàng dưới cùng trang phải hơi bé, cần lượn vòng rộng hơn để rõ nét thắt."
+    ],
+    "goi_y_luyen_tap": [
+      "Cho bé rèn thêm 2 dòng nét thắt và nét cong kín để chuẩn bị tốt cho việc ghép vần.",
+      "Giữ thói quen lia bút đều tay, không nhấn quá mạnh làm hằn nét sang trang sau."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "Nét sổ",
+        "nhan_xet": "Kéo thẳng đứng, lực tay rất đều.",
+        "sai_o_dau": "Đạt chuẩn 100%.",
+        "can_cai_thien": "Duy trì lực bút này khi viết các chữ t, l, b."
+      },
+      {
+        "chu": "Nét móc ngược",
+        "nhan_xet": "Điểm dừng bút cong nhẹ lên đường kẻ 2.",
+        "sai_o_dau": "Hơi nhọn ở góc đáy.",
+        "can_cai_thien": "Lượn cong tròn đáy móc trước khi đưa nét lên."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "t1_b1",
+        "box_2d": [190, 15, 340, 180],
+        "loai": "chuan",
+        "chu": "Nét sổ",
+        "tieu_de": "Nét sổ thẳng",
+        "nhan_xet": "Kéo thẳng tắp từ dòng kẻ 3 xuống dòng kẻ 1, cao đúng 2 ly.",
+        "huong_dan_sua": "Rất chuẩn mực!"
+      },
+      {
+        "id": "t1_b2",
+        "box_2d": [470, 15, 620, 180],
+        "loai": "chuan",
+        "chu": "Nét móc xuôi",
+        "tieu_de": "Nét móc xuôi",
+        "nhan_xet": "Đầu móc uốn cong tròn đều, chạm chuẩn đường kẻ ngang 3.",
+        "huong_dan_sua": "Giữ đúng độ nghiêng này khi viết chữ n, m."
+      },
+      {
+        "id": "t1_b3",
+        "box_2d": [650, 15, 790, 180],
+        "loai": "chu_y",
+        "chu": "Nét móc 2 đầu",
+        "tieu_de": "Nét móc hai đầu",
+        "nhan_xet": "Phần lượn đáy hơi hẹp.",
+        "huong_dan_sua": "Nới rộng phần đáy móc thêm 0.5 ô ly để con chữ nở nang."
+      },
+      {
+        "id": "t1_b4",
+        "box_2d": [270, 550, 410, 650],
+        "loai": "chuan",
+        "chu": "Nét cong kín",
+        "tieu_de": "Nét cong kín (o)",
+        "nhan_xet": "Hình ô-van cân đối, cao 2 ly rộng 1.5 ly chuẩn mẫu.",
+        "huong_dan_sua": "Điểm dừng bút khép kín hoàn hảo."
+      },
+      {
+        "id": "t1_b5",
+        "box_2d": [380, 540, 530, 640],
+        "loai": "chuan",
+        "chu": "Nét khuyết trên",
+        "tieu_de": "Nét khuyết trên (l, b, h)",
+        "nhan_xet": "Vươn cao 2.5 ly chuẩn mực, điểm giao chéo đúng dòng kẻ 2.",
+        "huong_dan_sua": "Nét khuyết rất đẹp và thanh thoát."
+      },
+      {
+        "id": "t1_b6",
+        "box_2d": [780, 540, 900, 650],
+        "loai": "loi",
+        "chu": "Nét thắt",
+        "tieu_de": "Nét thắt (v, r, s)",
+        "nhan_xet": "Vòng thắt hơi bé và bẹp.",
+        "huong_dan_sua": "Uốn vòng thắt tròn nhỏ ngang dòng kẻ 3 trước khi đưa nét sang phải."
+      }
+    ],
+    "nhan_xet_phu_huynh": "Bé làm quen với các nét cơ bản rất nhanh và nắm vững cấu tạo nét. Ba mẹ hãy khen ngợi bé để bé tự tin bước vào các bài viết ghép chữ nhé!"
+  },
+  "trang_02.jpg": {
+    "anh_hop_le": true,
+    "tong_diem": 92,
+    "xep_loai": "⭐ Xuất sắc (Chữ số 0-9 & Bài 1 'a', Bài 2 'b')",
+    "tieu_chi": {
+      "dung_mau_chu": 9.5,
+      "do_deu_net": 9.0,
+      "khoang_cach": 9.0,
+      "do_thang_hang": 9.5,
+      "trinh_bay": 9.5,
+      "net_co_ban": 9.0
+    },
+    "nhan_xet_chung": "Bài tập viết rất xuất sắc! Trang chữ số từ 0 đến 9 viết thẳng hàng, đúng tỉ lệ 2 ly. Trang Bài 1 (chữ a, từ ca) và Bài 2 (chữ b, từ bà) nối nét rất khéo, nét chữ mềm mại và đều tay.",
+    "diem_tot": [
+      "Chữ số 1, 2, 4, 7 viết dứt khoát, các góc gập rõ ràng và nằm ngay ngắn trên dòng kẻ đậm số 1.",
+      "Chữ số 8 lượn cong hai vòng tròn cân đối khép kín rất khéo.",
+      "Chữ 'a' viết đúng mẫu 2 ly, nét cong kín tròn trịa và nét móc ngược áp sát thân chữ.",
+      "Chữ 'b' vươn cao chuẩn 2.5 ly, nét thắt chạm nhẹ đường kẻ ngang 2."
+    ],
+    "loi_can_cai_thien": [
+      "Khoảng cách giữa 'c' và 'a' trong từ 'ca' ở hàng thứ 4 hơi hẹp một chút.",
+      "Dấu huyền trên chữ 'bà' ở hàng cuối hơi chếch sang trái, cần đặt ngay ngắn trên đầu chữ 'a'."
+    ],
+    "goi_y_luyen_tap": [
+      "Nhắc bé lia bút từ chữ 'c' sang chữ 'a' cách nhau nửa ô ly để tiếng 'ca' được thoáng.",
+      "Khi viết dấu thanh (huyền, sắc), luôn nhớ đặt trên đầu con chữ chính, không chạm sát vào thân chữ."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Nét cong kín tròn và nét móc dưới rất đều.",
+        "sai_o_dau": "Đúng chuẩn 100%.",
+        "can_cai_thien": "Giữ vững nét viết này."
+      },
+      {
+        "chu": "bà",
+        "nhan_xet": "Chữ b cao 2.5 ly, nối sang a mượt mà.",
+        "sai_o_dau": "Dấu huyền đặt hơi thấp.",
+        "can_cai_thien": "Nâng dấu huyền cách đỉnh chữ a nửa ô ly."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "t2_b1",
+        "box_2d": [80, 18, 170, 110],
+        "loai": "chuan",
+        "chu": "Số 1",
+        "tieu_de": "Chữ số 1",
+        "nhan_xet": "Nét xiên hướng lên và nét sổ thẳng đứng chuẩn 2 ly.",
+        "huong_dan_sua": "Rất chuẩn mực!"
+      },
+      {
+        "id": "t2_b2",
+        "box_2d": [690, 18, 780, 110],
+        "loai": "chuan",
+        "chu": "Số 8",
+        "tieu_de": "Chữ số 8",
+        "nhan_xet": "Hai nét cong lượn khép kín cân đối, nét trên hơi nhỏ hơn nét dưới chuẩn mẫu.",
+        "huong_dan_sua": "Nét uốn rất khéo tay!"
+      },
+      {
+        "id": "t2_b3",
+        "box_2d": [80, 535, 175, 620],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' mẫu Bài 1",
+        "nhan_xet": "Nét cong kín và nét móc ngược áp sát chuẩn độ cao 2 ly.",
+        "huong_dan_sua": "Chữ viết rất tròn trịa!"
+      },
+      {
+        "id": "t2_b4",
+        "box_2d": [290, 545, 380, 710],
+        "loai": "chu_y",
+        "chu": "ca",
+        "tieu_de": "Nối nét 'ca'",
+        "nhan_xet": "Điểm lia bút từ chữ 'c' sang chữ 'a' hơi hẹp.",
+        "huong_dan_sua": "Nới rộng khoảng cách giữa c và a thêm nửa ô ly."
+      },
+      {
+        "id": "t2_b5",
+        "box_2d": [480, 530, 600, 620],
+        "loai": "chuan",
+        "chu": "b",
+        "tieu_de": "Chữ 'b' mẫu Bài 2",
+        "nhan_xet": "Nét khuyết trên vươn cao đúng 2.5 ly, nét thắt tròn trên đường kẻ 2.",
+        "huong_dan_sua": "Nét chữ đạt chuẩn chữ đẹp cấp tiểu học!"
+      },
+      {
+        "id": "t2_b6",
+        "box_2d": [765, 540, 870, 700],
+        "loai": "loi",
+        "chu": "bà",
+        "tieu_de": "Dấu huyền chữ 'bà'",
+        "nhan_xet": "Dấu huyền đặt hơi sát lưng chữ b.",
+        "huong_dan_sua": "Dời dấu huyền sang chính giữa bên trên con chữ a."
+      }
+    ],
+    "nhan_xet_phu_huynh": "Bé nắm vững cả chữ số và con chữ cái đầu tiên (a, b) rất xuất sắc. Ba mẹ hãy tiếp tục đồng hành và động viên con duy trì nét bút nắn nót này nhé!"
+  },
+  "trang_03.jpg": {
+    "anh_hop_le": true,
+    "tong_diem": 91,
+    "xep_loai": "⭐ Tốt (Bài 3: c, cá - Bài 4: e, ê - Bài 5: bé bé - Bài 6: o, bò)",
+    "tieu_chi": {
+      "dung_mau_chu": 9.0,
+      "do_deu_net": 9.0,
+      "khoang_cach": 9.0,
+      "do_thang_hang": 9.5,
+      "trinh_bay": 9.0,
+      "net_co_ban": 9.0
+    },
+    "nhan_xet_chung": "Bài viết tiến bộ rõ rệt! Chữ 'c', 'e', 'ê' viết đúng độ cao 2 ly. Câu ứng dụng 'Ba bế bé.' ở trang phải viết rất khéo, nét chữ hoa 'B' uyển chuyển và khoảng cách giữa các tiếng đều đặn.",
+    "diem_tot": [
+      "Chữ 'c' có nét cong hở phải uốn tròn lưng, điểm dừng bút trên đường kẻ 1 chuẩn xác.",
+      "Câu ứng dụng 'Ba bế bé.' trình bày đẹp, chữ viết đều và có dấu chấm kết thúc câu ngay ngắn.",
+      "Chữ 'o' ở Bài 6 trang phải rất tròn, nét khép kín không bị nhọn đầu.",
+      "Dấu sắc trên từ 'cá' và dấu huyền trên từ 'bò' đặt đúng vị trí chuẩn mực."
+    ],
+    "loi_can_cai_thien": [
+      "Dấu mũ trên con chữ 'ê' ở Bài 4 hơi lệch nhẹ sang phải.",
+      "Dấu hỏi trên từ 'bó cỏ' ở hàng cuối trang phải viết hơi bé, cần uốn rõ hình móc câu."
+    ],
+    "goi_y_luyen_tap": [
+      "Nhắc bé đặt dấu mũ 'ê' cân đối ở chính giữa đỉnh đầu chữ 'e', cách đầu chữ nửa ô ly.",
+      "Luyện thêm cách viết dấu hỏi cong tròn nhẹ nhàng."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "c",
+        "nhan_xet": "Lưng chữ cong chạm dòng kẻ 3 chuẩn xác.",
+        "sai_o_dau": "Đạt chuẩn 100%.",
+        "can_cai_thien": "Giữ đều nét."
+      },
+      {
+        "chu": "ê",
+        "nhan_xet": "Thân chữ e viết mềm mại.",
+        "sai_o_dau": "Mũ nón hơi lệch.",
+        "can_cai_thien": "Căn đỉnh mũ nón vào trục giữa của chữ."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "t3_b1",
+        "box_2d": [110, 35, 210, 120],
+        "loai": "chuan",
+        "chu": "c",
+        "tieu_de": "Chữ 'c' mẫu Bài 3",
+        "nhan_xet": "Lưng cong tròn chạm dòng kẻ 3, chân dừng bút ở giữa ô ly 1.",
+        "huong_dan_sua": "Nét cong hở phải rất đẹp!"
+      },
+      {
+        "id": "t3_b2",
+        "box_2d": [390, 50, 480, 200],
+        "loai": "chuan",
+        "chu": "cá",
+        "tieu_de": "Từ 'cá'",
+        "nhan_xet": "Dấu sắc đặt đúng trên đầu con chữ 'a', xuôi theo nét nghiêng.",
+        "huong_dan_sua": "Vị trí dấu thanh rất chuẩn!"
+      },
+      {
+        "id": "t3_b3",
+        "box_2d": [710, 40, 810, 130],
+        "loai": "chu_y",
+        "chu": "ê",
+        "tieu_de": "Dấu mũ chữ 'ê' Bài 4",
+        "nhan_xet": "Dấu mũ hơi lệch sang phải.",
+        "huong_dan_sua": "Căn chỉnh đỉnh mũ vào đúng trục giữa của chữ e."
+      },
+      {
+        "id": "t3_b4",
+        "box_2d": [280, 570, 380, 790],
+        "loai": "chuan",
+        "chu": "Ba bế bé.",
+        "tieu_de": "Câu 'Ba bế bé.' Bài 5",
+        "nhan_xet": "Chữ B hoa uyển chuyển, khoảng cách giữa các tiếng đều đặn 1 con chữ o.",
+        "huong_dan_sua": "Trình bày câu ứng dụng rất xuất sắc!"
+      },
+      {
+        "id": "t3_b5",
+        "box_2d": [540, 560, 630, 630],
+        "loai": "chuan",
+        "chu": "o",
+        "tieu_de": "Chữ 'o' Bài 6",
+        "nhan_xet": "Nét cong kín khép điểm tròn đẹp, không bị méo đầu.",
+        "huong_dan_sua": "Chữ o rất tròn trịa!"
+      },
+      {
+        "id": "t3_b6",
+        "box_2d": [860, 560, 960, 830],
+        "loai": "loi",
+        "chu": "bó cỏ",
+        "tieu_de": "Từ 'bó cỏ'",
+        "nhan_xet": "Dấu hỏi trên chữ 'cỏ' hơi bé.",
+        "huong_dan_sua": "Uốn rõ nét cong móc câu cho dấu hỏi để người đọc dễ nhận diện."
+      }
+    ],
+    "nhan_xet_phu_huynh": "Bé đã biết viết cả câu hoàn chỉnh và dấu câu (dấu chấm). Khả năng điều khiển nét bút của con rất khéo léo, ba mẹ hãy tự hào về con nhé!"
+  }
+}

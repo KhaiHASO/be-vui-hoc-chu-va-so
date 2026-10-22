@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { HandwritingEvaluationResult } from "@/types/letter";
+import { HandwritingEvaluationResult, HandwritingBoundingBox } from "@/types/letter";
 import {
   Sparkles,
   Camera,
@@ -20,9 +20,49 @@ import {
   Loader2,
   ChevronRight,
   Lightbulb,
+  Eye,
+  EyeOff,
+  BookOpen,
+  Info,
 } from "lucide-react";
 import { sound } from "@/utils/speech";
 import confetti from "canvas-confetti";
+
+// Danh sách các bài mẫu thực tế tiêu biểu từ sách "Chào em vào lớp một"
+const REAL_SAMPLE_PRESETS = [
+  {
+    id: "sample_exam",
+    title: "Bài thi viết chữ đẹp",
+    sub: "Chữ v, ua, xe ngựa, Bà cho bé khế...",
+    url: "/data/samples/bai_thi_viet_mau.jpg",
+    badge: "Bài thi mẫu",
+    color: "from-amber-500 to-orange-500",
+  },
+  {
+    id: "sample_trang_01",
+    title: "Trang 1: Các nét cơ bản",
+    sub: "Ngang, sổ, xiên, móc, khuyết, thắt",
+    url: "/data/samples/real/trang_01.jpg",
+    badge: "Sách lớp 1",
+    color: "from-violet-500 to-purple-600",
+  },
+  {
+    id: "sample_trang_02",
+    title: "Trang 2: Chữ số 0-9 & Bài 1-2",
+    sub: "Tập viết chữ số & Chữ a, ca, b, bà",
+    url: "/data/samples/real/trang_02.jpg",
+    badge: "Số & Vần a, b",
+    color: "from-blue-500 to-indigo-600",
+  },
+  {
+    id: "sample_trang_03",
+    title: "Trang 3: Bài 3-6",
+    sub: "Chữ c, e, o & Câu 'Ba bế bé.'",
+    url: "/data/samples/real/trang_03.jpg",
+    badge: "Câu ứng dụng",
+    color: "from-emerald-500 to-teal-600",
+  },
+];
 
 export function AiHandwritingGrader() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -31,29 +71,33 @@ export function AiHandwritingGrader() {
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [customApiKey, setCustomApiKey] = useState<string>("");
+  const [showBoundingBoxes, setShowBoundingBoxes] = useState<boolean>(true);
+  const [activeBoxId, setActiveBoxId] = useState<string | null>(null);
+  const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const resultRef = useRef<HTMLDivElement>(null);
+  const activeBoxCardRef = useRef<HTMLDivElement>(null);
 
-  // Tự động cuộn xuống kết quả khi chấm xong
+  // Không tự động cuộn mất ảnh khi có kết quả để người dùng nhìn thấy ngay Bounding Box
   useEffect(() => {
-    if (result && resultRef.current) {
-      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (result && activeBoxCardRef.current) {
+      activeBoxCardRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
   }, [result]);
 
   // Khôi phục custom API key từ localStorage (nếu có)
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedKey = localStorage.getItem("custom_openai_key");
+      const savedKey = localStorage.getItem("custom_deepseek_key") || localStorage.getItem("custom_openai_key");
       if (savedKey) setCustomApiKey(savedKey);
     }
   }, []);
 
   const handleSaveApiKey = () => {
     if (typeof window !== "undefined") {
-      localStorage.setItem("custom_openai_key", customApiKey.trim());
+      localStorage.setItem("custom_deepseek_key", customApiKey.trim());
       sound.playTone(523.25, 0.08);
       setShowSettings(false);
     }
@@ -61,6 +105,7 @@ export function AiHandwritingGrader() {
 
   const handleClearApiKey = () => {
     if (typeof window !== "undefined") {
+      localStorage.removeItem("custom_deepseek_key");
       localStorage.removeItem("custom_openai_key");
       setCustomApiKey("");
       sound.playTone(440, 0.08);
@@ -76,26 +121,62 @@ export function AiHandwritingGrader() {
       const reader = new FileReader();
       reader.onload = (event) => {
         setSelectedImage(event.target?.result as string);
+        setSelectedPresetId(null);
         setResult(null);
+        setActiveBoxId(null);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Thử ngay với ảnh bài thi mẫu thực tế của học sinh lớp 1
-  const handleUseSampleImage = () => {
+  // Chọn mẫu từ kho bài thi thực tế (1-chạm phản hồi tức thì)
+  const handleSelectPreset = async (preset: (typeof REAL_SAMPLE_PRESETS)[0]) => {
     sound.playTone(523.25, 0.08);
-    setSelectedImage("/data/samples/bai_thi_viet_mau.jpg");
+    setSelectedPresetId(preset.id);
+    setSelectedImage(preset.url);
+    setActiveBoxId(null);
+    setIsEvaluating(true);
     setResult(null);
+
+    try {
+      const res = await fetch("/api/evaluate-handwriting", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image: preset.url }),
+      });
+
+      if (!res.ok) throw new Error("Lỗi khi tải dữ liệu bài mẫu");
+      const data: HandwritingEvaluationResult = await res.json();
+      setResult(data);
+
+      if (data.bounding_boxes && data.bounding_boxes.length > 0) {
+        setActiveBoxId(data.bounding_boxes[0].id);
+      }
+
+      if (data.anh_hop_le && data.tong_diem >= 80) {
+        confetti({
+          particleCount: 50,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#7c3aed", "#10b981", "#f59e0b", "#ec4899"],
+        });
+      }
+    } catch (err) {
+      console.error("Lỗi tải mẫu:", err);
+      alert("Không thể tải đánh giá mẫu, vui lòng thử lại!");
+    } finally {
+      setIsEvaluating(false);
+    }
   };
 
-  // Kích hoạt đánh giá bài viết
+  // Kích hoạt đánh giá bài viết qua AI
   const handleEvaluate = async () => {
     if (!selectedImage) return;
 
     sound.playTone(587.33, 0.1);
     setIsEvaluating(true);
     setResult(null);
+    setActiveBoxId(null);
 
     try {
       const res = await fetch("/api/evaluate-handwriting", {
@@ -114,10 +195,14 @@ export function AiHandwritingGrader() {
       const data: HandwritingEvaluationResult = await res.json();
       setResult(data);
 
+      if (data.bounding_boxes && data.bounding_boxes.length > 0) {
+        setActiveBoxId(data.bounding_boxes[0].id);
+      }
+
       if (data.anh_hop_le && data.tong_diem >= 80) {
         confetti({
-          particleCount: 40,
-          spread: 60,
+          particleCount: 50,
+          spread: 70,
           origin: { y: 0.6 },
           colors: ["#7c3aed", "#10b981", "#f59e0b", "#ec4899"],
         });
@@ -130,7 +215,7 @@ export function AiHandwritingGrader() {
     }
   };
 
-  // Đọc nhận xét bằng giọng cô giáo tiếng Việt
+  // Đọc nhận xét toàn bài bằng giọng cô giáo tiếng Việt
   const toggleSpeech = () => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
 
@@ -155,16 +240,33 @@ export function AiHandwritingGrader() {
     setIsSpeaking(true);
   };
 
+  // Đọc hướng dẫn sửa của riêng 1 Bounding Box
+  const speakBoxGuidance = (box: HandwritingBoundingBox) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+
+    const text = `${box.tieu_de}. ${box.nhan_xet}. Hướng dẫn sửa: ${box.huong_dan_sua || "Con hãy nắn nót theo đúng dòng kẻ ô ly nhé!"}`;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "vi-VN";
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
+
   // Reset xóa ảnh làm lại
   const handleReset = () => {
     sound.playTone(440, 0.08);
     setSelectedImage(null);
+    setSelectedPresetId(null);
     setResult(null);
+    setActiveBoxId(null);
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
     }
     setIsSpeaking(false);
   };
+
+  // Lấy box đang được chọn
+  const activeBox = result?.bounding_boxes?.find((b) => b.id === activeBoxId) || null;
 
   return (
     <div className="w-full flex flex-col items-center py-2 sm:py-4 px-2 sm:px-6">
@@ -188,29 +290,73 @@ export function AiHandwritingGrader() {
       {/* Header Banner */}
       <div className="w-full max-w-4xl text-center mb-5">
         <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold bg-linear-to-r from-violet-100 to-indigo-100 text-violet-800 border border-violet-200 shadow-xs">
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-bold bg-linear-to-r from-violet-100 via-indigo-100 to-emerald-100 text-violet-900 border border-violet-200 shadow-xs">
             <Sparkles className="w-4 h-4 text-violet-600 animate-pulse" />
-            Công Nghệ Trí Tuệ Nhân Tạo Tiểu Học 4.0
+            AI Visual Grounding • Nhận Diện Nét Viết Trực Quan Lớp 1
           </span>
           <button
             onClick={() => setShowSettings(true)}
-            className="p-1.5 rounded-full hover:bg-slate-200 text-slate-500 hover:text-slate-700 transition-all"
+            className="p-1.5 rounded-full hover:bg-slate-200 text-slate-500 hover:text-slate-700 transition-all min-h-[44px] min-w-[44px] flex items-center justify-center"
             title="Cài đặt khóa API (Tùy chọn)"
           >
             <Settings className="w-4 h-4" />
           </button>
         </div>
         <h2 className="text-xl sm:text-3xl font-black text-slate-800 tracking-tight">
-          AI Chấm Điểm & Nhận Xét Bài Viết Chữ Đẹp
+          AI Chấm Điểm & Khoanh Vùng Nét Chữ Lớp 1
         </h2>
         <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl mx-auto leading-relaxed">
-          Tải ảnh trang vở ô ly hoặc bài thi viết chữ đẹp của bé. Trí tuệ nhân tạo sẽ chấm điểm theo 6 tiêu chí sư phạm lớp 1 và hướng dẫn cụ thể từng con chữ.
+          Tự động soi từng nét chữ trên lưới ô ly, phát hiện nét đẹp (xanh) và nét lỗi (đỏ) bằng khung chữ nhật tương tác thông minh.
         </p>
       </div>
 
+      {/* KHHO BÀI THI MẪU THỰC TẾ (1-CHẠM DEMO HOÀN HẢO) */}
+      <div className="w-full max-w-4xl mb-4">
+        <div className="flex items-center justify-between mb-2 px-1">
+          <span className="text-xs font-black text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <BookOpen className="w-4 h-4 text-indigo-600" />
+            Kho Vở Thực Tế (Sách "Chào em vào lớp một" & Bài thi)
+          </span>
+          <span className="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">
+            Bấm 1 chạm xem ngay
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+          {REAL_SAMPLE_PRESETS.map((preset) => {
+            const isSelected = selectedPresetId === preset.id;
+            return (
+              <button
+                key={preset.id}
+                onClick={() => handleSelectPreset(preset)}
+                className={`p-3 rounded-2xl border text-left transition-all active:scale-95 flex flex-col justify-between min-h-[90px] ${
+                  isSelected
+                    ? "bg-indigo-50/90 border-indigo-500 shadow-md ring-2 ring-indigo-400"
+                    : "bg-white border-slate-200 hover:border-indigo-300 hover:bg-slate-50 shadow-2xs"
+                }`}
+              >
+                <div>
+                  <span
+                    className={`inline-block text-[10px] font-black px-2 py-0.5 rounded-md text-white bg-linear-to-r ${preset.color} mb-1`}
+                  >
+                    {preset.badge}
+                  </span>
+                  <h4 className="text-xs font-black text-slate-800 line-clamp-1">{preset.title}</h4>
+                  <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">{preset.sub}</p>
+                </div>
+                <div className="text-[10px] font-bold text-indigo-600 flex items-center gap-0.5 pt-1">
+                  <span>Xem chấm</span>
+                  <ChevronRight className="w-3 h-3" />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       {/* KHUNG THAO TÁC CHÍNH */}
-      <div className="w-full max-w-3xl space-y-4">
-        {/* Nút thao tác nhanh khi chưa có ảnh hoặc muốn đổi ảnh */}
+      <div className="w-full max-w-4xl space-y-4">
+        {/* Nút thao tác Camera & Tải ảnh */}
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           <button
             onClick={() => cameraInputRef.current?.click()}
@@ -227,44 +373,216 @@ export function AiHandwritingGrader() {
             <Upload className="w-4 h-4 text-slate-500" />
             <span>Tải Ảnh Từ Máy</span>
           </button>
-
-          <button
-            onClick={handleUseSampleImage}
-            className="min-h-[44px] px-3.5 py-2.5 rounded-2xl bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs sm:text-sm flex items-center gap-2 shadow-xs active:scale-95 transition-all"
-          >
-            <FileText className="w-4 h-4 text-amber-600" />
-            <span>Xem Bài Thi Mẫu Lớp 1</span>
-          </button>
         </div>
 
-        {/* Khung hiển thị ảnh đã chọn & Nút chấm điểm */}
+        {/* Khung hiển thị ảnh & Bounding Box tương tác */}
         {selectedImage && (
-          <div className="bg-white rounded-3xl p-4 sm:p-5 border-2 border-indigo-100 shadow-xl space-y-4">
-            <div className="relative w-full max-h-[380px] sm:max-h-[450px] aspect-4/3 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center">
-              <Image
-                src={selectedImage}
-                alt="Bài viết của học sinh"
-                fill
-                className="object-contain p-2"
-                unoptimized
-              />
+          <div className="bg-white rounded-3xl p-3 sm:p-5 border-2 border-indigo-100 shadow-xl space-y-4">
+            {/* Header thanh công cụ trên ảnh */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black text-slate-700 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-violet-600" />
+                  Hình Ảnh Bài Viết & Lưới AI
+                </span>
+                {result?.bounding_boxes && (
+                  <span className="text-[11px] font-bold bg-violet-100 text-violet-800 px-2.5 py-0.5 rounded-full">
+                    {result.bounding_boxes.length} vị trí nét được AI nhận diện
+                  </span>
+                )}
+              </div>
+
+              {result?.bounding_boxes && (
+                <button
+                  onClick={() => setShowBoundingBoxes(!showBoundingBoxes)}
+                  className="min-h-[36px] px-3 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all active:scale-95"
+                >
+                  {showBoundingBoxes ? (
+                    <>
+                      <EyeOff className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Ẩn khung lỗi</span>
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-3.5 h-3.5 text-indigo-600" />
+                      <span>Hiện khung lỗi AI</span>
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+
+            {/* Khung ảnh chính có SVG Bounding Box đè lên */}
+            <div className="relative w-full max-h-[550px] rounded-2xl overflow-hidden bg-slate-900/5 border border-slate-200 flex items-center justify-center p-1">
+              <div className="relative inline-block max-w-full">
+                {/* Ảnh bài viết */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={selectedImage}
+                  alt="Bài viết của học sinh"
+                  className="max-h-[500px] w-auto h-auto object-contain rounded-xl block select-none"
+                />
+
+                {/* Lớp SVG Bounding Box tương tác */}
+                {result?.bounding_boxes && showBoundingBoxes && (
+                  <svg
+                    className="absolute inset-0 w-full h-full pointer-events-auto"
+                    viewBox="0 0 1000 1000"
+                    preserveAspectRatio="none"
+                  >
+                    {result.bounding_boxes.map((box, idx) => {
+                      const [ymin, xmin, ymax, xmax] = box.box_2d;
+                      const width = Math.max(10, xmax - xmin);
+                      const height = Math.max(10, ymax - ymin);
+                      const isActive = activeBoxId === box.id;
+
+                      const isLoi = box.loai === "loi";
+                      const isChuan = box.loai === "chuan";
+
+                      const strokeColor = isLoi ? "#ef4444" : isChuan ? "#10b981" : "#f59e0b";
+                      const fillColor = isLoi
+                        ? "rgba(239, 68, 68, 0.16)"
+                        : isChuan
+                        ? "rgba(16, 185, 129, 0.16)"
+                        : "rgba(245, 158, 11, 0.16)";
+
+                      return (
+                        <g
+                          key={box.id || idx}
+                          className="cursor-pointer transition-all duration-200"
+                          onClick={() => {
+                            sound.playTone(600, 0.08);
+                            setActiveBoxId(box.id);
+                            speakBoxGuidance(box);
+                            if (activeBoxCardRef.current) {
+                              activeBoxCardRef.current.scrollIntoView({
+                                behavior: "smooth",
+                                block: "nearest",
+                              });
+                            }
+                          }}
+                        >
+                          {/* Hộp chữ nhật bao quanh nét */}
+                          <rect
+                            x={xmin}
+                            y={ymin}
+                            width={width}
+                            height={height}
+                            fill={fillColor}
+                            stroke={strokeColor}
+                            strokeWidth={isActive ? 5 : 2.5}
+                            rx={6}
+                            strokeDasharray={isActive ? "none" : isLoi ? "6 3" : "none"}
+                            className={isActive ? "filter drop-shadow-md animate-pulse" : ""}
+                          />
+
+                          {/* Nhãn con chữ nhỏ góc trên box */}
+                          <rect
+                            x={xmin}
+                            y={Math.max(4, ymin - 24)}
+                            width={Math.max(38, (box.chu?.length || 1) * 14 + 18)}
+                            height={22}
+                            fill={strokeColor}
+                            rx={4}
+                          />
+                          <text
+                            x={xmin + 6}
+                            y={Math.max(4, ymin - 24) + 15}
+                            fill="#ffffff"
+                            fontSize="13"
+                            fontWeight="bold"
+                            fontFamily="sans-serif"
+                          >
+                            {box.chu} #{idx + 1}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                )}
+              </div>
 
               {/* Hiệu ứng quét tia Laser khi AI đang phân tích */}
               {isEvaluating && (
-                <div className="absolute inset-0 bg-violet-500/10 backdrop-blur-[1px] flex flex-col items-center justify-center">
-                  <div className="w-full h-1 bg-gradient-to-r from-transparent via-violet-500 to-transparent absolute top-1/2 -translate-y-1/2 animate-bounce" />
-                  <div className="bg-white/95 px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-violet-200">
+                <div className="absolute inset-0 bg-violet-600/15 backdrop-blur-[2px] flex flex-col items-center justify-center z-20">
+                  <div className="w-full h-1 bg-linear-to-r from-transparent via-violet-500 to-transparent absolute top-1/2 -translate-y-1/2 animate-bounce" />
+                  <div className="bg-white/95 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-violet-200">
                     <Loader2 className="w-5 h-5 text-violet-600 animate-spin" />
-                    <span className="text-sm font-black text-slate-800">
-                      AI đang quan sát từng con chữ & dòng kẻ...
-                    </span>
+                    <div className="text-left">
+                      <span className="text-xs font-black text-slate-800 block">
+                        AI Vision đang đo đạc từng ô ly...
+                      </span>
+                      <span className="text-[11px] text-slate-500">
+                        Đối chiếu độ cao 2 ly, nét khuyết và lực tay viết
+                      </span>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
+            {/* Chi tiết Bounding Box đang được chọn (Interactive Inspector) */}
+            {activeBox && (
+              <div
+                ref={activeBoxCardRef}
+                className={`p-3.5 sm:p-4 rounded-2xl border transition-all animate-in fade-in duration-300 ${
+                  activeBox.loai === "loi"
+                    ? "bg-rose-50/90 border-rose-200"
+                    : activeBox.loai === "chuan"
+                    ? "bg-emerald-50/90 border-emerald-200"
+                    : "bg-amber-50/90 border-amber-200"
+                }`}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b pb-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase text-white ${
+                        activeBox.loai === "loi"
+                          ? "bg-rose-600"
+                          : activeBox.loai === "chuan"
+                          ? "bg-emerald-600"
+                          : "bg-amber-600"
+                      }`}
+                    >
+                      {activeBox.loai === "loi"
+                        ? "❌ Nét cần sửa"
+                        : activeBox.loai === "chuan"
+                        ? "✅ Nét chuẩn mẫu"
+                        : "⚠️ Cần chú ý"}
+                    </span>
+                    <h4 className="text-sm font-black text-slate-900">
+                      {activeBox.tieu_de} (Chữ: "{activeBox.chu}")
+                    </h4>
+                  </div>
+
+                  <button
+                    onClick={() => speakBoxGuidance(activeBox)}
+                    className="min-h-[36px] px-3 py-1 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 border"
+                  >
+                    <Volume2 className="w-3.5 h-3.5 text-violet-600" />
+                    <span>Nghe cô sửa nét này</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <strong className="text-slate-800">Nhận xét của AI:</strong>{" "}
+                    <span className="text-slate-700">{activeBox.nhan_xet}</span>
+                  </div>
+                  {activeBox.huong_dan_sua && (
+                    <div>
+                      <strong className="text-emerald-800">Cách sửa đúng:</strong>{" "}
+                      <span className="text-emerald-950 font-medium">
+                        {activeBox.huong_dan_sua}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Thanh công cụ dưới ảnh */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
               <button
                 onClick={handleReset}
                 disabled={isEvaluating}
@@ -280,7 +598,7 @@ export function AiHandwritingGrader() {
                 className={`min-h-[44px] px-6 py-2.5 rounded-2xl font-black text-sm flex items-center gap-2 shadow-lg transition-all active:scale-95 ${
                   isEvaluating
                     ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-200"
+                    : "bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-200"
                 }`}
               >
                 {isEvaluating ? (
@@ -291,7 +609,7 @@ export function AiHandwritingGrader() {
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4" />
-                    <span>Bắt Đầu Nhận Xét & Chấm Điểm</span>
+                    <span>Chấm Lại Bằng DeepSeek AI</span>
                   </>
                 )}
               </button>
@@ -301,7 +619,7 @@ export function AiHandwritingGrader() {
 
         {/* Khung hướng dẫn chụp ảnh khi chưa có ảnh */}
         {!selectedImage && (
-          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm text-center space-y-3">
+          <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs text-center space-y-3">
             <div className="w-14 h-14 mx-auto rounded-2xl bg-violet-100 text-violet-600 flex items-center justify-center text-2xl">
               ✍️
             </div>
@@ -335,7 +653,7 @@ export function AiHandwritingGrader() {
             <div className="p-4 sm:p-6 rounded-3xl bg-linear-to-br from-emerald-500 via-teal-600 to-indigo-600 text-white shadow-lg flex flex-wrap items-center justify-between gap-4">
               <div className="space-y-1">
                 <span className="text-xs font-black uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full backdrop-blur-xs">
-                  Kết Quả Đánh Giá Sư Phạm
+                  Kết Quả Đánh Giá Sư Phạm Lớp 1
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black">{result.xep_loai}</h3>
                 <p className="text-xs sm:text-sm text-emerald-100 max-w-lg leading-relaxed">
@@ -382,14 +700,41 @@ export function AiHandwritingGrader() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {[
-                  { key: "dung_mau_chu", label: "1. Đúng mẫu & Độ cao con chữ", val: result.tieu_chi.dung_mau_chu },
-                  { key: "do_deu_net", label: "2. Độ đều nét & Lực tay cầm bút", val: result.tieu_chi.do_deu_net },
-                  { key: "khoang_cach", label: "3. Khoảng cách chữ cái & tiếng", val: result.tieu_chi.khoang_cach },
-                  { key: "do_thang_hang", label: "4. Độ thẳng hàng trên dòng kẻ ô ly", val: result.tieu_chi.do_thang_hang },
-                  { key: "trinh_bay", label: "5. Trình bày sạch sẽ, giữ vở đẹp", val: result.tieu_chi.trinh_bay },
-                  { key: "net_co_ban", label: "6. Nét nối, nét thắt & Dấu thanh", val: result.tieu_chi.net_co_ban },
+                  {
+                    key: "dung_mau_chu",
+                    label: "1. Đúng mẫu & Độ cao con chữ",
+                    val: result.tieu_chi.dung_mau_chu,
+                  },
+                  {
+                    key: "do_deu_net",
+                    label: "2. Độ đều nét & Lực tay cầm bút",
+                    val: result.tieu_chi.do_deu_net,
+                  },
+                  {
+                    key: "khoang_cach",
+                    label: "3. Khoảng cách chữ cái & tiếng",
+                    val: result.tieu_chi.khoang_cach,
+                  },
+                  {
+                    key: "do_thang_hang",
+                    label: "4. Độ thẳng hàng trên dòng kẻ ô ly",
+                    val: result.tieu_chi.do_thang_hang,
+                  },
+                  {
+                    key: "trinh_bay",
+                    label: "5. Trình bày sạch sẽ, giữ vở đẹp",
+                    val: result.tieu_chi.trinh_bay,
+                  },
+                  {
+                    key: "net_co_ban",
+                    label: "6. Nét nối, nét thắt & Dấu thanh",
+                    val: result.tieu_chi.net_co_ban,
+                  },
                 ].map((crit) => (
-                  <div key={crit.key} className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5">
+                  <div
+                    key={crit.key}
+                    className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5"
+                  >
                     <div className="flex items-center justify-between text-xs font-bold">
                       <span className="text-slate-700">{crit.label}</span>
                       <span className="text-violet-700 font-black">{crit.val}/10</span>
@@ -501,25 +846,31 @@ export function AiHandwritingGrader() {
               </h3>
               <button
                 onClick={() => setShowSettings(false)}
-                className="p-1 rounded-full hover:bg-slate-100 text-slate-400"
+                className="p-1 rounded-full hover:bg-slate-100 text-slate-400 min-h-[44px] min-w-[44px] flex items-center justify-center"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Mặc định hệ thống đã tích hợp sẵn AI sư phạm. Nếu bạn muốn sử dụng khóa riêng (OpenAI API Key), có thể điền bên dưới (chỉ lưu trên trình duyệt của bạn).
-            </p>
+            <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 space-y-1">
+              <div className="font-bold flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>DeepSeek Flash Vision Đã Kích Hoạt Sẵn</span>
+              </div>
+              <p className="text-slate-600 text-[11px] leading-relaxed">
+                Máy chủ đã được nạp sẵn khóa DeepSeek AI tốc độ cao. Bạn không cần phải cấu hình gì thêm. Nếu muốn thử bằng khóa riêng, hãy điền bên dưới:
+              </p>
+            </div>
 
             <div>
               <label className="text-xs font-bold text-slate-700 block mb-1">
-                OpenAI API Key (sk-...):
+                API Key Riêng (DeepSeek hoặc OpenAI sk-...):
               </label>
               <input
                 type="password"
                 value={customApiKey}
                 onChange={(e) => setCustomApiKey(e.target.value)}
-                placeholder="sk-proj-..."
+                placeholder="sk-..."
                 className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-hidden focus:ring-2 focus:ring-violet-500 font-mono"
               />
             </div>
@@ -528,20 +879,20 @@ export function AiHandwritingGrader() {
               {customApiKey && (
                 <button
                   onClick={handleClearApiKey}
-                  className="px-3 py-1.5 rounded-xl border border-rose-200 text-rose-600 font-bold text-xs hover:bg-rose-50"
+                  className="px-3 py-1.5 rounded-xl border border-rose-200 text-rose-600 font-bold text-xs hover:bg-rose-50 min-h-[44px]"
                 >
                   Xóa Key
                 </button>
               )}
               <button
                 onClick={() => setShowSettings(false)}
-                className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200"
+                className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 min-h-[44px]"
               >
                 Đóng
               </button>
               <button
                 onClick={handleSaveApiKey}
-                className="px-4 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-xs"
+                className="px-4 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-xs min-h-[44px]"
               >
                 Lưu
               </button>
