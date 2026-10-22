@@ -145,7 +145,7 @@ function getPrecomputedEvaluation(imageStr: string, fileName?: string): Handwrit
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { image, fileName, apiKey } = body;
+    const { image, fileName, apiKey, annotations } = body;
 
     if (!image) {
       return NextResponse.json(
@@ -154,8 +154,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Kiểm tra nếu là ảnh trong kho mẫu thực tế (precomputed) -> Trả về ngay lập tức (<50ms)
-    if (typeof image === "string") {
+    const userAnnotations: HandwritingBoundingBox[] = Array.isArray(annotations) && annotations.length > 0
+      ? annotations
+      : [];
+
+    // 1. Kiểm tra nếu là ảnh trong kho mẫu thực tế (precomputed) VÀ người dùng chưa khoanh thủ công
+    if (typeof image === "string" && userAnnotations.length === 0) {
       const precomputed = getPrecomputedEvaluation(image, fileName);
       if (precomputed) {
         return NextResponse.json(precomputed);
@@ -164,6 +168,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(DEFAULT_SAMPLE_RESULT);
       }
     }
+
+    // Nếu người dùng đã tự khoanh vùng thủ công, tính toán dựa trên các nét giáo viên đã chọn
+    const loiCount = userAnnotations.filter((a) => a.loai === "loi").length;
+    const chuyCount = userAnnotations.filter((a) => a.loai === "chu_y").length;
+    const chuanCount = userAnnotations.filter((a) => a.loai === "chuan").length;
 
     // 2. Xác định API Key và Nhà cung cấp AI (Ưu tiên DeepSeek Vision)
     const deepseekKey = process.env.DEEPSEEK_API_KEY || "";
@@ -200,6 +209,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const annotationContext = userAnnotations.length > 0
+      ? `GIÁO VIÊN ĐÃ KHOANH VÙNG THỦ CÔNG ${userAnnotations.length} VỊ TRÍ NÉT TRÊN BÀI THI:
+${userAnnotations.map((a, i) => `- Nét #${i + 1}: Chữ "${a.chu}", Loại: ${a.loai === "loi" ? "❌ Cần sửa" : a.loai === "chuan" ? "✅ Chuẩn đẹp" : "⚠️ Cần chú ý"}${a.nhan_xet ? ` (${a.nhan_xet})` : ""}`).join("\n")}
+Hãy đưa ra nhận xét sư phạm tập trung vào những vị trí giáo viên đã khoanh vùng này.`
+      : "";
+
     const systemPrompt = `Bạn là chuyên gia sư phạm & Giám khảo chấm thi Luyện chữ đẹp Tiểu học Việt Nam (Bộ GD&ĐT).
 Nhiệm vụ của bạn là soi từng con chữ ô ly của học sinh lớp 1, nhận diện các nét chuẩn và nét lỗi, đồng thời định vị chính xác vị trí của từng con chữ trên ảnh.
 
@@ -211,21 +226,11 @@ TIÊU CHÍ ĐÁNH GIÁ (Thang điểm 0 - 10 mỗi tiêu chí):
 5. trinh_bay: Vở sạch sẽ, không tẩy xóa lem nhem
 6. net_co_ban: Nét hất, nét móc, nét khuyết, nét thắt và dấu thanh
 
-QUY TẮC BẮT BUỘC VỀ KHOANH VÙNG (BOUNDING BOXES):
-1. TUYỆT ĐỐI KHÔNG KHOANH CẢ DÒNG CHỮ DÀI (CẤM khoanh cả hàng chữ 'c c c c' hay 'e e e e' hay 'o o o o').
-2. MỖI BOUNDING BOX CHỈ ĐƯỢC KHOANH ĐÚNG 1 CON CHỮ ĐƠN LẺ HOẶC 1 TỪ NGẮN (tối đa 1-2 tiếng, ví dụ: 'c', 'ca', 'cá', 'ê', 'bề', 'bé bé', 'Ba', 'o', 'bó cỏ').
-3. KÍCH THƯỚC HỘP THOẠI PHẢI ÔM SÁT CON CHỮ:
-   - Với chữ đơn lẻ (c, e, ê, o, a, b...): Chiều rộng (xmax - xmin) CHỈ từ 40 đến 80, Chiều cao (ymax - ymin) CHỈ từ 50 đến 90 (trên thang chuẩn 0 - 1000).
-   - Với từ ghép (ca, cá, bề, bó cỏ): Chiều rộng (xmax - xmin) tối đa 100 đến 140.
-   - Tuyệt đối không để chiều rộng box vượt quá 150/1000!
-4. NẾU ẢNH LÀ TRANG ĐÔI (2 trang mở phẳng):
-   - Trang bên trái có xmin từ 30 đến 480.
-   - Trang bên phải có xmin từ 540 đến 980.
-5. PHÂN LOẠI & MÀU SẮC (loai):
-   - "chuan": Nét viết đẹp, chuẩn mẫu 2 ly, đúng điểm đặt và dừng bút (viền xanh lá).
-   - "loi": Nét viết sai, lệch dòng kẻ, méo, sai độ cao (viền đỏ).
-   - "chu_y": Nét viết tạm được nhưng cần chỉnh (mũ nón lệch, dấu thanh đặt sát, vòng thắt hẹp) (viền cam).
-6. Hãy chọn ra từ 6 đến 8 vị trí nét tiêu biểu nhất trên bài viết để chấm chi tiết.
+${annotationContext}
+
+QUY TẮC BẮT BUỘC:
+- Nếu có danh sách nét giáo viên khoanh vùng, hãy bám sát các nét đó để nhận xét.
+- Giọng văn ấm áp, sư phạm, khích lệ bé và hướng dẫn cụ thể cách rèn chữ.
 
 CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không markdown, không giải thích):
 {
@@ -252,17 +257,6 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không ma
       "can_cai_thien": "string"
     }
   ],
-  "bounding_boxes": [
-    {
-      "id": "box_1",
-      "box_2d": [ymin, xmin, ymax, xmax],
-      "loai": "chuan",
-      "chu": "string",
-      "tieu_de": "string",
-      "nhan_xet": "string",
-      "huong_dan_sua": "string"
-    }
-  ],
   "nhan_xet_phu_huynh": "string"
 }`;
 
@@ -281,7 +275,7 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không ma
           {
             role: "user",
             content: [
-              { type: "text", text: "Hãy phân tích, xác định các vị trí nét chữ đơn lẻ và chấm điểm bài tập viết ô ly này:" },
+              { type: "text", text: "Hãy phân tích và chấm điểm bài tập viết ô ly này:" },
               { type: "image_url", image_url: { url: finalImageUrl } },
             ],
           },
@@ -291,7 +285,14 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không ma
 
     if (!aiRes.ok) {
       console.warn("AI API call returned error, using pedagogical evaluation fallback:", aiRes.status);
-      return NextResponse.json(DEFAULT_SAMPLE_RESULT);
+      const fallbackResult: HandwritingEvaluationResult = {
+        ...DEFAULT_SAMPLE_RESULT,
+        bounding_boxes: userAnnotations.length > 0 ? userAnnotations : DEFAULT_SAMPLE_RESULT.bounding_boxes,
+      };
+      if (userAnnotations.length > 0) {
+        fallbackResult.tong_diem = Math.max(65, Math.min(98, 96 - loiCount * 4 - chuyCount * 2));
+      }
+      return NextResponse.json(fallbackResult);
     }
 
     const aiData = await aiRes.json();
@@ -303,37 +304,24 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không ma
 
     try {
       const parsed: HandwritingEvaluationResult = JSON.parse(cleaned);
-      // Đảm bảo luôn có ít nhất 1 bounding box minh họa nếu AI bỏ sót
-      if (!parsed.bounding_boxes || parsed.bounding_boxes.length === 0) {
-        parsed.bounding_boxes = DEFAULT_SAMPLE_RESULT.bounding_boxes;
+
+      // Nếu giáo viên đã khoanh vùng thủ công: Giữ nguyên 100% nét vẽ của giáo viên!
+      if (userAnnotations.length > 0) {
+        parsed.bounding_boxes = userAnnotations;
+        parsed.tong_diem = Math.max(65, Math.min(98, 96 - loiCount * 4 - chuyCount * 2));
+        if (parsed.tong_diem >= 90) parsed.xep_loai = "⭐ Xuất sắc (Bài luyện chữ đẹp)";
+        else if (parsed.tong_diem >= 80) parsed.xep_loai = "⭐ Tốt (Bài viết đạt chuẩn)";
+        else parsed.xep_loai = "Cần rèn luyện thêm";
       } else {
-        // Chuẩn hóa và clamp bounding boxes: Cấm tuyệt đối box to bè tràn dòng
-        parsed.bounding_boxes = parsed.bounding_boxes.slice(0, 8).map((b, idx) => {
-          let [ymin, xmin, ymax, xmax] = b.box_2d;
-          ymin = Math.max(0, Math.min(950, ymin));
-          xmin = Math.max(0, Math.min(950, xmin));
-          ymax = Math.max(ymin + 20, Math.min(1000, ymax));
-          xmax = Math.max(xmin + 20, Math.min(1000, xmax));
-
-          // Nếu box quá rộng (> 160), giới hạn lại thành 1 con chữ đơn lẻ
-          if (xmax - xmin > 160) {
-            xmax = xmin + 130;
-          }
-          // Nếu box quá cao (> 140), giới hạn lại
-          if (ymax - ymin > 140) {
-            ymax = ymin + 100;
-          }
-
-          return {
-            ...b,
-            id: b.id || `box_${idx + 1}`,
-            box_2d: [ymin, xmin, ymax, xmax] as [number, number, number, number],
-          };
-        });
+        parsed.bounding_boxes = DEFAULT_SAMPLE_RESULT.bounding_boxes;
       }
+
       return NextResponse.json(parsed);
     } catch {
-      return NextResponse.json(DEFAULT_SAMPLE_RESULT);
+      return NextResponse.json({
+        ...DEFAULT_SAMPLE_RESULT,
+        bounding_boxes: userAnnotations.length > 0 ? userAnnotations : DEFAULT_SAMPLE_RESULT.bounding_boxes,
+      });
     }
   } catch (error: any) {
     console.error("Evaluation API Error:", error);

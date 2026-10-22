@@ -73,9 +73,14 @@ export type LetterSubMode =
 
 export type NumberSubMode = "card" | "counting" | "writing" | "bonds" | "guide";
 
+export type AnnotationShape = "freehand" | "circle" | "rect";
+
 export interface HandwritingBoundingBox {
   id: string;
+  shape?: AnnotationShape; // 'freehand' = vẽ tay tự do, 'circle' = khoanh tròn/elip, 'rect' = khung chữ nhật
   box_2d: [number, number, number, number]; // [ymin, xmin, ymax, xmax] theo tỷ lệ 0 - 1000
+  points?: [number, number][]; // Dành cho nét vẽ tay tự do (freehand lasso)
+  ellipse?: [number, number, number, number]; // [centerX, centerY, radiusX, radiusY] theo thang 0 - 1000
   loai: "loi" | "chuan" | "chu_y"; // 'loi' = đỏ, 'chuan' = xanh lá, 'chu_y' = vàng cam
   chu: string;
   tieu_de: string;
