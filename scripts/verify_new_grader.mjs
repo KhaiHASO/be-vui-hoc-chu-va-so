@@ -24,7 +24,6 @@ async function runTest() {
   const mobilePage = await mobileContext.newPage();
   await mobilePage.goto(targetUrl, { waitUntil: "networkidle" });
 
-  // Mở menu điều hướng trên mobile
   const menuBtn = mobilePage.getByRole("button", { name: /Mở Menu điều hướng/i });
   if (await menuBtn.isVisible()) await menuBtn.click();
   await mobilePage.waitForTimeout(400);
@@ -32,20 +31,15 @@ async function runTest() {
   const graderBtn = mobilePage.getByRole("button", { name: /AI Chấm Bài Viết/i });
   if (await graderBtn.isVisible()) {
     await graderBtn.click();
-    await mobilePage.waitForTimeout(600);
+    await mobilePage.waitForTimeout(500);
 
-    // Chụp giao diện ban đầu của AI Grader
-    const initShot = path.join(outputDir, "verify_mobile_grader_presets.png");
-    await mobilePage.screenshot({ path: initShot, fullPage: false });
-    console.log(`   ✓ Đã chụp danh sách mẫu bài vở thực tế trên mobile -> ${initShot}`);
-
-    // Bấm chọn preset "Trang 2: Chữ số 0-9"
-    const presetBtn = mobilePage.getByRole("button", { name: /Trang 2: Chữ số 0-9/i });
+    // Bấm chọn preset "Trang 3: Bài 3-6"
+    const presetBtn = mobilePage.getByRole("button", { name: /Trang 3: Bài 3-6/i });
     if (await presetBtn.isVisible()) {
       await presetBtn.click();
       await mobilePage.waitForTimeout(1000);
 
-      const resultShot = path.join(outputDir, "verify_mobile_grader_bboxes.png");
+      const resultShot = path.join(outputDir, "verify_mobile_grader_trang03.png");
       await mobilePage.screenshot({ path: resultShot, fullPage: false });
       console.log(`   ✓ Đã chụp kết quả Bounding Box trên mobile -> ${resultShot}`);
     }
@@ -66,19 +60,35 @@ async function runTest() {
     await deskGraderBtn.click();
     await desktopPage.waitForTimeout(500);
 
+    // Bấm chọn preset "Trang 3: Bài 3-6"
+    const trang3Btn = desktopPage.getByRole("button", { name: /Trang 3: Bài 3-6/i });
+    await trang3Btn.click();
+    await desktopPage.waitForTimeout(1000);
+
+    // Click vào chip "ê #3"
+    const eChip = desktopPage.getByRole("button", { name: /ê #3/i });
+    if (await eChip.isVisible()) {
+      await eChip.click();
+      await desktopPage.waitForTimeout(400);
+    }
+
+    const deskTrang3Shot = path.join(outputDir, "verify_desktop_grader_trang03.png");
+    await desktopPage.screenshot({ path: deskTrang3Shot, fullPage: false });
+    console.log(`   ✓ Đã chụp kết quả 2 cột Trang 3 trên desktop -> ${deskTrang3Shot}`);
+
     // Bấm chọn preset "Bài thi viết chữ đẹp"
     const examBtn = desktopPage.getByRole("button", { name: /Bài thi viết chữ đẹp/i });
     await examBtn.click();
     await desktopPage.waitForTimeout(1000);
 
-    const deskResultShot = path.join(outputDir, "verify_desktop_grader_bboxes.png");
-    await desktopPage.screenshot({ path: deskResultShot, fullPage: false });
-    console.log(`   ✓ Đã chụp kết quả Bounding Box trên desktop -> ${deskResultShot}`);
+    const deskExamShot = path.join(outputDir, "verify_desktop_grader_exam.png");
+    await desktopPage.screenshot({ path: deskExamShot, fullPage: false });
+    console.log(`   ✓ Đã chụp kết quả Bài thi viết chữ đẹp trên desktop -> ${deskExamShot}`);
   }
   await desktopContext.close();
 
   await browser.close();
-  console.log("\n🎉 HOÀN TẤT KIỂM THỬ TRỰC QUAN AI GRADER!");
+  console.log("\n🎉 HOÀN TẤT KIỂM THỬ TRỰC QUAN PLAYWRIGHT!");
 }
 
 runTest().catch((err) => {

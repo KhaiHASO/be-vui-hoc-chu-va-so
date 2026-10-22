@@ -56,7 +56,7 @@
     "bounding_boxes": [
       {
         "id": "b1",
-        "box_2d": [385, 210, 485, 340],
+        "box_2d": [310, 50, 360, 115],
         "loai": "chuan",
         "chu": "v",
         "tieu_de": "Chữ 'v' mẫu",
@@ -65,7 +65,7 @@
       },
       {
         "id": "b2",
-        "box_2d": [385, 590, 485, 710],
+        "box_2d": [310, 275, 360, 335],
         "loai": "chu_y",
         "chu": "v",
         "tieu_de": "Nét thắt chữ 'v'",
@@ -74,7 +74,7 @@
       },
       {
         "id": "b3",
-        "box_2d": [505, 180, 605, 360],
+        "box_2d": [395, 220, 445, 310],
         "loai": "chuan",
         "chu": "ua",
         "tieu_de": "Vần 'ua' liền mạch",
@@ -83,8 +83,8 @@
       },
       {
         "id": "b4",
-        "box_2d": [625, 410, 745, 620],
-        "loai": "loi",
+        "box_2d": [480, 50, 540, 280],
+        "loai": "chu_y",
         "chu": "xe ngựa",
         "tieu_de": "Khoảng cách giữa hai tiếng",
         "nhan_xet": "Tiếng 'xe' và 'ngựa' viết hơi sát nhau.",
@@ -92,7 +92,7 @@
       },
       {
         "id": "b5",
-        "box_2d": [770, 100, 890, 240],
+        "box_2d": [570, 45, 640, 150],
         "loai": "chuan",
         "chu": "Bà",
         "tieu_de": "Chữ hoa 'B'",
@@ -101,7 +101,7 @@
       },
       {
         "id": "b6",
-        "box_2d": [770, 460, 890, 590],
+        "box_2d": [575, 395, 635, 480],
         "loai": "chu_y",
         "chu": "khế",
         "tieu_de": "Dấu sắc chữ 'khế'",
@@ -148,59 +148,71 @@
       {
         "chu": "Nét móc ngược",
         "nhan_xet": "Điểm dừng bút cong nhẹ lên đường kẻ 2.",
-        "sai_o_dau": "Hơi nhọn ở góc đáy.",
-        "can_cai_thien": "Lượn cong tròn đáy móc trước khi đưa nét lên."
+        "sai_o_dau": "Đạt chuẩn 100%.",
+        "can_cai_thien": "Giữ đúng độ nghiêng này."
+      },
+      {
+        "chu": "Nét móc hai đầu",
+        "nhan_xet": "Hai đầu cong tròn.",
+        "sai_o_dau": "Đoạn uốn đáy hơi nhọn một chút.",
+        "can_cai_thien": "Lượn đáy nhẹ nhàng trước khi kéo hất lên."
+      },
+      {
+        "chu": "Nét thắt",
+        "nhan_xet": "Vòng thắt tròn nhỏ.",
+        "sai_o_dau": "Hơi bẹp ở dòng kẻ ngang 2.",
+        "can_cai_thien": "Vòng rộng ra nửa ô ly."
       }
     ],
     "bounding_boxes": [
       {
         "id": "t1_b1",
-        "box_2d": [190, 15, 340, 180],
+        "box_2d": [200, 18, 260, 48],
         "loai": "chuan",
         "chu": "Nét sổ",
-        "tieu_de": "Nét sổ thẳng",
-        "nhan_xet": "Kéo thẳng tắp từ dòng kẻ 3 xuống dòng kẻ 1, cao đúng 2 ly.",
-        "huong_dan_sua": "Rất chuẩn mực!"
+        "tieu_de": "Nét sổ thẳng đứng",
+        "nhan_xet": "Thẳng tắp, đều tay từ dòng kẻ ngang 3 xuống dòng kẻ 1.",
+        "huong_dan_sua": "Lực tay rất chuẩn, giữ vững nhé con!"
       },
       {
         "id": "t1_b2",
-        "box_2d": [470, 15, 620, 180],
+        "box_2d": [475, 18, 535, 48],
         "loai": "chuan",
-        "chu": "Nét móc xuôi",
+        "chu": "Móc xuôi",
         "tieu_de": "Nét móc xuôi",
-        "nhan_xet": "Đầu móc uốn cong tròn đều, chạm chuẩn đường kẻ ngang 3.",
-        "huong_dan_sua": "Giữ đúng độ nghiêng này khi viết chữ n, m."
+        "nhan_xet": "Đầu móc uốn cong mềm mại chạm dòng kẻ 3.",
+        "huong_dan_sua": "Nét uốn rất khéo léo!"
       },
       {
         "id": "t1_b3",
-        "box_2d": [650, 15, 790, 180],
+        "box_2d": [650, 18, 720, 52],
         "loai": "chu_y",
-        "chu": "Nét móc 2 đầu",
+        "chu": "Móc 2 đầu",
         "tieu_de": "Nét móc hai đầu",
-        "nhan_xet": "Phần lượn đáy hơi hẹp.",
-        "huong_dan_sua": "Nới rộng phần đáy móc thêm 0.5 ô ly để con chữ nở nang."
+        "nhan_xet": "Phần chuyển hướng nét dưới hơi gấp.",
+        "huong_dan_sua": "Lượn cong nhẹ nhàng ở dòng kẻ 1 rồi hất lên dòng kẻ 2."
       },
       {
         "id": "t1_b4",
-        "box_2d": [270, 550, 410, 650],
+        "box_2d": [275, 565, 330, 600],
         "loai": "chuan",
-        "chu": "Nét cong kín",
-        "tieu_de": "Nét cong kín (o)",
-        "nhan_xet": "Hình ô-van cân đối, cao 2 ly rộng 1.5 ly chuẩn mẫu.",
-        "huong_dan_sua": "Điểm dừng bút khép kín hoàn hảo."
+        "chu": "Cong kín",
+        "tieu_de": "Nét cong kín",
+        "nhan_xet": "Hình tròn khép kín đều hai bên, không bị méo lệch.",
+        "huong_dan_sua": "Chuẩn mực chuẩn bị viết chữ o, ô, ơ."
       },
       {
         "id": "t1_b5",
-        "box_2d": [380, 540, 530, 640],
+        "box_2d": [375, 560, 465, 600],
         "loai": "chuan",
-        "chu": "Nét khuyết trên",
-        "tieu_de": "Nét khuyết trên (l, b, h)",
-        "nhan_xet": "Vươn cao 2.5 ly chuẩn mực, điểm giao chéo đúng dòng kẻ 2.",
-        "huong_dan_sua": "Nét khuyết rất đẹp và thanh thoát."
+        "chu": "Khuyết trên",
+        "tieu_de": "Nét khuyết trên",
+        "nhan_xet": "Vươn cao chuẩn 2.5 ô ly, giao nhau đúng dòng kẻ 2.",
+        "huong_dan_sua": "Rất đẹp, chuẩn quy định của Bộ Giáo dục!"
       },
       {
         "id": "t1_b6",
-        "box_2d": [780, 540, 900, 650],
+        "box_2d": [785, 560, 845, 600],
         "loai": "loi",
         "chu": "Nét thắt",
         "tieu_de": "Nét thắt (v, r, s)",
@@ -257,7 +269,7 @@
         "box_2d": [80, 18, 170, 110],
         "loai": "chuan",
         "chu": "Số 1",
-        "tieu_de": "Chữ số 1",
+        "tieu_de": "Chữ số 1 mẫu",
         "nhan_xet": "Nét xiên hướng lên và nét sổ thẳng đứng chuẩn 2 ly.",
         "huong_dan_sua": "Rất chuẩn mực!"
       },
@@ -266,7 +278,7 @@
         "box_2d": [690, 18, 780, 110],
         "loai": "chuan",
         "chu": "Số 8",
-        "tieu_de": "Chữ số 8",
+        "tieu_de": "Chữ số 8 mẫu",
         "nhan_xet": "Hai nét cong lượn khép kín cân đối, nét trên hơi nhỏ hơn nét dưới chuẩn mẫu.",
         "huong_dan_sua": "Nét uốn rất khéo tay!"
       },
@@ -281,12 +293,12 @@
       },
       {
         "id": "t2_b4",
-        "box_2d": [290, 545, 380, 710],
-        "loai": "chu_y",
+        "box_2d": [290, 560, 380, 625],
+        "loai": "chuan",
         "chu": "ca",
-        "tieu_de": "Nối nét 'ca'",
-        "nhan_xet": "Điểm lia bút từ chữ 'c' sang chữ 'a' hơi hẹp.",
-        "huong_dan_sua": "Nới rộng khoảng cách giữa c và a thêm nửa ô ly."
+        "tieu_de": "Từ 'ca' Bài 1",
+        "nhan_xet": "Điểm nối nét giữa chữ 'c' sang chữ 'a' mượt mà, đúng chuẩn.",
+        "huong_dan_sua": "Khoảng cách nối nét rất chuẩn mực!"
       },
       {
         "id": "t2_b5",
@@ -299,12 +311,12 @@
       },
       {
         "id": "t2_b6",
-        "box_2d": [765, 540, 870, 700],
-        "loai": "loi",
+        "box_2d": [765, 555, 870, 615],
+        "loai": "chu_y",
         "chu": "bà",
         "tieu_de": "Dấu huyền chữ 'bà'",
-        "nhan_xet": "Dấu huyền đặt hơi sát lưng chữ b.",
-        "huong_dan_sua": "Dời dấu huyền sang chính giữa bên trên con chữ a."
+        "nhan_xet": "Dấu huyền đặt hơi nghiêng sang lưng chữ b.",
+        "huong_dan_sua": "Dời dấu huyền sang chính giữa bên trên con chữ a cách nửa ô ly."
       }
     ],
     "nhan_xet_phu_huynh": "Bé nắm vững cả chữ số và con chữ cái đầu tiên (a, b) rất xuất sắc. Ba mẹ hãy tiếp tục đồng hành và động viên con duy trì nét bút nắn nót này nhé!"
@@ -353,7 +365,7 @@
     "bounding_boxes": [
       {
         "id": "t3_b1",
-        "box_2d": [110, 35, 210, 120],
+        "box_2d": [130, 36, 195, 90],
         "loai": "chuan",
         "chu": "c",
         "tieu_de": "Chữ 'c' mẫu Bài 3",
@@ -362,46 +374,64 @@
       },
       {
         "id": "t3_b2",
-        "box_2d": [390, 50, 480, 200],
+        "box_2d": [395, 50, 450, 105],
         "loai": "chuan",
         "chu": "cá",
-        "tieu_de": "Từ 'cá'",
-        "nhan_xet": "Dấu sắc đặt đúng trên đầu con chữ 'a', xuôi theo nét nghiêng.",
+        "tieu_de": "Từ 'cá' Bài 3",
+        "nhan_xet": "Dấu sắc đặt đúng trên đầu con chữ 'a', xuôi theo nét nghiêng chuẩn.",
         "huong_dan_sua": "Vị trí dấu thanh rất chuẩn!"
       },
       {
         "id": "t3_b3",
-        "box_2d": [710, 40, 810, 130],
+        "box_2d": [820, 235, 885, 280],
         "loai": "chu_y",
         "chu": "ê",
         "tieu_de": "Dấu mũ chữ 'ê' Bài 4",
-        "nhan_xet": "Dấu mũ hơi lệch sang phải.",
+        "nhan_xet": "Dấu mũ hơi lệch nhẹ sang phải so với trục thân chữ.",
         "huong_dan_sua": "Căn chỉnh đỉnh mũ vào đúng trục giữa của chữ e."
       },
       {
         "id": "t3_b4",
-        "box_2d": [280, 570, 380, 790],
+        "box_2d": [890, 55, 970, 105],
         "loai": "chuan",
-        "chu": "Ba bế bé.",
-        "tieu_de": "Câu 'Ba bế bé.' Bài 5",
-        "nhan_xet": "Chữ B hoa uyển chuyển, khoảng cách giữa các tiếng đều đặn 1 con chữ o.",
-        "huong_dan_sua": "Trình bày câu ứng dụng rất xuất sắc!"
+        "chu": "bề",
+        "tieu_de": "Từ 'bề' Bài 4",
+        "nhan_xet": "Nét khuyết trên vươn cao chuẩn 2.5 ly, dấu huyền ngay ngắn.",
+        "huong_dan_sua": "Nét viết rất thanh thoát!"
       },
       {
         "id": "t3_b5",
-        "box_2d": [540, 560, 630, 630],
+        "box_2d": [120, 580, 185, 670],
         "loai": "chuan",
-        "chu": "o",
-        "tieu_de": "Chữ 'o' Bài 6",
-        "nhan_xet": "Nét cong kín khép điểm tròn đẹp, không bị méo đầu.",
-        "huong_dan_sua": "Chữ o rất tròn trịa!"
+        "chu": "bé bé",
+        "tieu_de": "Từ 'bé bé' Bài 5",
+        "nhan_xet": "Hai tiếng viết đều tăm tắp, độ cao chuẩn 2 ly và 2.5 ly.",
+        "huong_dan_sua": "Nét chữ đều đặn rất đẹp!"
       },
       {
         "id": "t3_b6",
-        "box_2d": [860, 560, 960, 830],
-        "loai": "loi",
+        "box_2d": [285, 580, 355, 650],
+        "loai": "chuan",
+        "chu": "Ba",
+        "tieu_de": "Chữ hoa 'Ba' Bài 5",
+        "nhan_xet": "Chữ B hoa uyển chuyển, được cô giáo chấm ngôi sao đỏ khen ngợi.",
+        "huong_dan_sua": "Chữ hoa rất xuất sắc!"
+      },
+      {
+        "id": "t3_b7",
+        "box_2d": [565, 570, 620, 615],
+        "loai": "chuan",
+        "chu": "o",
+        "tieu_de": "Chữ 'o' mẫu Bài 6",
+        "nhan_xet": "Nét cong kín khép điểm tròn đẹp, không bị nhọn đầu.",
+        "huong_dan_sua": "Chữ o rất tròn trịa!"
+      },
+      {
+        "id": "t3_b8",
+        "box_2d": [880, 570, 955, 665],
+        "loai": "chu_y",
         "chu": "bó cỏ",
-        "tieu_de": "Từ 'bó cỏ'",
+        "tieu_de": "Từ 'bó cỏ' Bài 6",
         "nhan_xet": "Dấu hỏi trên chữ 'cỏ' hơi bé.",
         "huong_dan_sua": "Uốn rõ nét cong móc câu cho dấu hỏi để người đọc dễ nhận diện."
       }
