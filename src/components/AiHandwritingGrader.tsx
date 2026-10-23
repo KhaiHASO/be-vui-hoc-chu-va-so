@@ -83,6 +83,7 @@ export function AiHandwritingGrader() {
   const [isRotating, setIsRotating] = useState<boolean>(false);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
+  const [inspectMode, setInspectMode] = useState<"illustration" | "student" | "teacher">("illustration");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -262,16 +263,19 @@ export function AiHandwritingGrader() {
   };
 
   // Thử nghiệm nhanh với bài mẫu
-  const handleLoadSample = async () => {
+  const handleLoadSample = async (
+    sampleUrl: string = "/data/samples/bai_1_hoc_sinh_xau.jpg",
+    fileName: string = "bai_1_hoc_sinh_xau.jpg"
+  ) => {
     sound.playTone(523.25, 0.08);
-    const sampleUrl = "/data/samples/bai_thi_viet_mau.jpg";
-    setSelectedFileName("bai_thi_viet_mau.jpg");
+    setSelectedFileName(fileName);
     setSelectedImage(sampleUrl);
     setAnnotations([]);
     setResult(null);
     setActiveBoxId(null);
-    setDrawTool("freehand");
+    setDrawTool("select");
     setZoomLevel(1);
+    setInspectMode("student");
   };
 
   // XỬ LÝ VẼ THỦ CÔNG LINH HOẠT TRÊN SVG (FREEHAND LASSO / CIRCLE / RECTANGLE)
@@ -582,6 +586,14 @@ export function AiHandwritingGrader() {
       const data: HandwritingEvaluationResult = await res.json();
       setResult(data);
 
+      if (Array.isArray(data.bounding_boxes) && data.bounding_boxes.length > 0 && annotations.length === 0) {
+        setAnnotations(data.bounding_boxes);
+        const firstLoi = data.bounding_boxes.find((b) => b.loai === "loi") || data.bounding_boxes[0];
+        if (firstLoi) {
+          setActiveBoxId(firstLoi.id);
+        }
+      }
+
       if (data.anh_hop_le && data.tong_diem >= 80) {
         confetti({
           particleCount: 50,
@@ -731,15 +743,36 @@ export function AiHandwritingGrader() {
               </button>
             </div>
 
-            {/* Nút thử nhanh mẫu */}
-            <div className="pt-3 border-t border-slate-200/60 w-full max-w-sm flex items-center justify-center">
-              <button
-                onClick={handleLoadSample}
-                className="text-xs font-bold text-violet-600 hover:text-violet-800 hover:underline flex items-center gap-1.5 py-1 px-3 rounded-lg hover:bg-violet-50 transition-all"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Chưa có ảnh? Bấm để thử ngay với Bài thi mẫu</span>
-              </button>
+            {/* Kho mẫu thực tế đối chiếu chuẩn GiaoDienMongMuon */}
+            <div className="pt-4 border-t border-slate-200/80 w-full space-y-2 text-center">
+              <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider block">
+                Hoặc chọn nhanh bài mẫu từ sách chuẩn hóa để trải nghiệm:
+              </span>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <button
+                  onClick={() => handleLoadSample("/data/samples/bai_1_hoc_sinh_xau.jpg", "bai_1_hoc_sinh_xau.jpg")}
+                  className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+                >
+                  <AlertCircle className="w-4 h-4 text-rose-600" />
+                  <span>Bài 1 (Chữ 'a') - Mẫu có lỗi nét (Chuẩn GiaoDienMongMuon)</span>
+                </button>
+
+                <button
+                  onClick={() => handleLoadSample("/data/samples/bai_1_hoc_sinh_dep.jpg", "bai_1_hoc_sinh_dep.jpg")}
+                  className="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>Bài 1 (Chữ 'a') - Vở sạch chữ đẹp lớp 1</span>
+                </button>
+
+                <button
+                  onClick={() => handleLoadSample("/data/samples/bai_thi_viet_mau.jpg", "bai_thi_viet_mau.jpg")}
+                  className="px-3.5 py-2 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 border border-violet-200 font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+                >
+                  <Sparkles className="w-4 h-4 text-violet-600" />
+                  <span>Bài thi viết tổng hợp mẫu</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1041,25 +1074,86 @@ export function AiHandwritingGrader() {
                               className="cursor-pointer transition-opacity hover:opacity-90"
                             >
                               {shapeElement}
-                              {/* Tag nhãn nhỏ phía trên nét */}
-                              <rect
-                                x={xmin}
-                                y={Math.max(4, ymin - 22)}
-                                width={Math.max(40, (annot.chu?.length || 4) * 8 + 32)}
-                                height={20}
-                                fill={colors.stroke}
-                                rx={4}
-                              />
-                              <text
-                                x={xmin + 5}
-                                y={Math.max(4, ymin - 22) + 14}
-                                fill="#ffffff"
-                                fontSize="12"
-                                fontWeight="bold"
-                                fontFamily="sans-serif"
-                              >
-                                {annot.chu} #{idx + 1}
-                              </text>
+
+                              {/* CHUẨN GIAO DIỆN MONG MUỐN: VÒNG TRÒN NÉT ĐỨT + ĐƯỜNG CHỈ DẪN CALLOUT */}
+                              {annot.callout && (
+                                <g className="pointer-events-none">
+                                  {/* Vòng tròn nét đứt bao quanh vị trí lỗi */}
+                                  <circle
+                                    cx={annot.callout.target[0]}
+                                    cy={annot.callout.target[1]}
+                                    r={annot.callout.radius || 24}
+                                    fill="none"
+                                    stroke={colors.stroke}
+                                    strokeWidth={3}
+                                    strokeDasharray="6 4"
+                                  />
+                                  {/* Đường chỉ dẫn chéo từ vòng tròn ra điểm neo */}
+                                  <line
+                                    x1={annot.callout.target[0]}
+                                    y1={annot.callout.target[1]}
+                                    x2={annot.callout.anchor[0]}
+                                    y2={annot.callout.anchor[1]}
+                                    stroke={colors.stroke}
+                                    strokeWidth={2.5}
+                                    strokeLinecap="round"
+                                  />
+                                  {/* Chấm tròn đỏ tại đầu mút (chuẩn GiaoDienMongMuon.png) */}
+                                  <circle
+                                    cx={annot.callout.anchor[0]}
+                                    cy={annot.callout.anchor[1]}
+                                    r={5.5}
+                                    fill={colors.stroke}
+                                  />
+                                  {/* Nhãn tooltip nhỏ tại điểm neo */}
+                                  <g transform={`translate(${annot.callout.anchor[0] + 6}, ${annot.callout.anchor[1] - 12})`}>
+                                    <rect
+                                      x={0}
+                                      y={0}
+                                      width={Math.max(120, (annot.callout.title || annot.tieu_de).length * 7.5 + 18)}
+                                      height={24}
+                                      rx={6}
+                                      fill="#0f172a"
+                                      stroke={colors.stroke}
+                                      strokeWidth={1.5}
+                                    />
+                                    <text
+                                      x={8}
+                                      y={16}
+                                      fill="#ffffff"
+                                      fontSize="11"
+                                      fontWeight="bold"
+                                      fontFamily="sans-serif"
+                                    >
+                                      {annot.callout.title || annot.tieu_de}
+                                    </text>
+                                  </g>
+                                </g>
+                              )}
+
+                              {/* Tag nhãn nhỏ phía trên nét nếu không có callout */}
+                              {!annot.callout && (
+                                <>
+                                  <rect
+                                    x={xmin}
+                                    y={Math.max(4, ymin - 22)}
+                                    width={Math.max(40, (annot.chu?.length || 4) * 8 + 32)}
+                                    height={20}
+                                    fill={colors.stroke}
+                                    rx={4}
+                                  />
+                                  <text
+                                    x={xmin + 5}
+                                    y={Math.max(4, ymin - 22) + 14}
+                                    fill="#ffffff"
+                                    fontSize="12"
+                                    fontWeight="bold"
+                                    fontFamily="sans-serif"
+                                  >
+                                    {annot.chu} #{idx + 1}
+                                  </text>
+                                </>
+                              )}
                             </g>
                           );
                         })}
@@ -1200,6 +1294,120 @@ export function AiHandwritingGrader() {
                     >
                       ⚠️ Chú ý
                     </button>
+                  </div>
+
+                  {/* KHUNG SOI NÉT VIẾT CHUẨN GIAO DIỆN MONG MUỐN (DARK Ô LY GRID) */}
+                  <div id="dark-grid-inspector" className="mt-3 p-4 rounded-3xl bg-[#090d16] border-2 border-slate-800 text-white shadow-2xl relative overflow-hidden">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2.5 mb-3">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-3 h-3 rounded-full ${activeAnnotation.loai === "loi" ? "bg-rose-500 animate-pulse" : "bg-emerald-500"}`} />
+                        <h4 className="text-sm font-black text-slate-100 tracking-wide">
+                          {activeAnnotation.loai === "loi" ? "Ví dụ nét viết chưa đạt" : "Soi chi tiết nét viết"}
+                        </h4>
+                      </div>
+
+                      {/* Bộ nút chuyển đổi 3 chế độ xem đối chiếu */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        {activeAnnotation.loai === "loi" && (
+                          <button
+                            onClick={() => setInspectMode("illustration")}
+                            className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-black transition-all active:scale-95 flex items-center gap-1.5 ${
+                              inspectMode === "illustration"
+                                ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-400"
+                                : "bg-slate-800 text-slate-300 hover:text-white"
+                            }`}
+                          >
+                            <span>🎯 Minh họa lỗi</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setInspectMode("student")}
+                          className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-black transition-all active:scale-95 flex items-center gap-1.5 ${
+                            inspectMode === "student"
+                              ? "bg-amber-600 text-white shadow-md ring-2 ring-amber-400"
+                              : "bg-slate-800 text-slate-300 hover:text-white"
+                          }`}
+                        >
+                          <span>✍️ Nét bé viết</span>
+                        </button>
+                        {activeAnnotation.teacher_sample_url && (
+                          <button
+                            onClick={() => setInspectMode("teacher")}
+                            className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-black transition-all active:scale-95 flex items-center gap-1.5 ${
+                              inspectMode === "teacher"
+                                ? "bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400"
+                                : "bg-slate-800 text-slate-300 hover:text-white"
+                            }`}
+                          >
+                            <span>🎓 Mẫu cô giáo</span>
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* VÙNG HIỂN THỊ CHỮ VÀ LƯỚI Ô LY CHUẨN GIAODIENMONGMUON.PNG */}
+                    <div className="relative w-full aspect-[4/3] max-w-sm mx-auto rounded-2xl bg-[#050811] border border-slate-800/90 flex items-center justify-center overflow-hidden shadow-inner">
+                      {inspectMode === "illustration" ? (
+                        /* CHẾ ĐỘ 1: MINH HỌA GIAO DIỆN MONG MUỐN CHUẨN 100% */
+                        <img
+                          src="/data/samples/giao_dien_mong_muon_a_loi.png"
+                          alt="Ví dụ nét viết chưa đạt chuẩn"
+                          className="w-full h-full object-contain select-none"
+                        />
+                      ) : (
+                        /* CHẾ ĐỘ 2 & 3: LƯỚI Ô LY DARK NAVY + NÉT BÉ HOẶC CÔ GIÁO */
+                        <>
+                          {/* Lưới ô ly SVG nền tối */}
+                          <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-40" viewBox="0 0 300 225">
+                            <defs>
+                              <pattern id="darkOlyGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#2563eb" strokeWidth="0.8" />
+                              </pattern>
+                            </defs>
+                            <rect width="100%" height="100%" fill="url(#darkOlyGrid)" />
+                            {/* Đường kẻ ngang đậm số 1 (baseline) */}
+                            <line x1="0" y1="165" x2="300" y2="165" stroke="#3b82f6" strokeWidth="2.5" />
+                            {/* Đường kẻ ngang 3 (độ cao 2 ly) */}
+                            <line x1="0" y1="105" x2="300" y2="105" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 3" />
+                          </svg>
+
+                          {/* Hình ảnh nét viết */}
+                          <img
+                            src={
+                              inspectMode === "teacher" && activeAnnotation.teacher_sample_url
+                                ? activeAnnotation.teacher_sample_url
+                                : activeAnnotation.sample_crop_url || "/data/samples/crop_a_loi_nho_cao.jpg"
+                            }
+                            alt="Soi nét chữ"
+                            className="w-auto h-3/4 object-contain z-10 select-none drop-shadow-md rounded-lg"
+                          />
+
+                          {/* Vòng tròn nét đứt và chỉ dẫn nếu ở chế độ nét bé viết và có lỗi */}
+                          {inspectMode === "student" && activeAnnotation.loai === "loi" && (
+                            <svg className="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 300 225">
+                              {/* Vòng tròn nét đứt đỏ quanh điểm lỗi */}
+                              <circle cx="152" cy="98" r="26" fill="rgba(239, 68, 68, 0.08)" stroke="#ef4444" strokeWidth="3" strokeDasharray="6 4" />
+                              {/* Đường chỉ dẫn chéo lên góc trên bên phải */}
+                              <line x1="170" y1="80" x2="225" y2="35" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" />
+                              {/* Chấm tròn đỏ ở đầu mút */}
+                              <circle cx="225" cy="35" r="6" fill="#ef4444" />
+                            </svg>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {/* Nhận xét và hướng dẫn sư phạm */}
+                    <div className="mt-3 text-xs space-y-1.5 bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">
+                      <p className="font-bold text-slate-200">
+                        📌 <span className="text-amber-400">Đánh giá hình học:</span> {activeAnnotation.nhan_xet}
+                      </p>
+                      {activeAnnotation.huong_dan_sua && (
+                        <p className="text-slate-300">
+                          💡 <span className="text-emerald-400">Cách sửa tay cho bé:</span> {activeAnnotation.huong_dan_sua}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

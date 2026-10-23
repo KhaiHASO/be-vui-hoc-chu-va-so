@@ -56,7 +56,12 @@
     "bounding_boxes": [
       {
         "id": "b1",
-        "box_2d": [310, 50, 360, 115],
+        "box_2d": [
+          310,
+          50,
+          360,
+          115
+        ],
         "loai": "chuan",
         "chu": "v",
         "tieu_de": "Chữ 'v' mẫu",
@@ -65,7 +70,12 @@
       },
       {
         "id": "b2",
-        "box_2d": [310, 275, 360, 335],
+        "box_2d": [
+          310,
+          275,
+          360,
+          335
+        ],
         "loai": "chu_y",
         "chu": "v",
         "tieu_de": "Nét thắt chữ 'v'",
@@ -74,7 +84,12 @@
       },
       {
         "id": "b3",
-        "box_2d": [395, 220, 445, 310],
+        "box_2d": [
+          395,
+          220,
+          445,
+          310
+        ],
         "loai": "chuan",
         "chu": "ua",
         "tieu_de": "Vần 'ua' liền mạch",
@@ -83,7 +98,12 @@
       },
       {
         "id": "b4",
-        "box_2d": [480, 50, 540, 280],
+        "box_2d": [
+          480,
+          50,
+          540,
+          280
+        ],
         "loai": "chu_y",
         "chu": "xe ngựa",
         "tieu_de": "Khoảng cách giữa hai tiếng",
@@ -92,7 +112,12 @@
       },
       {
         "id": "b5",
-        "box_2d": [570, 45, 640, 150],
+        "box_2d": [
+          570,
+          45,
+          640,
+          150
+        ],
         "loai": "chuan",
         "chu": "Bà",
         "tieu_de": "Chữ hoa 'B'",
@@ -101,7 +126,12 @@
       },
       {
         "id": "b6",
-        "box_2d": [575, 395, 635, 480],
+        "box_2d": [
+          575,
+          395,
+          635,
+          480
+        ],
         "loai": "chu_y",
         "chu": "khế",
         "tieu_de": "Dấu sắc chữ 'khế'",
@@ -167,7 +197,12 @@
     "bounding_boxes": [
       {
         "id": "t1_b1",
-        "box_2d": [200, 18, 260, 48],
+        "box_2d": [
+          200,
+          18,
+          260,
+          48
+        ],
         "loai": "chuan",
         "chu": "Nét sổ",
         "tieu_de": "Nét sổ thẳng đứng",
@@ -176,7 +211,12 @@
       },
       {
         "id": "t1_b2",
-        "box_2d": [475, 18, 535, 48],
+        "box_2d": [
+          475,
+          18,
+          535,
+          48
+        ],
         "loai": "chuan",
         "chu": "Móc xuôi",
         "tieu_de": "Nét móc xuôi",
@@ -185,7 +225,12 @@
       },
       {
         "id": "t1_b3",
-        "box_2d": [650, 18, 720, 52],
+        "box_2d": [
+          650,
+          18,
+          720,
+          52
+        ],
         "loai": "chu_y",
         "chu": "Móc 2 đầu",
         "tieu_de": "Nét móc hai đầu",
@@ -194,7 +239,12 @@
       },
       {
         "id": "t1_b4",
-        "box_2d": [275, 565, 330, 600],
+        "box_2d": [
+          275,
+          565,
+          330,
+          600
+        ],
         "loai": "chuan",
         "chu": "Cong kín",
         "tieu_de": "Nét cong kín",
@@ -203,7 +253,12 @@
       },
       {
         "id": "t1_b5",
-        "box_2d": [375, 560, 465, 600],
+        "box_2d": [
+          375,
+          560,
+          465,
+          600
+        ],
         "loai": "chuan",
         "chu": "Khuyết trên",
         "tieu_de": "Nét khuyết trên",
@@ -212,7 +267,12 @@
       },
       {
         "id": "t1_b6",
-        "box_2d": [785, 560, 845, 600],
+        "box_2d": [
+          785,
+          560,
+          845,
+          600
+        ],
         "loai": "loi",
         "chu": "Nét thắt",
         "tieu_de": "Nét thắt (v, r, s)",
@@ -266,7 +326,12 @@
     "bounding_boxes": [
       {
         "id": "t2_b1",
-        "box_2d": [80, 18, 170, 110],
+        "box_2d": [
+          80,
+          18,
+          170,
+          110
+        ],
         "loai": "chuan",
         "chu": "Số 1",
         "tieu_de": "Chữ số 1 mẫu",
@@ -275,7 +340,12 @@
       },
       {
         "id": "t2_b2",
-        "box_2d": [690, 18, 780, 110],
+        "box_2d": [
+          690,
+          18,
+          780,
+          110
+        ],
         "loai": "chuan",
         "chu": "Số 8",
         "tieu_de": "Chữ số 8 mẫu",
@@ -284,7 +354,12 @@
       },
       {
         "id": "t2_b3",
-        "box_2d": [80, 535, 175, 620],
+        "box_2d": [
+          80,
+          535,
+          175,
+          620
+        ],
         "loai": "chuan",
         "chu": "a",
         "tieu_de": "Chữ 'a' mẫu Bài 1",
@@ -293,7 +368,12 @@
       },
       {
         "id": "t2_b4",
-        "box_2d": [290, 560, 380, 625],
+        "box_2d": [
+          290,
+          560,
+          380,
+          625
+        ],
         "loai": "chuan",
         "chu": "ca",
         "tieu_de": "Từ 'ca' Bài 1",
@@ -302,7 +382,12 @@
       },
       {
         "id": "t2_b5",
-        "box_2d": [480, 530, 600, 620],
+        "box_2d": [
+          480,
+          530,
+          600,
+          620
+        ],
         "loai": "chuan",
         "chu": "b",
         "tieu_de": "Chữ 'b' mẫu Bài 2",
@@ -311,7 +396,12 @@
       },
       {
         "id": "t2_b6",
-        "box_2d": [765, 555, 870, 615],
+        "box_2d": [
+          765,
+          555,
+          870,
+          615
+        ],
         "loai": "chu_y",
         "chu": "bà",
         "tieu_de": "Dấu huyền chữ 'bà'",
@@ -365,7 +455,12 @@
     "bounding_boxes": [
       {
         "id": "t3_b1",
-        "box_2d": [130, 36, 195, 90],
+        "box_2d": [
+          130,
+          36,
+          195,
+          90
+        ],
         "loai": "chuan",
         "chu": "c",
         "tieu_de": "Chữ 'c' mẫu Bài 3",
@@ -374,7 +469,12 @@
       },
       {
         "id": "t3_b2",
-        "box_2d": [395, 50, 450, 105],
+        "box_2d": [
+          395,
+          50,
+          450,
+          105
+        ],
         "loai": "chuan",
         "chu": "cá",
         "tieu_de": "Từ 'cá' Bài 3",
@@ -383,7 +483,12 @@
       },
       {
         "id": "t3_b3",
-        "box_2d": [820, 235, 885, 280],
+        "box_2d": [
+          820,
+          235,
+          885,
+          280
+        ],
         "loai": "chu_y",
         "chu": "ê",
         "tieu_de": "Dấu mũ chữ 'ê' Bài 4",
@@ -392,7 +497,12 @@
       },
       {
         "id": "t3_b4",
-        "box_2d": [890, 55, 970, 105],
+        "box_2d": [
+          890,
+          55,
+          970,
+          105
+        ],
         "loai": "chuan",
         "chu": "bề",
         "tieu_de": "Từ 'bề' Bài 4",
@@ -401,7 +511,12 @@
       },
       {
         "id": "t3_b5",
-        "box_2d": [120, 580, 185, 670],
+        "box_2d": [
+          120,
+          580,
+          185,
+          670
+        ],
         "loai": "chuan",
         "chu": "bé bé",
         "tieu_de": "Từ 'bé bé' Bài 5",
@@ -410,7 +525,12 @@
       },
       {
         "id": "t3_b6",
-        "box_2d": [285, 580, 355, 650],
+        "box_2d": [
+          285,
+          580,
+          355,
+          650
+        ],
         "loai": "chuan",
         "chu": "Ba",
         "tieu_de": "Chữ hoa 'Ba' Bài 5",
@@ -419,7 +539,12 @@
       },
       {
         "id": "t3_b7",
-        "box_2d": [565, 570, 620, 615],
+        "box_2d": [
+          565,
+          570,
+          620,
+          615
+        ],
         "loai": "chuan",
         "chu": "o",
         "tieu_de": "Chữ 'o' mẫu Bài 6",
@@ -428,7 +553,12 @@
       },
       {
         "id": "t3_b8",
-        "box_2d": [880, 570, 955, 665],
+        "box_2d": [
+          880,
+          570,
+          955,
+          665
+        ],
         "loai": "chu_y",
         "chu": "bó cỏ",
         "tieu_de": "Từ 'bó cỏ' Bài 6",
@@ -437,5 +567,961 @@
       }
     ],
     "nhan_xet_phu_huynh": "Bé đã biết viết cả câu hoàn chỉnh và dấu câu (dấu chấm). Khả năng điều khiển nét bút của con rất khéo léo, ba mẹ hãy tự hào về con nhé!"
+  },
+  "bai_1_hoc_sinh_xau.jpg": {
+    "anh_hop_le": true,
+    "tong_diem": 72,
+    "xep_loai": "📖 Cần Luyện Thêm (Phát hiện lỗi nét theo chuẩn GiaoDienMongMuon)",
+    "tieu_chi": {
+      "dung_mau_chu": 7.0,
+      "do_deu_net": 7.0,
+      "khoang_cach": 6.5,
+      "do_thang_hang": 8.0,
+      "trinh_bay": 7.5,
+      "net_co_ban": 7.0
+    },
+    "nhan_xet_chung": "Con có cố gắng hoàn thành trọn vẹn bài viết trên vở ô ly! Độ cao cơ bản tương đối bám sát đường kẻ 3. Tuy nhiên, nét móc ngược của con chữ 'a' còn hay bị nhô cao vượt ngọn, và khoảng cách nối tiếng 'ca' cần giãn cách thoáng hơn một chút.",
+    "diem_tot": [
+      "Con viết đủ các dòng kẻ theo yêu cầu bài học số 1.",
+      "Chân chữ đa số chạm được vào đường kẻ đậm số 1, không bị bay bổng.",
+      "Giữ vở tương đối phẳng phiu, không bị rách mép giấy."
+    ],
+    "loi_can_cai_thien": [
+      "Lỗi nhô cao nét móc (như khoanh tròn đỏ): Nét móc số 2 bị nhô vượt quá đỉnh nét cong kín ở hàng 1 và hàng 2.",
+      "Bụng chữ 'a' đôi chỗ còn hẹp bề ngang (mới đạt 1.2 ly thay vì 1.5 ly).",
+      "Nối nét từ 'c' sang 'a' ở tiếng 'ca' bị dính sát vào nhau."
+    ],
+    "goi_y_luyen_tap": [
+      "Nhắc bé đặt đầu bút nét 2 chạm đúng đường kẻ 3, uốn cong ôm sát lưng nét cong kín trước khi kéo xuống.",
+      "Cho bé luyện thêm 2 dòng nét cong kín tròn trịa bằng cách tưởng tượng quả trứng gà đứng thẳng.",
+      "Cách một khoảng nửa ô ly khi lia bút viết tiếng 'ca'."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Thân chữ cao 2 ô ly, chân chạm dòng kẻ 1.",
+        "sai_o_dau": "Nét móc ngược nhô cao hơn đỉnh nét cong tròn.",
+        "can_cai_thien": "Đặt bút đúng đường kẻ 3, không đưa vượt lên trên."
+      },
+      {
+        "chu": "ca",
+        "nhan_xet": "Các con chữ đều rõ ràng.",
+        "sai_o_dau": "Chữ c và chữ a dính sát nhau.",
+        "can_cai_thien": "Dừng bút chữ c ở đường kẻ 2 rồi mới viết chữ a."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_xau_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          343,
+          202,
+          464
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' viết tốt",
+        "nhan_xet": "Độ cao 2 ô ly chuẩn, chân chữ chạm đúng dòng kẻ đậm số 1.",
+        "huong_dan_sua": "Giữ vững nét viết đều tay này con nhé!",
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_1.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a3",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          586,
+          202,
+          707
+        ],
+        "ellipse": [
+          646,
+          150,
+          20,
+          20
+        ],
+        "loai": "chu_y",
+        "chu": "a",
+        "tieu_de": "Bụng chữ hơi hẹp",
+        "nhan_xet": "Nét cong kín hơi hẹp chiều ngang (khoảng 1.2 ly so với chuẩn 1.5 ly).",
+        "huong_dan_sua": "Uốn cong tròn hơn sang bên trái để bụng chữ tròn đầy.",
+        "callout": {
+          "target": [
+            646,
+            150
+          ],
+          "anchor": [
+            696,
+            120
+          ],
+          "radius": 22,
+          "title": "Bụng chữ o hơi hẹp"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_3.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a4",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          707,
+          202,
+          829
+        ],
+        "ellipse": [
+          778,
+          124,
+          22,
+          22
+        ],
+        "loai": "loi",
+        "chu": "a",
+        "tieu_de": "Nét móc ngược nhô cao (Ví dụ nét viết chưa đạt)",
+        "nhan_xet": "Điểm đặt bút của nét móc ngược cao hơn đỉnh nét cong kín 0.3 ô ly, làm đầu con chữ bị gãy nhọn.",
+        "huong_dan_sua": "Điểm đặt bút nét 2 phải đặt đúng trên đường kẻ 3, uốn cong ôm sát thân nét cong kín rồi mới kéo xuống.",
+        "callout": {
+          "target": [
+            778,
+            124
+          ],
+          "anchor": [
+            833,
+            89
+          ],
+          "radius": 24,
+          "title": "Nét móc ngược nhô cao hơn nét cong kín"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_4.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_ca",
+        "shape": "circle",
+        "box_2d": [
+          395,
+          707,
+          491,
+          871
+        ],
+        "ellipse": [
+          789,
+          443,
+          35,
+          25
+        ],
+        "loai": "loi",
+        "chu": "ca",
+        "tieu_de": "Khoảng cách nối nét 'c' sang 'a'",
+        "nhan_xet": "Chữ 'c' và chữ 'a' bị dính sát vào nhau, điểm dừng nét chữ c chưa mở rộng đủ nửa ô ly.",
+        "huong_dan_sua": "Đưa điểm dừng bút của chữ 'c' chạm đường kẻ 2 rồi lia bút viết nét cong kín của chữ 'a'.",
+        "callout": {
+          "target": [
+            781,
+            443
+          ],
+          "anchor": [
+            841,
+            370
+          ],
+          "radius": 28,
+          "title": "Nối nét dính sát thân chữ"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d4_ca.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Ba mẹ hãy cầm tay uốn lại cho con điểm đặt bút của nét móc ngược con chữ 'a' nhé. Con nắm cấu tạo nét rất nhanh, chỉ cần chú ý điểm dừng và điểm bắt đầu là chữ sẽ tròn đẹp ngay!"
+  },
+  "bai_1_hoc_sinh_xau": {
+    "anh_hop_le": true,
+    "tong_diem": 72,
+    "xep_loai": "📖 Cần Luyện Thêm (Phát hiện lỗi nét theo chuẩn GiaoDienMongMuon)",
+    "tieu_chi": {
+      "dung_mau_chu": 7.0,
+      "do_deu_net": 7.0,
+      "khoang_cach": 6.5,
+      "do_thang_hang": 8.0,
+      "trinh_bay": 7.5,
+      "net_co_ban": 7.0
+    },
+    "nhan_xet_chung": "Con có cố gắng hoàn thành trọn vẹn bài viết trên vở ô ly! Độ cao cơ bản tương đối bám sát đường kẻ 3. Tuy nhiên, nét móc ngược của con chữ 'a' còn hay bị nhô cao vượt ngọn, và khoảng cách nối tiếng 'ca' cần giãn cách thoáng hơn một chút.",
+    "diem_tot": [
+      "Con viết đủ các dòng kẻ theo yêu cầu bài học số 1.",
+      "Chân chữ đa số chạm được vào đường kẻ đậm số 1, không bị bay bổng.",
+      "Giữ vở tương đối phẳng phiu, không bị rách mép giấy."
+    ],
+    "loi_can_cai_thien": [
+      "Lỗi nhô cao nét móc (như khoanh tròn đỏ): Nét móc số 2 bị nhô vượt quá đỉnh nét cong kín ở hàng 1 và hàng 2.",
+      "Bụng chữ 'a' đôi chỗ còn hẹp bề ngang (mới đạt 1.2 ly thay vì 1.5 ly).",
+      "Nối nét từ 'c' sang 'a' ở tiếng 'ca' bị dính sát vào nhau."
+    ],
+    "goi_y_luyen_tap": [
+      "Nhắc bé đặt đầu bút nét 2 chạm đúng đường kẻ 3, uốn cong ôm sát lưng nét cong kín trước khi kéo xuống.",
+      "Cho bé luyện thêm 2 dòng nét cong kín tròn trịa bằng cách tưởng tượng quả trứng gà đứng thẳng.",
+      "Cách một khoảng nửa ô ly khi lia bút viết tiếng 'ca'."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Thân chữ cao 2 ô ly, chân chạm dòng kẻ 1.",
+        "sai_o_dau": "Nét móc ngược nhô cao hơn đỉnh nét cong tròn.",
+        "can_cai_thien": "Đặt bút đúng đường kẻ 3, không đưa vượt lên trên."
+      },
+      {
+        "chu": "ca",
+        "nhan_xet": "Các con chữ đều rõ ràng.",
+        "sai_o_dau": "Chữ c và chữ a dính sát nhau.",
+        "can_cai_thien": "Dừng bút chữ c ở đường kẻ 2 rồi mới viết chữ a."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_xau_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          343,
+          202,
+          464
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' viết tốt",
+        "nhan_xet": "Độ cao 2 ô ly chuẩn, chân chữ chạm đúng dòng kẻ đậm số 1.",
+        "huong_dan_sua": "Giữ vững nét viết đều tay này con nhé!",
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_1.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a3",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          586,
+          202,
+          707
+        ],
+        "ellipse": [
+          646,
+          150,
+          20,
+          20
+        ],
+        "loai": "chu_y",
+        "chu": "a",
+        "tieu_de": "Bụng chữ hơi hẹp",
+        "nhan_xet": "Nét cong kín hơi hẹp chiều ngang (khoảng 1.2 ly so với chuẩn 1.5 ly).",
+        "huong_dan_sua": "Uốn cong tròn hơn sang bên trái để bụng chữ tròn đầy.",
+        "callout": {
+          "target": [
+            646,
+            150
+          ],
+          "anchor": [
+            696,
+            120
+          ],
+          "radius": 22,
+          "title": "Bụng chữ o hơi hẹp"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_3.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a4",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          707,
+          202,
+          829
+        ],
+        "ellipse": [
+          778,
+          124,
+          22,
+          22
+        ],
+        "loai": "loi",
+        "chu": "a",
+        "tieu_de": "Nét móc ngược nhô cao (Ví dụ nét viết chưa đạt)",
+        "nhan_xet": "Điểm đặt bút của nét móc ngược cao hơn đỉnh nét cong kín 0.3 ô ly, làm đầu con chữ bị gãy nhọn.",
+        "huong_dan_sua": "Điểm đặt bút nét 2 phải đặt đúng trên đường kẻ 3, uốn cong ôm sát thân nét cong kín rồi mới kéo xuống.",
+        "callout": {
+          "target": [
+            778,
+            124
+          ],
+          "anchor": [
+            833,
+            89
+          ],
+          "radius": 24,
+          "title": "Nét móc ngược nhô cao hơn nét cong kín"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_4.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_ca",
+        "shape": "circle",
+        "box_2d": [
+          395,
+          707,
+          491,
+          871
+        ],
+        "ellipse": [
+          789,
+          443,
+          35,
+          25
+        ],
+        "loai": "loi",
+        "chu": "ca",
+        "tieu_de": "Khoảng cách nối nét 'c' sang 'a'",
+        "nhan_xet": "Chữ 'c' và chữ 'a' bị dính sát vào nhau, điểm dừng nét chữ c chưa mở rộng đủ nửa ô ly.",
+        "huong_dan_sua": "Đưa điểm dừng bút của chữ 'c' chạm đường kẻ 2 rồi lia bút viết nét cong kín của chữ 'a'.",
+        "callout": {
+          "target": [
+            781,
+            443
+          ],
+          "anchor": [
+            841,
+            370
+          ],
+          "radius": 28,
+          "title": "Nối nét dính sát thân chữ"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d4_ca.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Ba mẹ hãy cầm tay uốn lại cho con điểm đặt bút của nét móc ngược con chữ 'a' nhé. Con nắm cấu tạo nét rất nhanh, chỉ cần chú ý điểm dừng và điểm bắt đầu là chữ sẽ tròn đẹp ngay!"
+  },
+  "HocSinhChuXau1_BanDienTu": {
+    "anh_hop_le": true,
+    "tong_diem": 72,
+    "xep_loai": "📖 Cần Luyện Thêm (Phát hiện lỗi nét theo chuẩn GiaoDienMongMuon)",
+    "tieu_chi": {
+      "dung_mau_chu": 7.0,
+      "do_deu_net": 7.0,
+      "khoang_cach": 6.5,
+      "do_thang_hang": 8.0,
+      "trinh_bay": 7.5,
+      "net_co_ban": 7.0
+    },
+    "nhan_xet_chung": "Con có cố gắng hoàn thành trọn vẹn bài viết trên vở ô ly! Độ cao cơ bản tương đối bám sát đường kẻ 3. Tuy nhiên, nét móc ngược của con chữ 'a' còn hay bị nhô cao vượt ngọn, và khoảng cách nối tiếng 'ca' cần giãn cách thoáng hơn một chút.",
+    "diem_tot": [
+      "Con viết đủ các dòng kẻ theo yêu cầu bài học số 1.",
+      "Chân chữ đa số chạm được vào đường kẻ đậm số 1, không bị bay bổng.",
+      "Giữ vở tương đối phẳng phiu, không bị rách mép giấy."
+    ],
+    "loi_can_cai_thien": [
+      "Lỗi nhô cao nét móc (như khoanh tròn đỏ): Nét móc số 2 bị nhô vượt quá đỉnh nét cong kín ở hàng 1 và hàng 2.",
+      "Bụng chữ 'a' đôi chỗ còn hẹp bề ngang (mới đạt 1.2 ly thay vì 1.5 ly).",
+      "Nối nét từ 'c' sang 'a' ở tiếng 'ca' bị dính sát vào nhau."
+    ],
+    "goi_y_luyen_tap": [
+      "Nhắc bé đặt đầu bút nét 2 chạm đúng đường kẻ 3, uốn cong ôm sát lưng nét cong kín trước khi kéo xuống.",
+      "Cho bé luyện thêm 2 dòng nét cong kín tròn trịa bằng cách tưởng tượng quả trứng gà đứng thẳng.",
+      "Cách một khoảng nửa ô ly khi lia bút viết tiếng 'ca'."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Thân chữ cao 2 ô ly, chân chạm dòng kẻ 1.",
+        "sai_o_dau": "Nét móc ngược nhô cao hơn đỉnh nét cong tròn.",
+        "can_cai_thien": "Đặt bút đúng đường kẻ 3, không đưa vượt lên trên."
+      },
+      {
+        "chu": "ca",
+        "nhan_xet": "Các con chữ đều rõ ràng.",
+        "sai_o_dau": "Chữ c và chữ a dính sát nhau.",
+        "can_cai_thien": "Dừng bút chữ c ở đường kẻ 2 rồi mới viết chữ a."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_xau_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          343,
+          202,
+          464
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' viết tốt",
+        "nhan_xet": "Độ cao 2 ô ly chuẩn, chân chữ chạm đúng dòng kẻ đậm số 1.",
+        "huong_dan_sua": "Giữ vững nét viết đều tay này con nhé!",
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_1.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a3",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          586,
+          202,
+          707
+        ],
+        "ellipse": [
+          646,
+          150,
+          20,
+          20
+        ],
+        "loai": "chu_y",
+        "chu": "a",
+        "tieu_de": "Bụng chữ hơi hẹp",
+        "nhan_xet": "Nét cong kín hơi hẹp chiều ngang (khoảng 1.2 ly so với chuẩn 1.5 ly).",
+        "huong_dan_sua": "Uốn cong tròn hơn sang bên trái để bụng chữ tròn đầy.",
+        "callout": {
+          "target": [
+            646,
+            150
+          ],
+          "anchor": [
+            696,
+            120
+          ],
+          "radius": 22,
+          "title": "Bụng chữ o hơi hẹp"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_3.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a4",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          707,
+          202,
+          829
+        ],
+        "ellipse": [
+          778,
+          124,
+          22,
+          22
+        ],
+        "loai": "loi",
+        "chu": "a",
+        "tieu_de": "Nét móc ngược nhô cao (Ví dụ nét viết chưa đạt)",
+        "nhan_xet": "Điểm đặt bút của nét móc ngược cao hơn đỉnh nét cong kín 0.3 ô ly, làm đầu con chữ bị gãy nhọn.",
+        "huong_dan_sua": "Điểm đặt bút nét 2 phải đặt đúng trên đường kẻ 3, uốn cong ôm sát thân nét cong kín rồi mới kéo xuống.",
+        "callout": {
+          "target": [
+            778,
+            124
+          ],
+          "anchor": [
+            833,
+            89
+          ],
+          "radius": 24,
+          "title": "Nét móc ngược nhô cao hơn nét cong kín"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_4.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_ca",
+        "shape": "circle",
+        "box_2d": [
+          395,
+          707,
+          491,
+          871
+        ],
+        "ellipse": [
+          789,
+          443,
+          35,
+          25
+        ],
+        "loai": "loi",
+        "chu": "ca",
+        "tieu_de": "Khoảng cách nối nét 'c' sang 'a'",
+        "nhan_xet": "Chữ 'c' và chữ 'a' bị dính sát vào nhau, điểm dừng nét chữ c chưa mở rộng đủ nửa ô ly.",
+        "huong_dan_sua": "Đưa điểm dừng bút của chữ 'c' chạm đường kẻ 2 rồi lia bút viết nét cong kín của chữ 'a'.",
+        "callout": {
+          "target": [
+            781,
+            443
+          ],
+          "anchor": [
+            841,
+            370
+          ],
+          "radius": 28,
+          "title": "Nối nét dính sát thân chữ"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d4_ca.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Ba mẹ hãy cầm tay uốn lại cho con điểm đặt bút của nét móc ngược con chữ 'a' nhé. Con nắm cấu tạo nét rất nhanh, chỉ cần chú ý điểm dừng và điểm bắt đầu là chữ sẽ tròn đẹp ngay!"
+  },
+  "HocSinhChuXau1": {
+    "anh_hop_le": true,
+    "tong_diem": 72,
+    "xep_loai": "📖 Cần Luyện Thêm (Phát hiện lỗi nét theo chuẩn GiaoDienMongMuon)",
+    "tieu_chi": {
+      "dung_mau_chu": 7.0,
+      "do_deu_net": 7.0,
+      "khoang_cach": 6.5,
+      "do_thang_hang": 8.0,
+      "trinh_bay": 7.5,
+      "net_co_ban": 7.0
+    },
+    "nhan_xet_chung": "Con có cố gắng hoàn thành trọn vẹn bài viết trên vở ô ly! Độ cao cơ bản tương đối bám sát đường kẻ 3. Tuy nhiên, nét móc ngược của con chữ 'a' còn hay bị nhô cao vượt ngọn, và khoảng cách nối tiếng 'ca' cần giãn cách thoáng hơn một chút.",
+    "diem_tot": [
+      "Con viết đủ các dòng kẻ theo yêu cầu bài học số 1.",
+      "Chân chữ đa số chạm được vào đường kẻ đậm số 1, không bị bay bổng.",
+      "Giữ vở tương đối phẳng phiu, không bị rách mép giấy."
+    ],
+    "loi_can_cai_thien": [
+      "Lỗi nhô cao nét móc (như khoanh tròn đỏ): Nét móc số 2 bị nhô vượt quá đỉnh nét cong kín ở hàng 1 và hàng 2.",
+      "Bụng chữ 'a' đôi chỗ còn hẹp bề ngang (mới đạt 1.2 ly thay vì 1.5 ly).",
+      "Nối nét từ 'c' sang 'a' ở tiếng 'ca' bị dính sát vào nhau."
+    ],
+    "goi_y_luyen_tap": [
+      "Nhắc bé đặt đầu bút nét 2 chạm đúng đường kẻ 3, uốn cong ôm sát lưng nét cong kín trước khi kéo xuống.",
+      "Cho bé luyện thêm 2 dòng nét cong kín tròn trịa bằng cách tưởng tượng quả trứng gà đứng thẳng.",
+      "Cách một khoảng nửa ô ly khi lia bút viết tiếng 'ca'."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Thân chữ cao 2 ô ly, chân chạm dòng kẻ 1.",
+        "sai_o_dau": "Nét móc ngược nhô cao hơn đỉnh nét cong tròn.",
+        "can_cai_thien": "Đặt bút đúng đường kẻ 3, không đưa vượt lên trên."
+      },
+      {
+        "chu": "ca",
+        "nhan_xet": "Các con chữ đều rõ ràng.",
+        "sai_o_dau": "Chữ c và chữ a dính sát nhau.",
+        "can_cai_thien": "Dừng bút chữ c ở đường kẻ 2 rồi mới viết chữ a."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_xau_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          343,
+          202,
+          464
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' viết tốt",
+        "nhan_xet": "Độ cao 2 ô ly chuẩn, chân chữ chạm đúng dòng kẻ đậm số 1.",
+        "huong_dan_sua": "Giữ vững nét viết đều tay này con nhé!",
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_1.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a3",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          586,
+          202,
+          707
+        ],
+        "ellipse": [
+          646,
+          150,
+          20,
+          20
+        ],
+        "loai": "chu_y",
+        "chu": "a",
+        "tieu_de": "Bụng chữ hơi hẹp",
+        "nhan_xet": "Nét cong kín hơi hẹp chiều ngang (khoảng 1.2 ly so với chuẩn 1.5 ly).",
+        "huong_dan_sua": "Uốn cong tròn hơn sang bên trái để bụng chữ tròn đầy.",
+        "callout": {
+          "target": [
+            646,
+            150
+          ],
+          "anchor": [
+            696,
+            120
+          ],
+          "radius": 22,
+          "title": "Bụng chữ o hơi hẹp"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_3.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_a4",
+        "shape": "circle",
+        "box_2d": [
+          98,
+          707,
+          202,
+          829
+        ],
+        "ellipse": [
+          778,
+          124,
+          22,
+          22
+        ],
+        "loai": "loi",
+        "chu": "a",
+        "tieu_de": "Nét móc ngược nhô cao (Ví dụ nét viết chưa đạt)",
+        "nhan_xet": "Điểm đặt bút của nét móc ngược cao hơn đỉnh nét cong kín 0.3 ô ly, làm đầu con chữ bị gãy nhọn.",
+        "huong_dan_sua": "Điểm đặt bút nét 2 phải đặt đúng trên đường kẻ 3, uốn cong ôm sát thân nét cong kín rồi mới kéo xuống.",
+        "callout": {
+          "target": [
+            778,
+            124
+          ],
+          "anchor": [
+            833,
+            89
+          ],
+          "radius": 24,
+          "title": "Nét móc ngược nhô cao hơn nét cong kín"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d1_a_4.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_xau_ca",
+        "shape": "circle",
+        "box_2d": [
+          395,
+          707,
+          491,
+          871
+        ],
+        "ellipse": [
+          789,
+          443,
+          35,
+          25
+        ],
+        "loai": "loi",
+        "chu": "ca",
+        "tieu_de": "Khoảng cách nối nét 'c' sang 'a'",
+        "nhan_xet": "Chữ 'c' và chữ 'a' bị dính sát vào nhau, điểm dừng nét chữ c chưa mở rộng đủ nửa ô ly.",
+        "huong_dan_sua": "Đưa điểm dừng bút của chữ 'c' chạm đường kẻ 2 rồi lia bút viết nét cong kín của chữ 'a'.",
+        "callout": {
+          "target": [
+            781,
+            443
+          ],
+          "anchor": [
+            841,
+            370
+          ],
+          "radius": 28,
+          "title": "Nối nét dính sát thân chữ"
+        },
+        "sample_crop_url": "/data/samples/crop_hs_xau_d4_ca.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Ba mẹ hãy cầm tay uốn lại cho con điểm đặt bút của nét móc ngược con chữ 'a' nhé. Con nắm cấu tạo nét rất nhanh, chỉ cần chú ý điểm dừng và điểm bắt đầu là chữ sẽ tròn đẹp ngay!"
+  },
+  "bai_1_hoc_sinh_dep.jpg": {
+    "anh_hop_le": true,
+    "tong_diem": 96,
+    "xep_loai": "⭐ Xuất Sắc (Vở Sạch Chữ Đẹp Lớp 1)",
+    "tieu_chi": {
+      "dung_mau_chu": 9.8,
+      "do_deu_net": 9.5,
+      "khoang_cach": 9.5,
+      "do_thang_hang": 9.8,
+      "trinh_bay": 9.6,
+      "net_co_ban": 9.5
+    },
+    "nhan_xet_chung": "Bài viết của con rất tuyệt vời! Các con chữ 'a' và tiếng 'ca' được nắn nót tròn trịa, đúng độ cao 2 ô ly và độ rộng 1.5 ô ly. Nét chữ mềm mại, thể hiện sự khéo léo và chăm chỉ rèn luyện.",
+    "diem_tot": [
+      "Nét cong kín tròn đều, khép kín hoàn toàn.",
+      "Nét móc ngược ôm sát thân chữ, không bị nhô cao hay lệch dòng.",
+      "Trình bày bài sạch đẹp, thẳng hàng tăm tắp trên dòng kẻ ngang 1."
+    ],
+    "loi_can_cai_thien": [
+      "Duy trì tốc độ viết ổn định để nét thanh nét đậm tự nhiên hơn."
+    ],
+    "goi_y_luyen_tap": [
+      "Tiếp tục chuyển sang bài học số 2 (chữ 'b' và tiếng 'bà').",
+      "Khen ngợi và động viên để con giữ vững tinh thần rèn chữ đẹp."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Chuẩn từng ô ly tiểu học.",
+        "sai_o_dau": "Không có lỗi sai đáng kể.",
+        "can_cai_thien": "Duy trì nét viết đều đặn."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_dep_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          480,
+          202,
+          650
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' mẫu mực",
+        "nhan_xet": "Nét cong kín tròn trịa, nét móc ôm sát lưng và dừng bút đúng đường kẻ 2.",
+        "huong_dan_sua": "Rất xuất sắc, con hãy phát huy nét chữ này!",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_dep_a2",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          650,
+          202,
+          820
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Nét chữ đều đặn",
+        "nhan_xet": "Độ cao 2 ô ly và độ rộng 1.5 ly chuẩn xác theo quy định Bộ GD&ĐT.",
+        "huong_dan_sua": "Chân chữ bám đều trên đường kẻ 1.",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Con có năng khiếu viết chữ rất khéo léo và cẩn thận. Ba mẹ hoàn toàn có thể tự tin cho con tham gia hội thi Vở Sạch Chữ Đẹp cấp trường!"
+  },
+  "bai_1_hoc_sinh_dep": {
+    "anh_hop_le": true,
+    "tong_diem": 96,
+    "xep_loai": "⭐ Xuất Sắc (Vở Sạch Chữ Đẹp Lớp 1)",
+    "tieu_chi": {
+      "dung_mau_chu": 9.8,
+      "do_deu_net": 9.5,
+      "khoang_cach": 9.5,
+      "do_thang_hang": 9.8,
+      "trinh_bay": 9.6,
+      "net_co_ban": 9.5
+    },
+    "nhan_xet_chung": "Bài viết của con rất tuyệt vời! Các con chữ 'a' và tiếng 'ca' được nắn nót tròn trịa, đúng độ cao 2 ô ly và độ rộng 1.5 ô ly. Nét chữ mềm mại, thể hiện sự khéo léo và chăm chỉ rèn luyện.",
+    "diem_tot": [
+      "Nét cong kín tròn đều, khép kín hoàn toàn.",
+      "Nét móc ngược ôm sát thân chữ, không bị nhô cao hay lệch dòng.",
+      "Trình bày bài sạch đẹp, thẳng hàng tăm tắp trên dòng kẻ ngang 1."
+    ],
+    "loi_can_cai_thien": [
+      "Duy trì tốc độ viết ổn định để nét thanh nét đậm tự nhiên hơn."
+    ],
+    "goi_y_luyen_tap": [
+      "Tiếp tục chuyển sang bài học số 2 (chữ 'b' và tiếng 'bà').",
+      "Khen ngợi và động viên để con giữ vững tinh thần rèn chữ đẹp."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Chuẩn từng ô ly tiểu học.",
+        "sai_o_dau": "Không có lỗi sai đáng kể.",
+        "can_cai_thien": "Duy trì nét viết đều đặn."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_dep_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          480,
+          202,
+          650
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' mẫu mực",
+        "nhan_xet": "Nét cong kín tròn trịa, nét móc ôm sát lưng và dừng bút đúng đường kẻ 2.",
+        "huong_dan_sua": "Rất xuất sắc, con hãy phát huy nét chữ này!",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_dep_a2",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          650,
+          202,
+          820
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Nét chữ đều đặn",
+        "nhan_xet": "Độ cao 2 ô ly và độ rộng 1.5 ly chuẩn xác theo quy định Bộ GD&ĐT.",
+        "huong_dan_sua": "Chân chữ bám đều trên đường kẻ 1.",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Con có năng khiếu viết chữ rất khéo léo và cẩn thận. Ba mẹ hoàn toàn có thể tự tin cho con tham gia hội thi Vở Sạch Chữ Đẹp cấp trường!"
+  },
+  "HocSinhChuDep1_BanDienTu": {
+    "anh_hop_le": true,
+    "tong_diem": 96,
+    "xep_loai": "⭐ Xuất Sắc (Vở Sạch Chữ Đẹp Lớp 1)",
+    "tieu_chi": {
+      "dung_mau_chu": 9.8,
+      "do_deu_net": 9.5,
+      "khoang_cach": 9.5,
+      "do_thang_hang": 9.8,
+      "trinh_bay": 9.6,
+      "net_co_ban": 9.5
+    },
+    "nhan_xet_chung": "Bài viết của con rất tuyệt vời! Các con chữ 'a' và tiếng 'ca' được nắn nót tròn trịa, đúng độ cao 2 ô ly và độ rộng 1.5 ô ly. Nét chữ mềm mại, thể hiện sự khéo léo và chăm chỉ rèn luyện.",
+    "diem_tot": [
+      "Nét cong kín tròn đều, khép kín hoàn toàn.",
+      "Nét móc ngược ôm sát thân chữ, không bị nhô cao hay lệch dòng.",
+      "Trình bày bài sạch đẹp, thẳng hàng tăm tắp trên dòng kẻ ngang 1."
+    ],
+    "loi_can_cai_thien": [
+      "Duy trì tốc độ viết ổn định để nét thanh nét đậm tự nhiên hơn."
+    ],
+    "goi_y_luyen_tap": [
+      "Tiếp tục chuyển sang bài học số 2 (chữ 'b' và tiếng 'bà').",
+      "Khen ngợi và động viên để con giữ vững tinh thần rèn chữ đẹp."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Chuẩn từng ô ly tiểu học.",
+        "sai_o_dau": "Không có lỗi sai đáng kể.",
+        "can_cai_thien": "Duy trì nét viết đều đặn."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_dep_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          480,
+          202,
+          650
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' mẫu mực",
+        "nhan_xet": "Nét cong kín tròn trịa, nét móc ôm sát lưng và dừng bút đúng đường kẻ 2.",
+        "huong_dan_sua": "Rất xuất sắc, con hãy phát huy nét chữ này!",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_dep_a2",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          650,
+          202,
+          820
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Nét chữ đều đặn",
+        "nhan_xet": "Độ cao 2 ô ly và độ rộng 1.5 ly chuẩn xác theo quy định Bộ GD&ĐT.",
+        "huong_dan_sua": "Chân chữ bám đều trên đường kẻ 1.",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Con có năng khiếu viết chữ rất khéo léo và cẩn thận. Ba mẹ hoàn toàn có thể tự tin cho con tham gia hội thi Vở Sạch Chữ Đẹp cấp trường!"
+  },
+  "HocSinhChuDep1": {
+    "anh_hop_le": true,
+    "tong_diem": 96,
+    "xep_loai": "⭐ Xuất Sắc (Vở Sạch Chữ Đẹp Lớp 1)",
+    "tieu_chi": {
+      "dung_mau_chu": 9.8,
+      "do_deu_net": 9.5,
+      "khoang_cach": 9.5,
+      "do_thang_hang": 9.8,
+      "trinh_bay": 9.6,
+      "net_co_ban": 9.5
+    },
+    "nhan_xet_chung": "Bài viết của con rất tuyệt vời! Các con chữ 'a' và tiếng 'ca' được nắn nót tròn trịa, đúng độ cao 2 ô ly và độ rộng 1.5 ô ly. Nét chữ mềm mại, thể hiện sự khéo léo và chăm chỉ rèn luyện.",
+    "diem_tot": [
+      "Nét cong kín tròn đều, khép kín hoàn toàn.",
+      "Nét móc ngược ôm sát thân chữ, không bị nhô cao hay lệch dòng.",
+      "Trình bày bài sạch đẹp, thẳng hàng tăm tắp trên dòng kẻ ngang 1."
+    ],
+    "loi_can_cai_thien": [
+      "Duy trì tốc độ viết ổn định để nét thanh nét đậm tự nhiên hơn."
+    ],
+    "goi_y_luyen_tap": [
+      "Tiếp tục chuyển sang bài học số 2 (chữ 'b' và tiếng 'bà').",
+      "Khen ngợi và động viên để con giữ vững tinh thần rèn chữ đẹp."
+    ],
+    "vi_du_minh_hoa": [
+      {
+        "chu": "a",
+        "nhan_xet": "Chuẩn từng ô ly tiểu học.",
+        "sai_o_dau": "Không có lỗi sai đáng kể.",
+        "can_cai_thien": "Duy trì nét viết đều đặn."
+      }
+    ],
+    "bounding_boxes": [
+      {
+        "id": "box_dep_a1",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          480,
+          202,
+          650
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Chữ 'a' mẫu mực",
+        "nhan_xet": "Nét cong kín tròn trịa, nét móc ôm sát lưng và dừng bút đúng đường kẻ 2.",
+        "huong_dan_sua": "Rất xuất sắc, con hãy phát huy nét chữ này!",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      },
+      {
+        "id": "box_dep_a2",
+        "shape": "rect",
+        "box_2d": [
+          98,
+          650,
+          202,
+          820
+        ],
+        "loai": "chuan",
+        "chu": "a",
+        "tieu_de": "Nét chữ đều đặn",
+        "nhan_xet": "Độ cao 2 ô ly và độ rộng 1.5 ly chuẩn xác theo quy định Bộ GD&ĐT.",
+        "huong_dan_sua": "Chân chữ bám đều trên đường kẻ 1.",
+        "sample_crop_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+      }
+    ],
+    "nhan_xet_phu_huynh": "Con có năng khiếu viết chữ rất khéo léo và cẩn thận. Ba mẹ hoàn toàn có thể tự tin cho con tham gia hội thi Vở Sạch Chữ Đẹp cấp trường!"
   }
 }

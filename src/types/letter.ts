@@ -86,6 +86,15 @@ export interface HandwritingBoundingBox {
   tieu_de: string;
   nhan_xet: string;
   huong_dan_sua?: string;
+  // Chuẩn hiển thị GiaoDienMongMuon: Vòng tròn nét đứt + Đường chỉ dẫn callout
+  callout?: {
+    target: [number, number]; // [x, y] điểm lỗi trên nét (tâm vòng tròn nét đứt)
+    anchor: [number, number]; // [x, y] điểm mút của đường chỉ dẫn (đầu chấm tròn)
+    radius: number;           // bán kính vòng tròn nét đứt
+    title?: string;
+  };
+  sample_crop_url?: string; // Ảnh crop chi tiết ô chữ để soi nét
+  teacher_sample_url?: string; // Ảnh crop chữ mẫu chuẩn cô giáo đối chiếu
 }
 
 export interface HandwritingEvaluationResult {
