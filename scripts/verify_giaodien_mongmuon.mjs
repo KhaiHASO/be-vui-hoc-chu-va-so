@@ -10,7 +10,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 async function run() {
-  console.log(`🚀 Bắt đầu kiểm thử trực quan chuẩn GiaoDienMongMuon tại ${targetUrl}`);
+  console.log(`🚀 Bắt đầu kiểm thử trực quan Đánh Giá Thật tại ${targetUrl}`);
   const browser = await chromium.launch({ headless: true });
 
   const viewports = [
@@ -43,80 +43,59 @@ async function run() {
       }
     }
 
-    // Chọn nút AI Chấm Bài Viết ⭐ đang hiển thị (visible=true)
     const aiTabNav = page.locator('button:has-text("AI Chấm Bài Viết ⭐")').locator("visible=true").first();
     await aiTabNav.click();
     await page.waitForTimeout(400);
-    console.log("   ✓ Đã vào module AI Chấm Bài Viết");
 
-    // 3. Chọn Preset 1: Bài 1 lỗi nét móc (Chuẩn GiaoDienMongMuon)
-    const preset1 = page.locator('button:has-text("Mẫu có lỗi nét")').first();
+    // 3. Chọn Preset Bài 1
+    const preset1 = page.locator('button:has-text("Vở học sinh có lỗi nét thực tế")').or(page.locator('button:has-text("Bài 1 (Chữ \'a\')")').first());
     await preset1.scrollIntoViewIfNeeded();
     await preset1.click();
     await page.waitForTimeout(400);
-    console.log("   ✓ Đã nạp Preset 1 (Chuẩn GiaoDienMongMuon)");
 
-    // 4. Bấm nút AI Chấm Bài Viết
+    // 4. Bấm AI Chấm Bài Viết
     const evaluateBtn = page.locator('button:has-text("AI Chấm Bài Viết")').last();
     await evaluateBtn.scrollIntoViewIfNeeded();
     await evaluateBtn.click();
     await page.waitForTimeout(1400);
-    console.log("   ✓ Đã đánh giá xong và hiển thị kết quả");
+    console.log("   ✓ Đã chấm xong và hiển thị đánh giá thực tế");
 
-    // 5. Kiểm tra và chụp 3 chế độ soi nét trong #dark-grid-inspector
+    // 5. Kiểm tra Dark Grid Inspector
     const darkCard = page.locator("#dark-grid-inspector");
     if (await darkCard.isVisible()) {
       await darkCard.scrollIntoViewIfNeeded();
       await page.waitForTimeout(300);
 
-      // Chế độ 1: Minh họa lỗi (Illustration)
-      const btnIllustration = darkCard.locator('button:has-text("Minh họa lỗi")');
-      if (await btnIllustration.isVisible()) {
-        await btnIllustration.click();
-        await page.waitForTimeout(300);
-        await darkCard.screenshot({
-          path: path.join(outputDir, `audit_${vp.name}_mode1_illustration.png`),
-        });
-        console.log(`   ✓ Đã chụp Chế độ 1 (Minh họa lỗi) -> audit_${vp.name}_mode1_illustration.png`);
-      }
+      // Chụp Nét bé viết thực tế kèm thông số đo đạc
+      await darkCard.screenshot({
+        path: path.join(outputDir, `audit_${vp.name}_real_student.png`),
+      });
+      console.log(`   ✓ Đã chụp Nét bé viết thực tế -> audit_${vp.name}_real_student.png`);
 
-      // Chế độ 2: Nét bé viết (Student crop on grid)
-      const btnStudent = darkCard.locator('button:has-text("Nét bé viết")');
-      if (await btnStudent.isVisible()) {
-        await btnStudent.click();
-        await page.waitForTimeout(300);
-        await darkCard.screenshot({
-          path: path.join(outputDir, `audit_${vp.name}_mode2_student.png`),
-        });
-        console.log(`   ✓ Đã chụp Chế độ 2 (Nét bé viết) -> audit_${vp.name}_mode2_student.png`);
-      }
-
-      // Chế độ 3: Mẫu cô giáo (Teacher golden reference)
-      const btnTeacher = darkCard.locator('button:has-text("Mẫu cô giáo")');
+      // Bấm tab "Mẫu chuẩn cô giáo"
+      const btnTeacher = darkCard.locator('button:has-text("Mẫu chuẩn cô giáo")');
       if (await btnTeacher.isVisible()) {
         await btnTeacher.click();
         await page.waitForTimeout(300);
         await darkCard.screenshot({
-          path: path.join(outputDir, `audit_${vp.name}_mode3_teacher.png`),
+          path: path.join(outputDir, `audit_${vp.name}_real_teacher.png`),
         });
-        console.log(`   ✓ Đã chụp Chế độ 3 (Mẫu cô giáo) -> audit_${vp.name}_mode3_teacher.png`);
+        console.log(`   ✓ Đã chụp Mẫu chuẩn cô giáo -> audit_${vp.name}_real_teacher.png`);
       }
-    } else {
-      console.warn("   ⚠️ Không tìm thấy #dark-grid-inspector");
     }
 
-    // Chụp toàn màn hình cho viewport hiện tại
+    // Chụp toàn màn hình
     await page.screenshot({
-      path: path.join(outputDir, `audit_${vp.name}_full_layout.png`),
+      path: path.join(outputDir, `audit_${vp.name}_real_layout.png`),
       fullPage: true,
     });
-    console.log(`   ✓ Đã chụp toàn bộ giao diện -> audit_${vp.name}_full_layout.png`);
+    console.log(`   ✓ Đã chụp toàn bộ giao diện -> audit_${vp.name}_real_layout.png`);
 
     await context.close();
   }
 
   await browser.close();
-  console.log("\n🎉 TOÀN BỘ KIỂM THỬ TRỰC QUAN HOÀN TẤT THÀNH CÔNG 100%!");
+  console.log("\n🎉 HOÀN TẤT KIỂM THỬ TRỰC QUAN ĐÁNH GIÁ THỰC TẾ 100%!");
 }
 
 run().catch((err) => {

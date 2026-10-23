@@ -95,6 +95,12 @@ export interface HandwritingBoundingBox {
   };
   sample_crop_url?: string; // Ảnh crop chi tiết ô chữ để soi nét
   teacher_sample_url?: string; // Ảnh crop chữ mẫu chuẩn cô giáo đối chiếu
+  do_luong?: {
+    chieu_cao?: string;
+    do_rong?: string;
+    do_lech?: string;
+    chan_chu?: string;
+  };
 }
 
 export interface HandwritingEvaluationResult {

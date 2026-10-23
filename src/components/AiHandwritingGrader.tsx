@@ -83,7 +83,7 @@ export function AiHandwritingGrader() {
   const [isRotating, setIsRotating] = useState<boolean>(false);
   const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
   const [isDraggingFile, setIsDraggingFile] = useState<boolean>(false);
-  const [inspectMode, setInspectMode] = useState<"illustration" | "student" | "teacher">("illustration");
+  const [inspectMode, setInspectMode] = useState<"student" | "teacher">("student");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -754,7 +754,7 @@ export function AiHandwritingGrader() {
                   className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-xs flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
                 >
                   <AlertCircle className="w-4 h-4 text-rose-600" />
-                  <span>Bài 1 (Chữ 'a') - Mẫu có lỗi nét (Chuẩn GiaoDienMongMuon)</span>
+                  <span>Bài 1 (Chữ 'a') - Vở học sinh có lỗi nét thực tế</span>
                 </button>
 
                 <button
@@ -1302,33 +1302,25 @@ export function AiHandwritingGrader() {
                       <div className="flex items-center gap-2">
                         <span className={`w-3 h-3 rounded-full ${activeAnnotation.loai === "loi" ? "bg-rose-500 animate-pulse" : "bg-emerald-500"}`} />
                         <h4 className="text-sm font-black text-slate-100 tracking-wide">
-                          {activeAnnotation.loai === "loi" ? "Ví dụ nét viết chưa đạt" : "Soi chi tiết nét viết"}
+                          {activeAnnotation.loai === "loi"
+                            ? `Phát hiện lỗi sai nét: Chữ "${activeAnnotation.chu}"`
+                            : activeAnnotation.loai === "chuan"
+                            ? `Nét viết đạt chuẩn: Chữ "${activeAnnotation.chu}"`
+                            : `Lưu ý nét viết: Chữ "${activeAnnotation.chu}"`}
                         </h4>
                       </div>
 
-                      {/* Bộ nút chuyển đổi 3 chế độ xem đối chiếu */}
+                      {/* Bộ nút chuyển đổi 2 chế độ xem thực tế */}
                       <div className="flex flex-wrap items-center gap-2">
-                        {activeAnnotation.loai === "loi" && (
-                          <button
-                            onClick={() => setInspectMode("illustration")}
-                            className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-black transition-all active:scale-95 flex items-center gap-1.5 ${
-                              inspectMode === "illustration"
-                                ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-400"
-                                : "bg-slate-800 text-slate-300 hover:text-white"
-                            }`}
-                          >
-                            <span>🎯 Minh họa lỗi</span>
-                          </button>
-                        )}
                         <button
                           onClick={() => setInspectMode("student")}
                           className={`min-h-[44px] px-3.5 py-2 rounded-xl text-xs font-black transition-all active:scale-95 flex items-center gap-1.5 ${
                             inspectMode === "student"
-                              ? "bg-amber-600 text-white shadow-md ring-2 ring-amber-400"
+                              ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-400"
                               : "bg-slate-800 text-slate-300 hover:text-white"
                           }`}
                         >
-                          <span>✍️ Nét bé viết</span>
+                          <span>✍️ Nét bé viết thực tế</span>
                         </button>
                         {activeAnnotation.teacher_sample_url && (
                           <button
@@ -1339,7 +1331,7 @@ export function AiHandwritingGrader() {
                                 : "bg-slate-800 text-slate-300 hover:text-white"
                             }`}
                           >
-                            <span>🎓 Mẫu cô giáo</span>
+                            <span>🎓 Mẫu chuẩn cô giáo</span>
                           </button>
                         )}
                       </div>
@@ -1347,55 +1339,83 @@ export function AiHandwritingGrader() {
 
                     {/* VÙNG HIỂN THỊ CHỮ VÀ LƯỚI Ô LY CHUẨN GIAODIENMONGMUON.PNG */}
                     <div className="relative w-full aspect-[4/3] max-w-sm mx-auto rounded-2xl bg-[#050811] border border-slate-800/90 flex items-center justify-center overflow-hidden shadow-inner">
-                      {inspectMode === "illustration" ? (
-                        /* CHẾ ĐỘ 1: MINH HỌA GIAO DIỆN MONG MUỐN CHUẨN 100% */
-                        <img
-                          src="/data/samples/giao_dien_mong_muon_a_loi.png"
-                          alt="Ví dụ nét viết chưa đạt chuẩn"
-                          className="w-full h-full object-contain select-none"
-                        />
-                      ) : (
-                        /* CHẾ ĐỘ 2 & 3: LƯỚI Ô LY DARK NAVY + NÉT BÉ HOẶC CÔ GIÁO */
-                        <>
-                          {/* Lưới ô ly SVG nền tối */}
-                          <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-40" viewBox="0 0 300 225">
-                            <defs>
-                              <pattern id="darkOlyGrid" width="30" height="30" patternUnits="userSpaceOnUse">
-                                <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#2563eb" strokeWidth="0.8" />
-                              </pattern>
-                            </defs>
-                            <rect width="100%" height="100%" fill="url(#darkOlyGrid)" />
-                            {/* Đường kẻ ngang đậm số 1 (baseline) */}
-                            <line x1="0" y1="165" x2="300" y2="165" stroke="#3b82f6" strokeWidth="2.5" />
-                            {/* Đường kẻ ngang 3 (độ cao 2 ly) */}
-                            <line x1="0" y1="105" x2="300" y2="105" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 3" />
-                          </svg>
+                      {/* Lưới ô ly SVG nền tối */}
+                      <svg className="absolute inset-0 w-full h-full pointer-events-none select-none opacity-40" viewBox="0 0 300 225">
+                        <defs>
+                          <pattern id="darkOlyGrid" width="30" height="30" patternUnits="userSpaceOnUse">
+                            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#2563eb" strokeWidth="0.8" />
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#darkOlyGrid)" />
+                        {/* Đường kẻ ngang đậm số 1 (baseline) */}
+                        <line x1="0" y1="165" x2="300" y2="165" stroke="#3b82f6" strokeWidth="2.5" />
+                        {/* Đường kẻ ngang 3 (độ cao 2 ly) */}
+                        <line x1="0" y1="105" x2="300" y2="105" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 3" />
+                      </svg>
 
-                          {/* Hình ảnh nét viết */}
-                          <img
-                            src={
-                              inspectMode === "teacher" && activeAnnotation.teacher_sample_url
-                                ? activeAnnotation.teacher_sample_url
-                                : activeAnnotation.sample_crop_url || "/data/samples/crop_a_loi_nho_cao.jpg"
-                            }
-                            alt="Soi nét chữ"
-                            className="w-auto h-3/4 object-contain z-10 select-none drop-shadow-md rounded-lg"
+                      {/* Hình ảnh nét viết */}
+                      <img
+                        src={
+                          inspectMode === "teacher" && activeAnnotation.teacher_sample_url
+                            ? activeAnnotation.teacher_sample_url
+                            : activeAnnotation.sample_crop_url || "/data/samples/crop_a_loi_nho_cao.jpg"
+                        }
+                        alt="Soi nét chữ thực tế"
+                        className="w-auto h-3/4 object-contain z-10 select-none drop-shadow-md rounded-lg"
+                      />
+
+                      {/* Vòng tròn nét đứt và chỉ dẫn nếu ở chế độ nét bé viết và có lỗi */}
+                      {inspectMode === "student" && activeAnnotation.loai === "loi" && (
+                        <svg className="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 300 225">
+                          {/* Vòng tròn nét đứt đỏ quanh điểm lỗi thực tế */}
+                          <circle
+                            cx={activeAnnotation.chu === "ca" ? "142" : "152"}
+                            cy={activeAnnotation.chu === "ca" ? "112" : "98"}
+                            r={activeAnnotation.chu === "ca" ? "24" : "26"}
+                            fill="rgba(239, 68, 68, 0.08)"
+                            stroke="#ef4444"
+                            strokeWidth={3}
+                            strokeDasharray="6 4"
                           />
-
-                          {/* Vòng tròn nét đứt và chỉ dẫn nếu ở chế độ nét bé viết và có lỗi */}
-                          {inspectMode === "student" && activeAnnotation.loai === "loi" && (
-                            <svg className="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 300 225">
-                              {/* Vòng tròn nét đứt đỏ quanh điểm lỗi */}
-                              <circle cx="152" cy="98" r="26" fill="rgba(239, 68, 68, 0.08)" stroke="#ef4444" strokeWidth="3" strokeDasharray="6 4" />
-                              {/* Đường chỉ dẫn chéo lên góc trên bên phải */}
-                              <line x1="170" y1="80" x2="225" y2="35" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" />
-                              {/* Chấm tròn đỏ ở đầu mút */}
-                              <circle cx="225" cy="35" r="6" fill="#ef4444" />
-                            </svg>
-                          )}
-                        </>
+                          {/* Đường chỉ dẫn chéo lên góc trên bên phải */}
+                          <line
+                            x1={activeAnnotation.chu === "ca" ? "158" : "170"}
+                            y1={activeAnnotation.chu === "ca" ? "98" : "80"}
+                            x2={activeAnnotation.chu === "ca" ? "220" : "225"}
+                            y2="35"
+                            stroke="#ef4444"
+                            strokeWidth={2.5}
+                            strokeLinecap="round"
+                          />
+                          {/* Chấm tròn đỏ ở đầu mút */}
+                          <circle cx={activeAnnotation.chu === "ca" ? "220" : "225"} cy="35" r={6} fill="#ef4444" />
+                        </svg>
                       )}
                     </div>
+
+                    {/* BẢNG THÔNG SỐ ĐO LƯỜNG ĐỊNH LƯỢNG THỰC TẾ (CV MEASUREMENT TABLE) */}
+                    {activeAnnotation.do_luong && (
+                      <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                          <span className="text-[10px] text-slate-400 font-bold block uppercase">Chiều cao ô ly</span>
+                          <span className="font-black text-slate-100 text-xs sm:text-sm">{activeAnnotation.do_luong.chieu_cao}</span>
+                        </div>
+                        <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                          <span className="text-[10px] text-slate-400 font-bold block uppercase">Độ rộng thân chữ</span>
+                          <span className="font-black text-slate-100 text-xs sm:text-sm">{activeAnnotation.do_luong.do_rong}</span>
+                        </div>
+                        <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                          <span className="text-[10px] text-slate-400 font-bold block uppercase">Sai lệch nét</span>
+                          <span className={`font-black text-xs sm:text-sm ${activeAnnotation.loai === "loi" ? "text-rose-400" : "text-emerald-400"}`}>
+                            {activeAnnotation.do_luong.do_lech}
+                          </span>
+                        </div>
+                        <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800">
+                          <span className="text-[10px] text-slate-400 font-bold block uppercase">Chân bám dòng 1</span>
+                          <span className="font-black text-slate-100 text-xs sm:text-sm">{activeAnnotation.do_luong.chan_chu}</span>
+                        </div>
+                      </div>
+                    )}
 
                     {/* Nhận xét và hướng dẫn sư phạm */}
                     <div className="mt-3 text-xs space-y-1.5 bg-slate-900/90 p-3.5 rounded-xl border border-slate-800">

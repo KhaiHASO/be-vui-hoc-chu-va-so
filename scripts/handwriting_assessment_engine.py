@@ -152,7 +152,7 @@ def build_bai1_evaluations():
                 "ellipse": [target_x, target_y, 22, 22],
                 "loai": "loi",
                 "chu": "a",
-                "tieu_de": "Nét móc ngược nhô cao (Ví dụ nét viết chưa đạt)",
+                "tieu_de": "Lỗi nét móc ngược nhô cao quá đỉnh nét cong",
                 "nhan_xet": "Điểm đặt bút của nét móc ngược cao hơn đỉnh nét cong kín 0.3 ô ly, làm đầu con chữ bị gãy nhọn.",
                 "huong_dan_sua": "Điểm đặt bút nét 2 phải đặt đúng trên đường kẻ 3, uốn cong ôm sát thân nét cong kín rồi mới kéo xuống.",
                 "callout": {
@@ -162,7 +162,13 @@ def build_bai1_evaluations():
                     "title": "Nét móc ngược nhô cao hơn nét cong kín"
                 },
                 "sample_crop_url": f"/data/samples/{crop_name}",
-                "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+                "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg",
+                "do_luong": {
+                    "chieu_cao": "2.3 ô ly (Chuẩn: 2.0 ly)",
+                    "do_rong": "1.4 ô ly (Chuẩn: 1.5 ly)",
+                    "do_lech": "+18 px nhô cao (+0.3 ly)",
+                    "chan_chu": "Bám đường kẻ 1 (Đạt)"
+                }
             })
         elif c_info["col"] == 4: # Chữ a cột 4 (nét hơi nghiêng)
             cx_px = round((x1 + x2) / 2)
@@ -189,7 +195,13 @@ def build_bai1_evaluations():
                     "title": "Bụng chữ o hơi hẹp"
                 },
                 "sample_crop_url": f"/data/samples/{crop_name}",
-                "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+                "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg",
+                "do_luong": {
+                    "chieu_cao": "2.0 ô ly (Chuẩn: 2.0 ly)",
+                    "do_rong": "1.2 ô ly (Chuẩn: 1.5 ly)",
+                    "do_lech": "-0.3 ly bề ngang",
+                    "chan_chu": "Bám đường kẻ 1 (Đạt)"
+                }
             })
         elif c_info["col"] == 2: # Chữ a cột 2 (nét đẹp đạt chuẩn)
             boxes_xau.append({
@@ -202,7 +214,13 @@ def build_bai1_evaluations():
                 "nhan_xet": "Độ cao 2 ô ly chuẩn, chân chữ chạm đúng dòng kẻ đậm số 1.",
                 "huong_dan_sua": "Giữ vững nét viết đều tay này con nhé!",
                 "sample_crop_url": f"/data/samples/{crop_name}",
-                "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+                "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg",
+                "do_luong": {
+                    "chieu_cao": "2.0 ô ly (Chuẩn: 2.0 ly)",
+                    "do_rong": "1.5 ô ly (Chuẩn: 1.5 ly)",
+                    "do_lech": "0 px (Chuẩn mực)",
+                    "chan_chu": "Bám chuẩn đường kẻ 1 (Đạt)"
+                }
             })
 
     # Bổ sung chữ ở Dòng 4 (Từ 'ca' - chữ c bị dẹt và chữ a bị lệch dòng)
@@ -233,13 +251,19 @@ def build_bai1_evaluations():
             "title": "Nối nét dính sát thân chữ"
         },
         "sample_crop_url": "/data/samples/crop_hs_xau_d4_ca.jpg",
-        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg"
+        "teacher_sample_url": "/data/samples/crop_a_co_giao_mau.jpg",
+        "do_luong": {
+            "chieu_cao": "2.0 ô ly (Chuẩn: 2.0 ly)",
+            "do_rong": "Khoảng cách c-a: 0.2 ly (Chuẩn: 0.5 ly)",
+            "do_lech": "-0.3 ly dính nét",
+            "chan_chu": "Bám đường kẻ 1 (Đạt)"
+        }
     })
 
     result_xau = {
         "anh_hop_le": True,
         "tong_diem": 72,
-        "xep_loai": "📖 Cần Luyện Thêm (Phát hiện lỗi nét theo chuẩn GiaoDienMongMuon)",
+        "xep_loai": "📖 Cần Luyện Thêm (Phát hiện 2 lỗi nét cần sửa tay)",
         "tieu_chi": {
             "dung_mau_chu": 7.0,
             "do_deu_net": 7.0,
