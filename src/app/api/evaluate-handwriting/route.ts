@@ -142,10 +142,128 @@ function getPrecomputedEvaluation(imageStr: string, fileName?: string): Handwrit
   return null;
 }
 
+// Helper kiểm tra xem ô khoanh có trùng/chồng lấn vào vùng mẫu in hướng dẫn bị loại trừ không
+function isInsideOrOverlapping(
+  boxA: [number, number, number, number],
+  boxB: [number, number, number, number]
+): boolean {
+  const [yA1, xA1, yA2, xA2] = boxA;
+  const [yB1, xB1, yB2, xB2] = boxB;
+
+  // Tâm của boxA
+  const cxA = (xA1 + xA2) / 2;
+  const cyA = (yA1 + yA2) / 2;
+
+  // Nếu tâm boxA rơi vào trong boxB
+  if (cxA >= xB1 && cxA <= xB2 && cyA >= yB1 && cyA <= yB2) {
+    return true;
+  }
+
+  // Kiểm tra diện tích giao nhau
+  const interX1 = Math.max(xA1, xB1);
+  const interY1 = Math.max(yA1, yB1);
+  const interX2 = Math.min(xA2, xB2);
+  const interY2 = Math.min(yA2, yB2);
+
+  if (interX2 > interX1 && interY2 > interY1) {
+    const interArea = (interX2 - interX1) * (interY2 - interY1);
+    const areaA = Math.max(1, (xA2 - xA1) * (yA2 - yA1));
+    if (interArea / areaA > 0.4) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { image, fileName, apiKey, annotations } = body;
+    const { image, fileName, apiKey, annotations, mode, cropImage, boxId } = body;
+
+    // ── Chế độ Soi Nét Real-Time (Spot Inspection): Phân tích tức thì 1 ô cắt lẻ (~1s) ──
+    if (mode === "spot_inspect") {
+      const activeApiKey = apiKey?.trim() || process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY || "";
+      const isDeepSeek =
+        activeApiKey &&
+        (activeApiKey.includes("deepseek") ||
+          activeApiKey === process.env.DEEPSEEK_API_KEY ||
+          (!activeApiKey.startsWith("sk-proj-") && activeApiKey.length <= 40));
+
+      const apiBase = isDeepSeek
+        ? process.env.DEEPSEEK_API_BASE || "https://api.deepseek.com"
+        : process.env.OPENAI_API_BASE || "https://api.openai.com/v1";
+
+      const model = isDeepSeek
+        ? process.env.DEEPSEEK_MODEL || "deepseek-chat"
+        : process.env.OPENAI_MODEL || "gpt-4o-mini";
+
+      const spotTargetImage = cropImage || image;
+      if (!spotTargetImage) {
+        return NextResponse.json({ error: "Thiếu ảnh cắt vùng nét." }, { status: 400 });
+      }
+
+      const spotPrompt = `Bạn là chuyên gia sư phạm & Giám khảo chấm thi Luyện chữ đẹp Tiểu học Bộ GD&ĐT Việt Nam.
+Nhiệm vụ: Soi ô chữ hoặc nét viết tay ô ly này của học sinh lớp 1.
+CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (Không markdown, không giải thích):
+{
+  "chu": "chữ cái hoặc nét nhận diện được (ví dụ: c, e, ng, ngh, nét khuyết...)",
+  "loai": "chuan" (nếu viết đúng đẹp) hoặc "chu_y" (hơi lệch/chưa đều) hoặc "loi" (sai nét/sai độ cao ô ly),
+  "tieu_de": "tiêu đề nhận xét ngắn gọn dưới 8 chữ",
+  "nhan_xet": "1 câu nhận xét sư phạm cụ thể về nét chữ và độ cao so với dòng kẻ ô ly",
+  "huong_dan_sua": "cách sửa cụ thể cho bé"
+}`;
+
+      try {
+        const aiRes = await fetch(`${apiBase}/chat/completions`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${activeApiKey}`,
+          },
+          body: JSON.stringify({
+            model: model,
+            temperature: 0.1,
+            max_tokens: 300,
+            messages: [
+              { role: "system", content: spotPrompt },
+              {
+                role: "user",
+                content: [
+                  { type: "text", text: "Chấm nét chữ trong ô cắt này:" },
+                  { type: "image_url", image_url: { url: spotTargetImage } },
+                ],
+              },
+            ],
+          }),
+        });
+
+        if (aiRes.ok) {
+          const aiData = await aiRes.json();
+          const rawContent = aiData.choices?.[0]?.message?.content || "";
+          const firstBrace = rawContent.indexOf("{");
+          const lastBrace = rawContent.lastIndexOf("}");
+          if (firstBrace !== -1 && lastBrace !== -1) {
+            const parsedSpot = JSON.parse(rawContent.substring(firstBrace, lastBrace + 1));
+            return NextResponse.json({
+              boxId,
+              ...parsedSpot,
+            });
+          }
+        }
+      } catch (spotErr) {
+        console.warn("Spot inspect error:", spotErr);
+      }
+
+      return NextResponse.json({
+        boxId,
+        chu: "nét",
+        loai: "chu_y",
+        tieu_de: "Vị trí được chọn",
+        nhan_xet: "Đã ghi nhận vị trí nét chữ học sinh.",
+        huong_dan_sua: "Giữ vững nét viết đều tay đúng ô ly.",
+      });
+    }
 
     if (!image) {
       return NextResponse.json(
@@ -158,16 +276,7 @@ export async function POST(req: NextRequest) {
       ? annotations
       : [];
 
-    // 1. Kiểm tra nếu là ảnh trong kho mẫu thực tế (precomputed) VÀ người dùng chưa khoanh thủ công
-    if (typeof image === "string" && userAnnotations.length === 0) {
-      const precomputed = getPrecomputedEvaluation(image, fileName);
-      if (precomputed) {
-        return NextResponse.json(precomputed);
-      }
-      if (image.includes("bai_thi_viet_mau") || (fileName && fileName.includes("bai_thi"))) {
-        return NextResponse.json(DEFAULT_SAMPLE_RESULT);
-      }
-    }
+    // Bỏ qua precomputed hardcode — Luôn đánh giá trực tiếp trên bài viết thực tế của học sinh!
 
     // Nếu người dùng đã tự khoanh vùng thủ công, tính toán dựa trên các nét giáo viên đã chọn
     const loiCount = userAnnotations.filter((a) => a.loai === "loi").length;
@@ -193,7 +302,7 @@ export async function POST(req: NextRequest) {
       ? process.env.DEEPSEEK_MODEL || "deepseek-flash"
       : process.env.OPENAI_MODEL || "gpt-4o-mini";
 
-    const maxTokens = isDeepSeek ? 4000 : 2500;
+    const maxTokens = isDeepSeek ? 6000 : 3000;
 
     // Chuyển đổi đường dẫn ảnh local sang base64 nếu cần
     let finalImageUrl = image;
@@ -216,47 +325,72 @@ Hãy đưa ra nhận xét sư phạm tập trung vào những vị trí giáo vi
       : "";
 
     const systemPrompt = `Bạn là chuyên gia sư phạm & Giám khảo chấm thi Luyện chữ đẹp Tiểu học Việt Nam (Bộ GD&ĐT).
-Nhiệm vụ của bạn là soi từng con chữ ô ly của học sinh lớp 1, nhận diện các nét chuẩn và nét lỗi, đồng thời định vị chính xác vị trí của từng con chữ trên ảnh.
+NHIỆM VỤ: Đánh giá chất lượng chữ viết tay của học sinh lớp 1 trên trang vở ô ly.
 
-TIÊU CHÍ ĐÁNH GIÁ (Thang điểm 0 - 10 mỗi tiêu chí):
-1. dung_mau_chu: Đúng độ cao, độ rộng con chữ (chuẩn 2 ly, 2.5 ly...)
-2. do_deu_net: Nét thanh nét đậm, lực tay đều
-3. khoang_cach: Khoảng cách giữa các chữ cái và các tiếng (chuẩn 1 con chữ o)
-4. do_thang_hang: Chữ nằm ngay ngắn trên dòng kẻ ngang 1
-5. trinh_bay: Vở sạch sẽ, không tẩy xóa lem nhem
-6. net_co_ban: Nét hất, nét móc, nét khuyết, nét thắt và dấu thanh
+NGUYÊN TẮC BẤT DI BẤT DỊCH VỀ BỐ CỤC (LAYOUT CONSTRAINTS):
+1. TRÊN TRANG VỞ CÓ CÁC Ô CHỮ MẪU IN SẴN HƯỚNG DẪN NÉT VIẾT Ở CỘT TRÁI (chứa chữ in nét đậm và các số 1, 2, 3, 4, 5 đánh mũi tên thứ tự nét).
+   TUYỆT ĐỐI KHÔNG ĐƯỢC CHẤM, KHÔNG KHOANH BOUNDING BOX VÀO CÁC Ô MẪU IN SẴN NÀY!
+   Hãy xác định vị trí của các ô này và đưa vào danh sách "vung_loai_tru_khong_cham".
+2. CHỈ ĐƯỢC CHẤM VÀ KHOANH VÙNG CÁC CHỮ DO HỌC SINH THỰC SỰ CẦM BÚT VIẾT TAY (nét mực viết tay trên các dòng kẻ ngang ô ly).
+3. Mỗi bounding box [ymin, xmin, ymax, xmax] (thang 0-1000) PHẢI chỉ vào đúng một con chữ học sinh tự viết, nêu rõ ở dòng nào.
+   - loai: "chuan" (nếu viết đúng mẫu đẹp), "chu_y" (nếu hơi lệch/chưa đều), "loi" (nếu sai nét, thiếu nét, sai độ cao ô ly).
+4. Mọi nhận xét phải có BẰNG CHỨNG QUAN SÁT THỰC TẾ (ví dụ: chân chữ có chạm dòng kẻ ngang 1 không, nét khuyết cao mấy ô ly). Nếu không chắc chắn do ảnh mờ, ghi rõ "can_giao_vien_kiem_tra": true.
+5. ĐIỂM SỐ PHẢI MINH BẠCH THEO RUBRIC (0-10 mỗi tiêu chí):
+   - muc_do_hoan_thanh: Viết đủ bao nhiêu dòng yêu cầu
+   - dung_do_cao_o_ly: Đúng độ cao ô ly chuẩn (2 ly, 2.5 ly...)
+   - can_dong_baseline: Đặt đúng trên dòng kẻ ngang 1 (chân chữ không bay hay thụt)
+   - khoang_cach_noi_net: Khoảng cách giữa các chữ cái và nét nối liền mạch
+   - trinh_bay_sach_se: Vở sạch sẽ, không lem nhem
 
 ${annotationContext}
-
-QUY TẮC BẮT BUỘC:
-- Nếu có danh sách nét giáo viên khoanh vùng, hãy bám sát các nét đó để nhận xét.
-- Giọng văn ấm áp, sư phạm, khích lệ bé và hướng dẫn cụ thể cách rèn chữ.
 
 CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không markdown, không giải thích):
 {
   "anh_hop_le": true,
+  "bai_hoc": "string",
+  "chu_muc_tieu": ["string"],
+  "vung_loai_tru_khong_cham": [
+    {
+      "loai": "o_mau_in_huong_dan",
+      "box_2d": [0,0,0,0],
+      "mo_ta": "string"
+    }
+  ],
   "tong_diem": 90,
-  "xep_loai": "Xuất sắc",
+  "xep_loai": "Tốt",
+  "rubric_minh_bach": {
+    "muc_do_hoan_thanh": {"diem": 10, "giai_thich": "Viết đủ số dòng yêu cầu"},
+    "dung_do_cao_o_ly": {"diem": 9, "giai_thich": "string"},
+    "can_dong_baseline": {"diem": 9, "giai_thich": "string"},
+    "khoang_cach_noi_net": {"diem": 8.5, "giai_thich": "string"},
+    "trinh_bay_sach_se": {"diem": 9.5, "giai_thich": "string"}
+  },
   "tieu_chi": {
     "dung_mau_chu": 9,
-    "do_deu_net": 9,
-    "khoang_cach": 9,
+    "do_deu_net": 8.5,
+    "khoang_cach": 8.5,
     "do_thang_hang": 9,
-    "trinh_bay": 9,
-    "net_co_ban": 9
+    "trinh_bay": 9.5,
+    "net_co_ban": 8.5
   },
   "nhan_xet_chung": "string",
+  "bounding_boxes": [
+    {
+      "id": "bb_1",
+      "box_2d": [100, 300, 200, 400],
+      "loai": "loi",
+      "chu": "string",
+      "dong_so": 1,
+      "tieu_de": "string",
+      "nhan_xet": "string",
+      "huong_dan_sua": "string",
+      "bang_chung": "string",
+      "can_giao_vien_kiem_tra": false
+    }
+  ],
   "diem_tot": ["string"],
   "loi_can_cai_thien": ["string"],
   "goi_y_luyen_tap": ["string"],
-  "vi_du_minh_hoa": [
-    {
-      "chu": "string",
-      "nhan_xet": "string",
-      "sai_o_dau": "string",
-      "can_cai_thien": "string"
-    }
-  ],
   "nhan_xet_phu_huynh": "string"
 }`;
 
@@ -297,14 +431,25 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không ma
 
     const aiData = await aiRes.json();
     const rawContent = aiData.choices?.[0]?.message?.content || "";
-    const cleaned = rawContent
-      .replace(/^```(?:json)?\s*/i, "")
-      .replace(/```$/i, "")
-      .trim();
-
+    
+    let parsed: HandwritingEvaluationResult | null = null;
     try {
-      const parsed: HandwritingEvaluationResult = JSON.parse(cleaned);
+      const firstBrace = rawContent.indexOf("{");
+      const lastBrace = rawContent.lastIndexOf("}");
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        parsed = JSON.parse(rawContent.substring(firstBrace, lastBrace + 1));
+      } else {
+        const cleaned = rawContent
+          .replace(/^```(?:json)?\s*/i, "")
+          .replace(/```$/i, "")
+          .trim();
+        parsed = JSON.parse(cleaned);
+      }
+    } catch (parseErr) {
+      console.warn("JSON parse error from AI:", parseErr, rawContent.substring(0, 300));
+    }
 
+    if (parsed) {
       // Nếu giáo viên đã khoanh vùng thủ công: Giữ nguyên 100% nét vẽ của giáo viên!
       if (userAnnotations.length > 0) {
         parsed.bounding_boxes = userAnnotations;
@@ -313,16 +458,40 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ THEO SCHEMA SAU (Không ma
         else if (parsed.tong_diem >= 80) parsed.xep_loai = "⭐ Tốt (Bài viết đạt chuẩn)";
         else parsed.xep_loai = "Cần rèn luyện thêm";
       } else {
-        parsed.bounding_boxes = DEFAULT_SAMPLE_RESULT.bounding_boxes;
+        // Lấy danh sách vùng loại trừ (mẫu in, tiêu đề, qr)
+        const excludedBoxes: [number, number, number, number][] = (parsed.vung_loai_tru_khong_cham || [])
+          .filter((v: any) => Array.isArray(v?.box_2d) && v.box_2d.length === 4)
+          .map((v: any) => v.box_2d as [number, number, number, number]);
+
+        const rawBBs = Array.isArray(parsed.bounding_boxes)
+          ? parsed.bounding_boxes
+          : (parsed as any).boxes || (parsed as any).cac_vung_loi || [];
+
+        // LỌC NGHIÊM NGẶT: Loại bỏ triệt để bất kỳ ô khoanh nào rơi vào vùng mẫu in hướng dẫn
+        parsed.bounding_boxes = rawBBs
+          .filter((bb: any) => Array.isArray(bb?.box_2d) && bb.box_2d.length === 4)
+          .filter((bb: any) => {
+            const isOverlapExcluded = excludedBoxes.some((ex) => isInsideOrOverlapping(bb.box_2d, ex));
+            if (isOverlapExcluded) {
+              console.warn(`[HQA Safety Filter] Loại bỏ bounding box rơi vào ô mẫu in:`, bb);
+              return false;
+            }
+            return true;
+          })
+          .map((bb: any, i: number) => ({
+            ...bb,
+            id: bb.id || `ai_bb_${i + 1}`,
+            loai: bb.loai === "chuan" || bb.loai === "chu_y" ? bb.loai : "loi",
+          }));
       }
 
       return NextResponse.json(parsed);
-    } catch {
-      return NextResponse.json({
-        ...DEFAULT_SAMPLE_RESULT,
-        bounding_boxes: userAnnotations.length > 0 ? userAnnotations : DEFAULT_SAMPLE_RESULT.bounding_boxes,
-      });
     }
+
+    return NextResponse.json({
+      ...DEFAULT_SAMPLE_RESULT,
+      bounding_boxes: userAnnotations.length > 0 ? userAnnotations : DEFAULT_SAMPLE_RESULT.bounding_boxes,
+    });
   } catch (error: any) {
     console.error("Evaluation API Error:", error);
     return NextResponse.json(DEFAULT_SAMPLE_RESULT);

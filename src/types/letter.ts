@@ -95,6 +95,9 @@ export interface HandwritingBoundingBox {
   };
   sample_crop_url?: string; // Ảnh crop chi tiết ô chữ để soi nét
   teacher_sample_url?: string; // Ảnh crop chữ mẫu chuẩn cô giáo đối chiếu
+  dong_so?: number; // Dòng số mấy trên bài tập
+  can_giao_vien_kiem_tra?: boolean; // Đánh dấu khi chưa đủ bằng chứng chắc chắn 100%
+  bang_chung?: string; // Mô tả quan sát thực tế (baseline, chiều cao ô ly)
   do_luong?: {
     chieu_cao?: string;
     do_rong?: string;
@@ -103,9 +106,25 @@ export interface HandwritingBoundingBox {
   };
 }
 
+export interface HandwritingExcludedRegion {
+  loai: "o_mau_in_huong_dan" | "tieu_de" | "qr_code" | "chu_mo_chua_to" | string;
+  box_2d: [number, number, number, number];
+  mo_ta: string;
+}
+
+export interface RubricCriterion {
+  diem: number;
+  giai_thich: string;
+  bang_chung?: string;
+}
+
 export interface HandwritingEvaluationResult {
   anh_hop_le: boolean;
   ly_do?: string;
+  bai_hoc?: string;
+  chu_muc_tieu?: string[];
+  vung_loai_tru_khong_cham?: HandwritingExcludedRegion[];
+  rubric_minh_bach?: Record<string, RubricCriterion>;
   tong_diem: number;
   xep_loai: string;
   tieu_chi: {

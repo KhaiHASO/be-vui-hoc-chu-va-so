@@ -10,7 +10,7 @@ if (!fs.existsSync(outputDir)) {
 }
 
 async function run() {
-  console.log(`🚀 Bắt đầu kiểm thử module Kính Lúp Soi Nét Mới tại ${targetUrl}`);
+  console.log(`🚀 Bắt đầu kiểm thử giao diện AI Chấm Bài Viết tinh gọn tại ${targetUrl}`);
   const browser = await chromium.launch({ headless: true });
 
   const viewports = [
@@ -48,34 +48,52 @@ async function run() {
     await page.waitForTimeout(600);
     console.log("   ✓ Đã vào module AI Chấm Bài Viết");
 
-    // 3. Chụp toàn cảnh màn hình
+    // 3. Chụp toàn cảnh màn hình ban đầu (1x)
     const fullShotPath = path.join(outputDir, `clean_grader_${vp.name}_full.png`);
     await page.screenshot({ path: fullShotPath, fullPage: true });
-    console.log(`   ✓ Đã chụp toàn bộ giao diện -> ${fullShotPath}`);
+    console.log(`   ✓ Đã chụp toàn bộ giao diện 1 màn hình -> ${fullShotPath}`);
 
-    // 4. Bấm vào một ghim lỗi (❌) trên trang vở
+    // 4. Bấm vào một ghim lỗi (❌) trên trang vở để phóng to
     const errorPin = page.locator('button:has-text("❌")').first();
     if (await errorPin.isVisible()) {
       await errorPin.click();
-      await page.waitForTimeout(400);
-      console.log("   ✓ Đã bấm vào ghim lỗi trên trang vở");
+      await page.waitForTimeout(500);
+      const zoomedShotPath = path.join(outputDir, `clean_grader_${vp.name}_zoomed_error.png`);
+      await page.screenshot({ path: zoomedShotPath, fullPage: true });
+      console.log(`   ✓ Đã bấm ghim lỗi & phóng to cận cảnh -> ${zoomedShotPath}`);
     }
 
-    // 5. Chụp cận cảnh Studio Kính lúp soi nét bên phải
-    const studioPanel = page.locator('div:has(> canvas)').first().locator("xpath=ancestor::div[contains(@class, 'bg-[#090d16]')]");
-    if (await studioPanel.isVisible()) {
-      await studioPanel.scrollIntoViewIfNeeded();
-      await page.waitForTimeout(300);
-      const studioShotPath = path.join(outputDir, `clean_grader_${vp.name}_studio_lens.png`);
-      await studioPanel.screenshot({ path: studioShotPath });
-      console.log(`   ✓ Đã chụp cận cảnh Studio Kính Lúp -> ${studioShotPath}`);
+    // 5. Thử click tự do vào một nét chữ bất kỳ trên trang vở (trên desktop)
+    if (vp.name === "desktop") {
+      const studentImg = page.locator('img[alt="Trang vở học sinh"]').first();
+      if (await studentImg.isVisible()) {
+        const box = await studentImg.boundingBox();
+        if (box) {
+          // Click vào chữ 'ca' ở dòng 3 (khoảng 40% width, 40% height)
+          await page.mouse.click(box.x + box.width * 0.4, box.y + box.height * 0.4);
+          await page.waitForTimeout(500);
+          const freeClickShot = path.join(outputDir, `clean_grader_desktop_free_click.png`);
+          await page.screenshot({ path: freeClickShot, fullPage: true });
+          console.log(`   ✓ Đã kiểm tra click tự do phóng to -> ${freeClickShot}`);
+        }
+      }
+
+      // Thử bấm nút "Toàn trang" để thu nhỏ lại
+      const resetBtn = page.locator('button:has-text("Toàn trang")').first();
+      if (await resetBtn.isVisible()) {
+        await resetBtn.click();
+        await page.waitForTimeout(400);
+        const resetShot = path.join(outputDir, `clean_grader_desktop_reset.png`);
+        await page.screenshot({ path: resetShot, fullPage: true });
+        console.log(`   ✓ Đã bấm nút Toàn trang -> ${resetShot}`);
+      }
     }
 
     await context.close();
   }
 
   await browser.close();
-  console.log("\n🎉 HOÀN TẤT KIỂM THỬ TRỰC QUAN MODULE MỚI 100%!");
+  console.log("\n🎉 HOÀN TẤT KIỂM THỬ TRỰC QUAN GIAO DIỆN MỚI 100%!");
 }
 
 run().catch((err) => {

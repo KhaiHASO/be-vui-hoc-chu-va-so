@@ -1,910 +1,1323 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from "react";
-import { HandwritingEvaluationResult, HandwritingBoundingBox } from "@/types/letter";
+import React, { useState, useRef, useCallback } from "react";
 import {
-  Sparkles,
   Upload,
-  RotateCcw,
-  Volume2,
+  Camera,
+  Loader2,
   CheckCircle2,
-  AlertCircle,
-  Eye,
-  EyeOff,
+  AlertTriangle,
+  Info,
+  RotateCcw,
   ZoomIn,
   ZoomOut,
-  Target,
-  Layers,
-  HelpCircle,
-  Loader2,
-  FileText,
-  VolumeX,
+  ChevronRight,
+  Sparkles,
+  BookOpen,
+  Eye,
+  X,
+  Maximize2,
+  Crosshair,
+  Move,
+  Plus,
+  Trash2,
+  RefreshCw,
 } from "lucide-react";
-import { sound } from "@/utils/speech";
-import confetti from "canvas-confetti";
+import { HandwritingEvaluationResult, HandwritingBoundingBox } from "@/types/letter";
 
-// Các bài mẫu scan thực tế từ kho sách đã chuẩn hóa
-const PRESETS = [
-  {
-    id: "bai_1_xau",
-    label: "Bài 1 (Chữ 'a', 'ca') - Có lỗi nét thực tế",
-    file: "bai_1_hoc_sinh_xau.jpg",
-    url: "/data/samples/bai_1_hoc_sinh_xau.jpg",
-    teacherUrl: "/data/samples/crop_a_co_giao_mau.jpg",
-    badge: "Phát hiện lỗi",
-    color: "rose",
-  },
-  {
-    id: "bai_1_dep",
-    label: "Bài 1 (Chữ 'a') - Vở sạch chữ đẹp lớp 1",
-    file: "bai_1_hoc_sinh_dep.jpg",
-    url: "/data/samples/bai_1_hoc_sinh_dep.jpg",
-    teacherUrl: "/data/samples/crop_a_co_giao_mau.jpg",
-    badge: "Mẫu mực",
-    color: "emerald",
-  },
-  {
-    id: "bai_thi",
-    label: "Bài thi tổng hợp chữ viết lớp 1",
-    file: "bai_thi_viet_mau.jpg",
-    url: "/data/samples/bai_thi_viet_mau.jpg",
-    teacherUrl: "/data/samples/crop_a_co_giao_mau.jpg",
-    badge: "Bài thi",
-    color: "violet",
-  },
-];
+// ─── Helpers ─────────────────────────────────────────────────────────────────
 
-interface PointFocus {
-  x: number; // Tọa độ pixel trên ảnh gốc (0 .. naturalWidth)
-  y: number; // Tọa độ pixel trên ảnh gốc (0 .. naturalHeight)
-  normX: number; // Tỷ lệ 0 .. 1000
-  normY: number; // Tỷ lệ 0 .. 1000
-  title?: string;
-  matchedBox?: HandwritingBoundingBox | null;
+function scoreColor(score: number): string {
+  if (score >= 9) return "text-emerald-700";
+  if (score >= 7) return "text-blue-700";
+  if (score >= 5) return "text-amber-700";
+  return "text-rose-700";
 }
 
+function scoreBg(score: number): string {
+  if (score >= 9) return "bg-emerald-100 border-emerald-200";
+  if (score >= 7) return "bg-blue-100 border-blue-200";
+  if (score >= 5) return "bg-amber-100 border-amber-200";
+  return "bg-rose-100 border-rose-200";
+}
+
+function totalColor(total: number): string {
+  if (total >= 90) return "text-emerald-700";
+  if (total >= 75) return "text-blue-700";
+  if (total >= 60) return "text-amber-700";
+  return "text-rose-700";
+}
+
+function bbColor(loai: HandwritingBoundingBox["loai"]) {
+  if (loai === "loi") {
+    return {
+      border: "#ef4444",
+      bg: "rgba(239, 68, 68, 0.20)",
+      label: "bg-red-600 text-white",
+      badge: "bg-red-100 text-red-700 border-red-200",
+      text: "Lỗi cần sửa",
+      dot: "bg-red-500",
+      icon: "❌",
+    };
+  }
+  if (loai === "chu_y") {
+    return {
+      border: "#f59e0b",
+      bg: "rgba(245, 158, 11, 0.20)",
+      label: "bg-amber-600 text-white",
+      badge: "bg-amber-100 text-amber-700 border-amber-200",
+      text: "Cần chú ý",
+      dot: "bg-amber-500",
+      icon: "⚠️",
+    };
+  }
+  return {
+    border: "#10b981",
+    bg: "rgba(16, 185, 129, 0.20)",
+    label: "bg-emerald-600 text-white",
+    badge: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    text: "Chuẩn đẹp",
+    dot: "bg-emerald-500",
+    icon: "✅",
+  };
+}
+
+const TIEU_CHI_LABELS: Record<string, string> = {
+  dung_mau_chu: "Đúng mẫu chữ",
+  do_deu_net: "Đều nét",
+  khoang_cach: "Khoảng cách",
+  do_thang_hang: "Thẳng hàng",
+  trinh_bay: "Trình bày",
+  net_co_ban: "Nét cơ bản",
+};
+
+// ─── Main Component ────────────────────────────────────────────────────────────
+
 export function AiHandwritingGrader() {
-  // Trạng thái ảnh đang xem
-  const [currentPreset, setCurrentPreset] = useState(PRESETS[0]);
-  const [imageUrl, setImageUrl] = useState<string>(PRESETS[0].url);
-  const [imageFileName, setImageFileName] = useState<string>(PRESETS[0].file);
-
-  // Trạng thái phân tích & đánh giá
-  const [isScanning, setIsScanning] = useState<boolean>(false);
-  const [evaluation, setEvaluation] = useState<HandwritingEvaluationResult | null>(null);
-
-  // Kính lúp & Tiêu cự soi nét
-  const [isMagnifierActive, setIsMagnifierActive] = useState<boolean>(true);
-  const [zoomLevel, setZoomLevel] = useState<number>(3); // 2x, 3x, 4x
-  const [ghostOpacity, setGhostOpacity] = useState<number>(0.35); // Độ mờ nét mẫu cô giáo đè lên
-  const [showGhostOverlay, setShowGhostOverlay] = useState<boolean>(true);
-  const [showGridOverlay, setShowGridOverlay] = useState<boolean>(true);
-
-  // Điểm đang được khóa tiêu cự (Focused Point)
-  const [focusPoint, setFocusPoint] = useState<PointFocus>({
-    x: 1075, // Mặc định khóa vào chữ 'a' lỗi nét móc dòng 1 của bài 1
-    y: 330,
-    normX: 768,
-    normY: 150,
-  });
-
-  // Vị trí con trỏ chuột thời gian thực cho kính lúp bay (Floating lens)
-  const [cursorPos, setCursorPos] = useState<{ x: number; y: number; visible: boolean }>({
-    x: 0,
-    y: 0,
-    visible: false,
-  });
-
-  // Trạng thái giọng đọc
-  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
-
-  // Refs
-  const imageRef = useRef<HTMLImageElement>(null);
-  const canvasLensRef = useRef<HTMLCanvasElement>(null); // Kính lúp cố định ở panel
-  const floatingCanvasRef = useRef<HTMLCanvasElement>(null); // Kính lúp trôi theo chuột
-  const teacherImgRef = useRef<HTMLImageElement | null>(null);
+  // Upload state
+  const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
+  const [imageName, setImageName] = useState<string>("");
+  const [isDraggingFile, setIsDraggingFile] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Nạp sẵn ảnh mẫu cô giáo để làm lớp lồng nét (Ghost Overlay)
-  useEffect(() => {
-    const teacher = new window.Image();
-    teacher.crossOrigin = "anonymous";
-    teacher.src = currentPreset.teacherUrl || "/data/samples/crop_a_co_giao_mau.jpg";
-    teacher.onload = () => {
-      teacherImgRef.current = teacher;
-      renderInspectorLens();
-    };
-  }, [currentPreset]);
+  // Evaluation state
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<HandwritingEvaluationResult | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // Tự động tải kết quả precomputed khi mở bài mẫu
-  const loadEvaluationForImage = useCallback(async (file: string, url: string) => {
+  // Result view state — Zoom level: 1.0 = fit to container width, 2.5 = 250% close-up
+  const [zoom, setZoom] = useState(1.0);
+  const [selectedBB, setSelectedBB] = useState<HandwritingBoundingBox | null>(null);
+  const [showAnnotations, setShowAnnotations] = useState(true);
+
+  // Interactive Bounding Boxes (Cho phép di chuyển, kéo giãn, thêm, xóa)
+  const [boxes, setBoxes] = useState<HandwritingBoundingBox[]>([]);
+  const [isAdjusted, setIsAdjusted] = useState(false);
+
+  // Real-time Spot Inspection state (Soi nét tức thì theo thời gian thực)
+  const [isSpotLoading, setIsSpotLoading] = useState<string | null>(null);
+  const resultImgRef = useRef<HTMLImageElement>(null);
+
+  // Refs for scroll and pointer dragging
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const imageWrapperRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{
+    active: boolean;
+    mode: "move" | "resize-se";
+    boxId: string;
+    startPointerX: number;
+    startPointerY: number;
+    startBox: [number, number, number, number];
+  } | null>(null);
+
+  // ── File processing ──────────────────────────────────────────────────────────
+
+  const processFile = useCallback((file: File) => {
+    setResult(null);
+    setBoxes([]);
+    setIsAdjusted(false);
+    setError(null);
+    setSelectedBB(null);
+    setZoom(1.0);
+    setImageName(file.name);
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setImageDataUrl(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) processFile(file);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggingFile(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processFile(file);
+  };
+
+  // ── AI Evaluation & Re-evaluation ────────────────────────────────────────────
+
+  const executeEvaluation = async (customBoxes?: HandwritingBoundingBox[]) => {
+    if (!imageDataUrl) return;
+    setLoading(true);
+    setError(null);
+
     try {
       const res = await fetch("/api/evaluate-handwriting", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: url, fileName: file }),
+        body: JSON.stringify({
+          image: imageDataUrl,
+          fileName: imageName,
+          annotations: customBoxes,
+        }),
       });
-      if (res.ok) {
-        const data: HandwritingEvaluationResult = await res.json();
-        setEvaluation(data);
 
-        // Khóa tiêu cự vào lỗi đầu tiên nếu có
-        const firstError = data.bounding_boxes?.find((b) => b.loai === "loi");
-        if (firstError) {
-          const [ymin, xmin, ymax, xmax] = firstError.box_2d;
-          const cx1000 = firstError.callout?.target[0] || (xmin + xmax) / 2;
-          const cy1000 = firstError.callout?.target[1] || (ymin + ymax) / 2;
+      if (!res.ok) throw new Error(`Lỗi máy chủ: ${res.status}`);
 
-          const img = imageRef.current;
-          const nw = img?.naturalWidth || 1400;
-          const nh = img?.naturalHeight || 2200;
+      const data: HandwritingEvaluationResult = await res.json();
 
-          setFocusPoint({
-            x: (cx1000 / 1000) * nw,
-            y: (cy1000 / 1000) * nh,
-            normX: cx1000,
-            normY: cy1000,
-            title: firstError.tieu_de,
-            matchedBox: firstError,
-          });
-        }
+      if (!data.anh_hop_le) {
+        setError(data.ly_do || "Ảnh không hợp lệ. Vui lòng chụp rõ hơn bài viết ô ly.");
+        setLoading(false);
+        return;
       }
-    } catch (e) {
-      console.warn("Không tải được dữ liệu đánh giá trước:", e);
+
+      setResult(data);
+      const newBoxes = data.bounding_boxes ?? customBoxes ?? [];
+      setBoxes(newBoxes);
+      setIsAdjusted(false);
+
+      // Select first box if available
+      if (newBoxes.length > 0 && !selectedBB) {
+        setSelectedBB(newBoxes[0]);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Có lỗi xảy ra. Vui lòng thử lại.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleStartEvaluate = () => {
+    executeEvaluation();
+  };
+
+  const handleReEvaluate = () => {
+    executeEvaluation(boxes);
+  };
+
+  const handleReset = () => {
+    setImageDataUrl(null);
+    setImageName("");
+    setResult(null);
+    setBoxes([]);
+    setIsAdjusted(false);
+    setError(null);
+    setSelectedBB(null);
+    setZoom(1.0);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  // ── Focus & Zoom to Bounding Box ─────────────────────────────────────────────
+
+  const focusBoundingBox = useCallback((bb: HandwritingBoundingBox) => {
+    setSelectedBB(bb);
+    setShowAnnotations(true);
+
+    const targetZoom = 2.5;
+    setZoom(targetZoom);
+
+    setTimeout(() => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      const [ymin, xmin, ymax, xmax] = bb.box_2d;
+      const cx = (xmin + xmax) / 2000;
+      const cy = (ymin + ymax) / 2000;
+
+      const targetX = cx * container.scrollWidth;
+      const targetY = cy * container.scrollHeight;
+
+      const scrollLeft = targetX - container.clientWidth / 2;
+      const scrollTop = targetY - container.clientHeight / 2;
+
+      container.scrollTo({
+        left: Math.max(0, scrollLeft),
+        top: Math.max(0, scrollTop),
+        behavior: "smooth",
+      });
+    }, 80);
+  }, []);
+
+  const resetZoom = useCallback(() => {
+    setZoom(1.0);
+    setSelectedBB(null);
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: "smooth",
+      });
     }
   }, []);
 
-  // Khởi động lần đầu: Tải ảnh và đánh giá
-  useEffect(() => {
-    loadEvaluationForImage(currentPreset.file, currentPreset.url);
-  }, [currentPreset, loadEvaluationForImage]);
+  const handleZoomIn = () => setZoom((z) => Math.min(+(z + 0.5).toFixed(1), 4.0));
+  const handleZoomOut = () => setZoom((z) => Math.max(+(z - 0.5).toFixed(1), 1.0));
 
-  // VẼ KÍNH LÚP SOI NÉT CỐ ĐỊNH Ở PANEL BÊN PHẢI (Studio Inspector Lens)
-  const renderInspectorLens = useCallback(() => {
-    const canvas = canvasLensRef.current;
-    const img = imageRef.current;
-    if (!canvas || !img || !img.naturalWidth || !img.naturalHeight) return;
+  // ── Real-Time Spot Inspection (Soi nét tức thì 1 ô cắt lẻ) ───────────────────
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const cropBoxImage = (imgEl: HTMLImageElement, box_2d: [number, number, number, number]): string => {
+    try {
+      const canvas = document.createElement("canvas");
+      const nw = imgEl.naturalWidth;
+      const nh = imgEl.naturalHeight;
+      if (nw <= 0 || nh <= 0) return "";
 
-    const cw = canvas.width;
-    const ch = canvas.height;
+      const [ymin, xmin, ymax, xmax] = box_2d;
+      const sx = Math.max(0, (xmin * nw) / 1000);
+      const sy = Math.max(0, (ymin * nh) / 1000);
+      const sw = Math.min(nw - sx, Math.max(20, ((xmax - xmin) * nw) / 1000));
+      const sh = Math.min(nh - sy, Math.max(20, ((ymax - ymin) * nh) / 1000));
 
-    // Kích thước vùng crop từ ảnh gốc dựa trên zoomLevel
-    const cropW = cw / zoomLevel;
-    const cropH = ch / zoomLevel;
-    const sx = Math.max(0, Math.min(img.naturalWidth - cropW, focusPoint.x - cropW / 2));
-    const sy = Math.max(0, Math.min(img.naturalHeight - cropH, focusPoint.y - cropH / 2));
-
-    // 1. Nền canvas tối chuyên dụng Studio
-    ctx.fillStyle = "#050811";
-    ctx.fillRect(0, 0, cw, ch);
-
-    // 2. Vẽ nét chữ thật của học sinh từ trang vở
-    ctx.drawImage(img, sx, sy, cropW, cropH, 0, 0, cw, ch);
-
-    // 3. Vẽ lưới ô ly chuẩn tiểu học đè lên (nếu bật)
-    if (showGridOverlay) {
-      ctx.save();
-      ctx.strokeStyle = "rgba(37, 99, 235, 0.4)"; // Xanh dương ô ly
-      ctx.lineWidth = 1;
-
-      // Khoảng cách ô ly xấp xỉ 75px trên ảnh 2200px -> scaled
-      const cellStep = (75 / cropH) * ch;
-
-      // Lưới dọc
-      for (let x = 0; x <= cw; x += cellStep) {
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, ch);
-        ctx.stroke();
-      }
-
-      // Lưới ngang
-      for (let y = 0; y <= ch; y += cellStep) {
-        ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(cw, y);
-        ctx.stroke();
-      }
-
-      // Đường kẻ ngang đậm số 1 (Chân chữ bám dòng)
-      ctx.strokeStyle = "rgba(59, 130, 246, 0.85)";
-      ctx.lineWidth = 2.5;
-      const baselineY = ch * 0.72;
-      ctx.beginPath();
-      ctx.moveTo(0, baselineY);
-      ctx.lineTo(cw, baselineY);
-      ctx.stroke();
-
-      // Đường kẻ số 3 (Độ cao chuẩn 2 ô ly)
-      ctx.strokeStyle = "rgba(96, 165, 250, 0.75)";
-      ctx.setLineDash([4, 4]);
-      ctx.lineWidth = 1.5;
-      const height2LyY = baselineY - cellStep * 2;
-      ctx.beginPath();
-      ctx.moveTo(0, height2LyY);
-      ctx.lineTo(cw, height2LyY);
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    // 4. Lồng nét mẫu cô giáo (Ghost Overlay) để thấy ngay sai lệch
-    if (showGhostOverlay && teacherImgRef.current && ghostOpacity > 0) {
-      ctx.save();
-      ctx.globalAlpha = ghostOpacity;
-      ctx.globalCompositeOperation = "screen"; // Hòa trộn nét mực
-      // Vẽ chữ mẫu cô giáo phủ lên trung tâm
-      const tw = cw * 0.85;
-      const th = ch * 0.85;
-      const tx = (cw - tw) / 2;
-      const ty = (ch - th) / 2;
-      ctx.drawImage(teacherImgRef.current, tx, ty, tw, th);
-      ctx.restore();
-    }
-
-    // 5. Tâm ngắm tiêu cự (Crosshair Center Reticle)
-    ctx.save();
-    ctx.strokeStyle = "rgba(239, 68, 68, 0.4)";
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3, 3]);
-    ctx.beginPath();
-    ctx.moveTo(cw / 2, 0);
-    ctx.lineTo(cw / 2, ch);
-    ctx.moveTo(0, ch / 2);
-    ctx.lineTo(cw, ch / 2);
-    ctx.stroke();
-    ctx.restore();
-  }, [focusPoint, zoomLevel, showGridOverlay, showGhostOverlay, ghostOpacity]);
-
-  // Cập nhật lại kính lúp mỗi khi thay đổi tiêu cự hoặc cấu hình
-  useEffect(() => {
-    renderInspectorLens();
-  }, [renderInspectorLens]);
-
-  // VẼ KÍNH LÚP TRÔI (FLOATING LENS) THEO TỌA ĐỘ CHUỘT
-  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isMagnifierActive) return;
-
-    const img = imageRef.current;
-    if (!img) return;
-
-    const rect = img.getBoundingClientRect();
-    const clientX = e.clientX;
-    const clientY = e.clientY;
-
-    if (clientX < rect.left || clientX > rect.right || clientY < rect.top || clientY > rect.bottom) {
-      setCursorPos((prev) => ({ ...prev, visible: false }));
-      return;
-    }
-
-    // Tọa độ trên ảnh hiển thị
-    const relX = clientX - rect.left;
-    const relY = clientY - rect.top;
-
-    // Tọa độ thật trên ảnh gốc
-    const scaleX = img.naturalWidth / rect.width;
-    const scaleY = img.naturalHeight / rect.height;
-    const realX = relX * scaleX;
-    const realY = relY * scaleY;
-
-    setCursorPos({
-      x: relX,
-      y: relY,
-      visible: true,
-    });
-
-    // Vẽ tức thì lên Floating Canvas
-    const canvas = floatingCanvasRef.current;
-    if (canvas && img.naturalWidth) {
+      canvas.width = Math.max(40, sw);
+      canvas.height = Math.max(40, sh);
       const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const cw = canvas.width;
-        const ch = canvas.height;
-        const cropW = cw / zoomLevel;
-        const cropH = ch / zoomLevel;
-        const sx = Math.max(0, Math.min(img.naturalWidth - cropW, realX - cropW / 2));
-        const sy = Math.max(0, Math.min(img.naturalHeight - cropH, realY - cropH / 2));
+      if (!ctx) return "";
 
-        ctx.fillStyle = "#050811";
-        ctx.fillRect(0, 0, cw, ch);
-        ctx.drawImage(img, sx, sy, cropW, cropH, 0, 0, cw, ch);
-
-        // Kẻ chữ thập tâm ngắm
-        ctx.strokeStyle = "rgba(239, 68, 68, 0.7)";
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(cw / 2, ch / 2, 8, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+      ctx.drawImage(imgEl, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL("image/jpeg", 0.85);
+    } catch {
+      return "";
     }
   };
 
-  // KHI NGƯỜI DÙNG CLICK VÀO BẤT KỲ ĐÂU TRÊN TRANG VỞ
-  const handleCanvasClick = (e: React.PointerEvent<HTMLDivElement>) => {
-    const img = imageRef.current;
-    if (!img) return;
+  const triggerSpotInspection = useCallback(async (targetBox: HandwritingBoundingBox) => {
+    if (!resultImgRef.current) return;
+    const crop = cropBoxImage(resultImgRef.current, targetBox.box_2d);
+    if (!crop) return;
 
-    sound.playTone(600, 0.05);
-
-    const rect = img.getBoundingClientRect();
-    const relX = e.clientX - rect.left;
-    const relY = e.clientY - rect.top;
-
-    const scaleX = img.naturalWidth / rect.width;
-    const scaleY = img.naturalHeight / rect.height;
-    const realX = relX * scaleX;
-    const realY = relY * scaleY;
-
-    const normX = Math.round((realX / img.naturalWidth) * 1000);
-    const normY = Math.round((realY / img.naturalHeight) * 1000);
-
-    // Kiểm tra xem vị trí click có khớp với Bounding Box lỗi nào không
-    const matched = evaluation?.bounding_boxes?.find((b) => {
-      const [ymin, xmin, ymax, xmax] = b.box_2d;
-      return normX >= xmin && normX <= xmax && normY >= ymin && normY <= ymax;
-    });
-
-    setFocusPoint({
-      x: realX,
-      y: realY,
-      normX,
-      normY,
-      title: matched ? matched.tieu_de : `Nét chữ tại tọa độ (${normX}, ${normY})`,
-      matchedBox: matched || null,
-    });
-  };
-
-  // BẤM VÀO GHIM LỖI ĐỂ KHÓA TIÊU CỰ
-  const handleSelectBox = (box: HandwritingBoundingBox) => {
-    sound.playTone(659.25, 0.08);
-    const img = imageRef.current;
-    const nw = img?.naturalWidth || 1400;
-    const nh = img?.naturalHeight || 2200;
-
-    const [ymin, xmin, ymax, xmax] = box.box_2d;
-    const cx1000 = box.callout?.target[0] || (xmin + xmax) / 2;
-    const cy1000 = box.callout?.target[1] || (ymin + ymax) / 2;
-
-    setFocusPoint({
-      x: (cx1000 / 1000) * nw,
-      y: (cy1000 / 1000) * nh,
-      normX: cx1000,
-      normY: cy1000,
-      title: box.tieu_de,
-      matchedBox: box,
-    });
-  };
-
-  // KÍCH HOẠT QUÉT LỖI TOÀN TRANG
-  const handleTriggerFullScan = async () => {
-    sound.playTone(523.25, 0.1);
-    setIsScanning(true);
-    setEvaluation(null);
+    setIsSpotLoading(targetBox.id);
 
     try {
       const res = await fetch("/api/evaluate-handwriting", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ image: imageUrl, fileName: imageFileName }),
+        body: JSON.stringify({
+          mode: "spot_inspect",
+          cropImage: crop,
+          boxId: targetBox.id,
+        }),
       });
-      if (!res.ok) throw new Error("Lỗi kết nối AI");
 
-      const data: HandwritingEvaluationResult = await res.json();
-      setEvaluation(data);
+      if (res.ok) {
+        const spotData = await res.json();
+        setBoxes((prev) =>
+          prev.map((b) =>
+            b.id === targetBox.id
+              ? {
+                  ...b,
+                  chu: spotData.chu || b.chu,
+                  loai: spotData.loai || b.loai,
+                  tieu_de: spotData.tieu_de || b.tieu_de,
+                  nhan_xet: spotData.nhan_xet || b.nhan_xet,
+                  huong_dan_sua: spotData.huong_dan_sua || b.huong_dan_sua,
+                  sample_crop_url: crop,
+                }
+              : b
+          )
+        );
 
-      if (data.anh_hop_le && data.tong_diem >= 80) {
-        confetti({
-          particleCount: 60,
-          spread: 80,
-          origin: { y: 0.6 },
-          colors: ["#7c3aed", "#10b981", "#f59e0b", "#ec4899"],
-        });
-      }
-
-      // Tự động nhảy tiêu cự vào lỗi đầu tiên
-      const firstLoi = data.bounding_boxes?.find((b) => b.loai === "loi") || data.bounding_boxes?.[0];
-      if (firstLoi) {
-        handleSelectBox(firstLoi);
+        setSelectedBB((prev) =>
+          prev && prev.id === targetBox.id
+            ? {
+                ...prev,
+                chu: spotData.chu || prev.chu,
+                loai: spotData.loai || prev.loai,
+                tieu_de: spotData.tieu_de || prev.tieu_de,
+                nhan_xet: spotData.nhan_xet || prev.nhan_xet,
+                huong_dan_sua: spotData.huong_dan_sua || prev.huong_dan_sua,
+                sample_crop_url: crop,
+              }
+            : prev
+        );
       }
     } catch (err) {
-      console.error(err);
-      alert("Đã xảy ra lỗi khi quét bài viết. Vui lòng thử lại!");
+      console.warn("Spot inspect error:", err);
     } finally {
-      setIsScanning(false);
+      setIsSpotLoading(null);
     }
-  };
+  }, []);
 
-  // TẢI ẢNH TỪ MÁY TÍNH / ĐIỆN THOẠI
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  // ── Interactive Drag & Resize Handlers ───────────────────────────────────────
 
-    sound.playTone(440, 0.05);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      const result = evt.target?.result as string;
-      if (result) {
-        setImageUrl(result);
-        setImageFileName(file.name);
-        setEvaluation(null);
-        setFocusPoint({ x: 700, y: 1100, normX: 500, normY: 500 });
-      }
+  const handleBoxPointerDown = (
+    e: React.PointerEvent,
+    box: HandwritingBoundingBox,
+    mode: "move" | "resize-se"
+  ) => {
+    e.stopPropagation();
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {}
+
+    dragRef.current = {
+      active: true,
+      mode,
+      boxId: box.id,
+      startPointerX: e.clientX,
+      startPointerY: e.clientY,
+      startBox: [...box.box_2d],
     };
-    reader.readAsDataURL(file);
+    setSelectedBB(box);
   };
 
-  // ĐỌC HƯỚNG DẪN BẰNG GIỌNG CÔ GIÁO
-  const toggleSpeechGuidance = () => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const handleCanvasPointerMove = (e: React.PointerEvent) => {
+    if (!dragRef.current || !dragRef.current.active) return;
+    if (!imageWrapperRef.current) return;
 
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-      return;
-    }
+    const wrapper = imageWrapperRef.current;
+    const rect = wrapper.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
 
-    const box = focusPoint.matchedBox;
-    let textToSpeak = "";
-    if (box) {
-      textToSpeak = `${box.tieu_de}. ${box.nhan_xet} ${box.huong_dan_sua ? `Cách sửa tay cho bé: ${box.huong_dan_sua}` : ""}`;
-    } else if (evaluation) {
-      textToSpeak = `${evaluation.nhan_xet_chung} Điểm sáng của con: ${evaluation.diem_tot.join(". ")}. Chỗ cần rèn luyện thêm: ${evaluation.loi_can_cai_thien.join(". ")}`;
-    } else {
-      textToSpeak = "Bé hãy đặt bút đúng đường kẻ ngang 3, đưa nét cong tròn trịa và bám đều trên đường kẻ đậm số 1 con nhé.";
-    }
+    const dx = e.clientX - dragRef.current.startPointerX;
+    const dy = e.clientY - dragRef.current.startPointerY;
 
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.lang = "vi-VN";
-    utterance.rate = 0.88;
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
+    // Quy đổi pixel di chuyển sang thang đo 0-1000
+    const d1000X = (dx / rect.width) * 1000;
+    const d1000Y = (dy / rect.height) * 1000;
 
-    window.speechSynthesis.speak(utterance);
-    setIsSpeaking(true);
+    const [startYmin, startXmin, startYmax, startXmax] = dragRef.current.startBox;
+    const boxW = startXmax - startXmin;
+    const boxH = startYmax - startYmin;
+
+    setBoxes((prev) =>
+      prev.map((b) => {
+        if (b.id !== dragRef.current?.boxId) return b;
+
+        if (dragRef.current.mode === "move") {
+          const newYmin = Math.max(0, Math.min(1000 - boxH, startYmin + d1000Y));
+          const newXmin = Math.max(0, Math.min(1000 - boxW, startXmin + d1000X));
+          const updatedBox: [number, number, number, number] = [
+            Math.round(newYmin),
+            Math.round(newXmin),
+            Math.round(newYmin + boxH),
+            Math.round(newXmin + boxW),
+          ];
+          const updatedItem = { ...b, box_2d: updatedBox };
+          setSelectedBB(updatedItem);
+          return updatedItem;
+        } else {
+          // resize-se (kéo góc dưới - phải)
+          const newYmax = Math.max(startYmin + 15, Math.min(1000, startYmax + d1000Y));
+          const newXmax = Math.max(startXmin + 15, Math.min(1000, startXmax + d1000X));
+          const updatedBox: [number, number, number, number] = [
+            startYmin,
+            startXmin,
+            Math.round(newYmax),
+            Math.round(newXmax),
+          ];
+          const updatedItem = { ...b, box_2d: updatedBox };
+          setSelectedBB(updatedItem);
+          return updatedItem;
+        }
+      })
+    );
+    setIsAdjusted(true);
   };
 
-  const activeBox = focusPoint.matchedBox;
+  const handleCanvasPointerUp = (e: React.PointerEvent) => {
+    if (dragRef.current?.active) {
+      const activeBoxId = dragRef.current.boxId;
+      dragRef.current = null;
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {}
+
+      // TỰ ĐỘNG CHẤM REAL-TIME: Vừa di chuyển/co giãn xong là AI lập tức soi và nhận dạng tại chỗ!
+      setTimeout(() => {
+        setBoxes((currentBoxes) => {
+          const target = currentBoxes.find((b) => b.id === activeBoxId);
+          if (target) {
+            triggerSpotInspection(target);
+          }
+          return currentBoxes;
+        });
+      }, 50);
+    }
+  };
+
+  // Thêm ô khoanh mới thủ công & tự động nhận dạng ngay
+  const handleAddNewBox = () => {
+    const newId = `teacher_bb_${Date.now()}`;
+    const newBox: HandwritingBoundingBox = {
+      id: newId,
+      box_2d: [350, 350, 440, 480],
+      loai: "chu_y",
+      chu: "...",
+      tieu_de: "Đang soi vị trí...",
+      nhan_xet: "Đang nhận dạng vị trí mới tạo...",
+      huong_dan_sua: "",
+    };
+    setBoxes((prev) => [...prev, newBox]);
+    setSelectedBB(newBox);
+    setIsAdjusted(true);
+    focusBoundingBox(newBox);
+
+    setTimeout(() => {
+      triggerSpotInspection(newBox);
+    }, 200);
+  };
+
+  // Xóa ô khoanh
+  const handleDeleteBox = (id: string) => {
+    setBoxes((prev) => prev.filter((b) => b.id !== id));
+    if (selectedBB?.id === id) {
+      setSelectedBB(null);
+    }
+    setIsAdjusted(true);
+  };
+
+  // Cập nhật loại lỗi cho ô
+  const handleUpdateBoxLoai = (id: string, loai: "loi" | "chu_y" | "chuan") => {
+    setBoxes((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, loai } : b))
+    );
+    setSelectedBB((prev) => (prev && prev.id === id ? { ...prev, loai } : prev));
+    setIsAdjusted(true);
+  };
+
+  // Cập nhật tên con chữ
+  const handleUpdateBoxChu = (id: string, chu: string) => {
+    setBoxes((prev) =>
+      prev.map((b) => (b.id === id ? { ...b, chu } : b))
+    );
+    setSelectedBB((prev) => (prev && prev.id === id ? { ...prev, chu } : prev));
+    setIsAdjusted(true);
+  };
+
+  // ── Render: Upload Zone ──────────────────────────────────────────────────────
+
+  if (!imageDataUrl) {
+    return (
+      <div className="w-full flex flex-col items-center py-4 sm:py-8 px-4 sm:px-6">
+        <div className="w-full max-w-2xl mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-violet-100 text-violet-800 border border-violet-200 mb-2">
+            <Sparkles className="w-3.5 h-3.5" />
+            AI Chấm Bài Viết Lớp 1 Chuẩn Ô Ly
+          </span>
+          <h2 className="text-xl sm:text-2xl font-black text-slate-800 mb-1">
+            Đánh Giá Chất Lượng Nét Chữ
+          </h2>
+          <p className="text-sm text-slate-500">
+            Tải ảnh chụp bài tập viết. AI sẽ soi từng con chữ, tự động khoanh vùng lỗi trên bài, và cho phép cô giáo linh hoạt di chuyển, co giãn ô khoanh để thẩm định lại.
+          </p>
+        </div>
+
+        {/* Drop Zone */}
+        <div
+          className={`w-full max-w-2xl rounded-3xl border-2 border-dashed transition-all duration-200 cursor-pointer ${
+            isDraggingFile
+              ? "border-violet-500 bg-violet-50 scale-[1.01]"
+              : "border-slate-300 bg-slate-50 hover:border-violet-400 hover:bg-violet-50/40"
+          }`}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setIsDraggingFile(true);
+          }}
+          onDragLeave={() => setIsDraggingFile(false)}
+          onDrop={handleDrop}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <div className="flex flex-col items-center justify-center py-14 px-6 text-center">
+            <div
+              className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-colors ${
+                isDraggingFile ? "bg-violet-200" : "bg-white border border-slate-200 shadow-xs"
+              }`}
+            >
+              <Upload className="w-7 h-7 text-violet-600" />
+            </div>
+            <p className="font-black text-slate-700 text-lg mb-1">
+              Kéo thả hoặc bấm để tải ảnh bài viết
+            </p>
+            <p className="text-sm text-slate-400 mb-5">
+              Hỗ trợ định dạng: JPG, PNG, HEIC, WEBP
+            </p>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                fileInputRef.current?.click();
+              }}
+              className="min-h-[44px] px-5 py-2.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-sm flex items-center gap-2 active:scale-95 transition-all shadow-md cursor-pointer"
+            >
+              <Camera className="w-4 h-4" />
+              Chọn ảnh từ thiết bị
+            </button>
+          </div>
+        </div>
+
+        {/* Tips */}
+        <div className="w-full max-w-2xl mt-5 p-4 rounded-2xl bg-blue-50 border border-blue-200">
+          <h4 className="text-xs font-black text-blue-800 flex items-center gap-1.5 mb-2">
+            <Info className="w-3.5 h-3.5" />
+            Mẹo chụp ảnh để AI chấm chính xác:
+          </h4>
+          <ul className="text-xs text-blue-700 space-y-1.5">
+            <li className="flex items-start gap-1.5">
+              <span>📷</span> Chụp thẳng góc từ trên xuống, đủ ánh sáng, không bị bóng mờ
+            </li>
+            <li className="flex items-start gap-1.5">
+              <span>📄</span> Thấy rõ các đường kẻ ngang và lưới ô ly tập viết
+            </li>
+            <li className="flex items-start gap-1.5">
+              <span>🔍</span> Ảnh sắc nét, chữ viết không bị nhòe tay hay rung lắc khi chụp
+            </li>
+          </ul>
+        </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={handleFileChange}
+        />
+      </div>
+    );
+  }
+
+  // ── Render: Preview + Evaluate ───────────────────────────────────────────────
+
+  if (!result && !loading) {
+    return (
+      <div className="w-full flex flex-col items-center py-4 sm:py-8 px-4 sm:px-6">
+        <div className="w-full max-w-2xl">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5">
+              <BookOpen className="w-4 h-4 text-violet-600" />
+              {imageName || "Bài viết học sinh"}
+            </span>
+            <button
+              onClick={handleReset}
+              className="min-h-[44px] px-3 text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Đổi ảnh khác
+            </button>
+          </div>
+
+          {/* Preview Image */}
+          <div
+            className="rounded-3xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 mb-4 flex items-center justify-center p-2"
+            style={{ maxHeight: "65vh" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageDataUrl}
+              alt="Bài viết học sinh"
+              className="max-w-full max-h-[60vh] object-contain rounded-2xl"
+            />
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-sm flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          <div className="flex gap-3">
+            <button
+              onClick={handleReset}
+              className="min-h-[44px] px-4 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+            >
+              <RotateCcw className="w-4 h-4" /> Đổi ảnh
+            </button>
+            <button
+              onClick={handleStartEvaluate}
+              className="flex-1 min-h-[44px] px-5 py-2.5 rounded-2xl bg-violet-600 hover:bg-violet-700 text-white font-black text-sm flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4" />
+              Bắt đầu AI Chấm Bài Viết
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Render: Loading ──────────────────────────────────────────────────────────
+
+  if (loading) {
+    return (
+      <div className="w-full min-h-[60vh] flex flex-col items-center justify-center py-8 px-4">
+        <div className="w-16 h-16 rounded-full bg-violet-100 flex items-center justify-center mb-5">
+          <Loader2 className="w-8 h-8 text-violet-600 animate-spin" />
+        </div>
+        <p className="font-black text-slate-800 text-lg mb-1">
+          {isAdjusted ? "AI đang thẩm định lại các vùng bạn vừa chỉnh..." : "AI đang soi từng nét chữ..."}
+        </p>
+        <p className="text-sm text-slate-500 text-center max-w-sm">
+          Đang đối chiếu mẫu chữ ô ly Lớp 1, định vị các điểm lỗi và tổng hợp nhận xét sư phạm.
+        </p>
+        <div className="mt-6 flex gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="w-2.5 h-2.5 rounded-full bg-violet-500 animate-bounce"
+              style={{ animationDelay: `${i * 0.15}s` }}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // ── Render: Result ───────────────────────────────────────────────────────────
+
+  if (!result) return null;
+
+  const excludedRegions = result.vung_loai_tru_khong_cham ?? [];
+  const hasAnnotations = boxes.length > 0;
+  const criteriaPairs = Object.entries(result.tieu_chi);
+  const rubricEntries = result.rubric_minh_bach ? Object.entries(result.rubric_minh_bach) : [];
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-4 select-none pb-12">
-      {/* 1. THANH ĐIỀU KHIỂN TINH GỌN (TOP WORKSPACE TOOLBAR) */}
-      <header className="bg-white rounded-3xl p-3 sm:p-4 border border-slate-200/80 shadow-xs flex flex-wrap items-center justify-between gap-3">
-        {/* Bộ chọn bài tập mẫu */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-black text-slate-500 uppercase tracking-wider hidden sm:inline">
-            Chọn vở luyện:
-          </span>
-          {PRESETS.map((p) => {
-            const isSelected = imageFileName === p.file;
-            return (
-              <button
-                key={p.id}
-                onClick={() => {
-                  sound.playTone(520, 0.05);
-                  setCurrentPreset(p);
-                  setImageUrl(p.url);
-                  setImageFileName(p.file);
-                }}
-                className={`min-h-[44px] px-3.5 py-2 rounded-2xl text-xs font-bold transition-all active:scale-95 flex items-center gap-1.5 ${
-                  isSelected
-                    ? "bg-slate-900 text-white shadow-md ring-2 ring-violet-500"
-                    : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                }`}
+    <div className="w-full py-3 sm:py-5 px-3 sm:px-6 pb-12">
+      {/* ── Top Score Strip ── */}
+      <div className="w-full max-w-5xl mx-auto mb-5">
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Total score */}
+            <div className="flex items-center gap-4">
+              <div
+                className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center border-2 font-black shadow-xs ${scoreBg(
+                  result.tong_diem / 10
+                )}`}
               >
-                <span>{p.label}</span>
-                <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-black ${
-                    p.color === "rose"
-                      ? "bg-rose-500 text-white"
-                      : p.color === "emerald"
-                      ? "bg-emerald-500 text-white"
-                      : "bg-violet-500 text-white"
-                  }`}
-                >
-                  {p.badge}
+                <span className={`text-2xl leading-none ${totalColor(result.tong_diem)}`}>
+                  {result.tong_diem}
                 </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Nút hành động chính */}
-        <div className="flex items-center gap-2 ml-auto">
-          {/* Nút Tải ảnh lên */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileUpload}
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="min-h-[44px] px-3.5 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all"
-            title="Tải ảnh vở chụp từ điện thoại"
-          >
-            <Upload className="w-4 h-4 text-violet-600" />
-            <span className="hidden sm:inline">Tải ảnh khác</span>
-          </button>
-
-          {/* Nút Kính lúp bật/tắt */}
-          <button
-            onClick={() => {
-              sound.playTone(480, 0.05);
-              setIsMagnifierActive(!isMagnifierActive);
-            }}
-            className={`min-h-[44px] px-3.5 py-2 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all active:scale-95 ${
-              isMagnifierActive
-                ? "bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs"
-                : "bg-slate-100 text-slate-500"
-            }`}
-            title="Bật/Tắt kính lúp soi nét trôi theo chuột"
-          >
-            {isMagnifierActive ? <Eye className="w-4 h-4 text-amber-600" /> : <EyeOff className="w-4 h-4" />}
-            <span>Kính lúp: {isMagnifierActive ? "Bật" : "Tắt"}</span>
-          </button>
-
-          {/* Nút AI QUÉT LỖI TOÀN TRANG */}
-          <button
-            onClick={handleTriggerFullScan}
-            disabled={isScanning}
-            className={`min-h-[44px] px-5 py-2.5 rounded-2xl font-black text-xs sm:text-sm flex items-center gap-2 shadow-lg transition-all active:scale-95 ${
-              isScanning
-                ? "bg-slate-300 text-slate-500 cursor-not-allowed"
-                : "bg-linear-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-700 hover:to-indigo-700 text-white shadow-emerald-200"
-            }`}
-          >
-            {isScanning ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Đang quét ô ly...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4" />
-                <span>AI Quét Cả Trang</span>
-              </>
-            )}
-          </button>
-        </div>
-      </header>
-
-      {/* 2. KHÔNG GIAN LÀM VIỆC CHÍNH (2 CỘT CHUẨN SPLIT-STUDIO) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* CỘT TRÁI (7/12 CỘT): TRANG VỞ SCAN & KÍNH LÚP TƯƠNG TÁC QUANG HỌC */}
-        <div className="lg:col-span-7 space-y-3">
-          <div className="bg-slate-900 rounded-3xl p-2 sm:p-3 shadow-2xl relative overflow-hidden border border-slate-800">
-            {/* Header nhỏ hướng dẫn thao tác */}
-            <div className="flex items-center justify-between px-3 py-1.5 text-xs text-slate-400 border-b border-slate-800 mb-2">
-              <div className="flex items-center gap-1.5 font-bold text-slate-300">
-                <Target className="w-3.5 h-3.5 text-amber-400" />
-                <span>Di chuột để soi • Click vào nét chữ để khóa tiêu cự</span>
+                <span className="text-[10px] text-slate-500 font-bold">/100</span>
               </div>
-              <span className="text-[11px] text-slate-500 hidden sm:inline">
-                Khổ chuẩn 1400 × 2200px
-              </span>
+              <div className="min-w-0">
+                <div className="font-black text-slate-800 text-base sm:text-lg leading-tight truncate">
+                  {result.xep_loai}
+                </div>
+                {result.bai_hoc ? (
+                  <div className="text-xs font-bold text-violet-700 mt-0.5 truncate max-w-[280px]">
+                    📖 {result.bai_hoc}
+                  </div>
+                ) : imageName ? (
+                  <div className="text-xs text-slate-400 mt-0.5 truncate max-w-[200px]">
+                    📄 {imageName}
+                  </div>
+                ) : null}
+              </div>
             </div>
 
-            {/* Vùng chứa ảnh vở */}
-            <div
-              className="relative rounded-2xl overflow-hidden bg-[#0a0f1d] flex items-center justify-center cursor-crosshair min-h-[480px]"
-              onPointerMove={handlePointerMove}
-              onPointerLeave={() => setCursorPos((p) => ({ ...p, visible: false }))}
-              onPointerDown={handleCanvasClick}
-            >
-              {/* Ảnh bài viết gốc */}
-              <img
-                ref={imageRef}
-                src={imageUrl}
-                alt="Trang vở học sinh"
-                className="w-full h-auto max-h-[75vh] object-contain rounded-xl select-none pointer-events-none block mx-auto"
-                draggable={false}
-                crossOrigin="anonymous"
-                onLoad={() => renderInspectorLens()}
-              />
-
-              {/* VÒNG TIÊU CỰ ĐANG KHÓA (LOCKED FOCUS RING) */}
-              {imageRef.current && (
+            {/* 6 criteria boxes */}
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 flex-1 min-w-[280px]">
+              {criteriaPairs.map(([key, val]) => (
                 <div
-                  className="absolute pointer-events-none transition-all duration-200"
-                  style={{
-                    left: `${(focusPoint.normX / 1000) * 100}%`,
-                    top: `${(focusPoint.normY / 1000) * 100}%`,
-                    transform: "translate(-50%, -50%)",
-                  }}
+                  key={key}
+                  className={`rounded-xl px-2 py-1.5 border text-center ${scoreBg(val)}`}
                 >
-                  <div className="w-12 h-12 rounded-full border-2 border-rose-500 bg-rose-500/15 animate-ping absolute -inset-0" />
-                  <div className="w-12 h-12 rounded-full border-2 border-amber-400 bg-amber-400/20 shadow-lg flex items-center justify-center relative">
-                    <div className="w-2 h-2 rounded-full bg-rose-600 shadow-xs" />
+                  <div className={`text-sm font-black ${scoreColor(val)}`}>{val}</div>
+                  <div className="text-[10px] text-slate-600 font-bold leading-tight">
+                    {TIEU_CHI_LABELS[key] ?? key}
                   </div>
                 </div>
-              )}
-
-              {/* CÁC CHẤM GHIM LỖI TỰ ĐỘNG CỦA AI TRÊN TRANG VỞ */}
-              {evaluation?.bounding_boxes?.map((box) => {
-                const [ymin, xmin, ymax, xmax] = box.box_2d;
-                const cx = box.callout?.target[0] || (xmin + xmax) / 2;
-                const cy = box.callout?.target[1] || (ymin + ymax) / 2;
-                const isSelected = activeBox?.id === box.id;
-
-                return (
-                  <button
-                    key={box.id}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSelectBox(box);
-                    }}
-                    style={{
-                      left: `${cx / 10}%`,
-                      top: `${cy / 10}%`,
-                      transform: "translate(-50%, -50%)",
-                    }}
-                    className={`absolute z-20 min-h-[36px] min-w-[36px] p-1.5 rounded-full shadow-xl font-black text-xs flex items-center justify-center transition-all active:scale-90 ${
-                      box.loai === "loi"
-                        ? isSelected
-                          ? "bg-rose-600 text-white ring-4 ring-rose-400 ring-offset-2 ring-offset-slate-900 scale-125"
-                          : "bg-rose-500/90 text-white hover:scale-110 animate-pulse"
-                        : isSelected
-                        ? "bg-emerald-600 text-white ring-4 ring-emerald-400 ring-offset-2 ring-offset-slate-900 scale-125"
-                        : "bg-emerald-500/90 text-white hover:scale-110"
-                    }`}
-                    title={box.tieu_de}
-                  >
-                    {box.loai === "loi" ? "❌" : "✅"}
-                  </button>
-                );
-              })}
-
-              {/* KÍNH LÚP TRÔI NỔI (FLOATING SPYGLASS LENS) */}
-              {isMagnifierActive && cursorPos.visible && (
-                <div
-                  className="absolute pointer-events-none z-30 transition-opacity duration-75 shadow-2xl rounded-full border-4 border-white/90 overflow-hidden ring-4 ring-black/40"
-                  style={{
-                    left: `${cursorPos.x}px`,
-                    top: `${cursorPos.y}px`,
-                    width: "160px",
-                    height: "160px",
-                    transform: "translate(-50%, -50%)",
-                  }}
-                >
-                  <canvas
-                    ref={floatingCanvasRef}
-                    width={160}
-                    height={160}
-                    className="w-full h-full block"
-                  />
-                  <div className="absolute inset-0 rounded-full border-2 border-amber-400/80 pointer-events-none" />
-                </div>
-              )}
+              ))}
             </div>
+
+            <button
+              onClick={handleReset}
+              className="min-h-[44px] px-4 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" /> Chấm bài khác
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* CỘT PHẢI (5/12 CỘT): STUDIO KÍNH LÚP SOI NÉT & SO SÁNH CHÂN LÝ */}
-        <div className="lg:col-span-5 space-y-4">
-          {/* KHUNG THẤU KÍNH QUANG HỌC CẬN CẢNH (DARK GRID STUDIO) */}
-          <div className="bg-[#090d16] rounded-3xl p-4 sm:p-5 border-2 border-slate-800 text-white shadow-2xl space-y-3.5">
-            {/* Header thấu kính */}
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-3 h-3 rounded-full ${
-                    activeBox?.loai === "loi" ? "bg-rose-500 animate-pulse" : "bg-emerald-500"
-                  }`}
-                />
-                <h3 className="text-sm sm:text-base font-black text-slate-100 tracking-wide">
-                  {activeBox?.loai === "loi"
-                    ? `Phát hiện lỗi: ${activeBox.tieu_de}`
-                    : activeBox
-                    ? `Nét chuẩn: ${activeBox.tieu_de}`
-                    : "Kính lúp soi nét thời gian thực"}
-                </h3>
-              </div>
+      {/* ── Main 2-Column Layout ── */}
+      <div className="w-full max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
-              {/* Nút đổi độ phóng đại */}
-              <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
-                {[2, 3, 4].map((z) => (
-                  <button
-                    key={z}
-                    onClick={() => {
-                      sound.playTone(500, 0.03);
-                      setZoomLevel(z);
-                    }}
-                    className={`px-2 py-0.5 rounded-lg text-xs font-black transition-all ${
-                      zoomLevel === z
-                        ? "bg-violet-600 text-white shadow-xs"
-                        : "text-slate-400 hover:text-white"
-                    }`}
-                  >
-                    {z}×
-                  </button>
-                ))}
-              </div>
+        {/* ── LEFT: Image with Interactive Bounding Boxes ── */}
+        <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden order-1 flex flex-col">
+          {/* Toolbar */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 flex-wrap gap-2 bg-slate-50/70">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-black text-slate-700 flex items-center gap-1.5">
+                <Eye className="w-4 h-4 text-violet-600" />
+                Bài viết
+                {hasAnnotations && (
+                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-violet-100 text-violet-700">
+                    {boxes.length} vị trí
+                  </span>
+                )}
+              </span>
+
+              {/* Nút thêm ô khoanh mới */}
+              <button
+                onClick={handleAddNewBox}
+                className="min-h-[36px] px-2.5 py-1 rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 font-bold text-xs flex items-center gap-1 border border-violet-200 active:scale-95 transition-all cursor-pointer"
+                title="Khoanh thêm một vị trí nét chữ mới"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Thêm ô
+              </button>
             </div>
 
-            {/* VÙNG THẤU KÍNH HIỂN THỊ NÉT THẬT TRÊN LƯỚI Ô LY */}
-            <div className="relative w-full aspect-[4/3] rounded-2xl bg-[#050811] border border-slate-800 overflow-hidden shadow-inner flex items-center justify-center">
-              <canvas
-                ref={canvasLensRef}
-                width={360}
-                height={270}
-                className="w-full h-full object-cover block"
-              />
-
-              {/* VÒNG TRÒN NÉT ĐỨT ĐỎ + CALLOUT CHỈ LỖI (CHUẨN GIAODIENMONGMUON.PNG) */}
-              {activeBox?.loai === "loi" && (
-                <svg className="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 360 270">
-                  {/* Vòng tròn nét đứt đỏ quanh điểm lỗi */}
-                  <circle
-                    cx="180"
-                    cy="125"
-                    r="34"
-                    fill="rgba(239, 68, 68, 0.08)"
-                    stroke="#ef4444"
-                    strokeWidth={3}
-                    strokeDasharray="6 4"
-                  />
-                  {/* Đường chỉ dẫn chéo lên góc trên bên phải */}
-                  <line
-                    x1="204"
-                    y1="102"
-                    x2="275"
-                    y2="42"
-                    stroke="#ef4444"
-                    strokeWidth={2.5}
-                    strokeLinecap="round"
-                  />
-                  {/* Chấm tròn đỏ đầu mút */}
-                  <circle cx="275" cy="42" r="6.5" fill="#ef4444" />
-                </svg>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {/* Nút Nhận dạng lại khi cô giáo đã chỉnh sửa */}
+              {isAdjusted && (
+                <button
+                  onClick={handleReEvaluate}
+                  className="min-h-[36px] px-3 py-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer animate-pulse"
+                  title="Gửi lại vị trí các ô bạn vừa chỉnh để AI chấm lại"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  Chấm lại ({boxes.length})
+                </button>
               )}
-            </div>
 
-            {/* THANH ĐIỀU CHỈNH ĐỐI CHIẾU MẪU CÔ GIÁO (GHOST OVERLAY SLIDER) */}
-            <div className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800/90 space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-300">
-                <span className="flex items-center gap-1.5">
-                  <Layers className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Lồng nét mẫu cô giáo (Vở Chân Lý):</span>
-                </span>
-                <span className="text-emerald-400 font-mono">
-                  {showGhostOverlay ? `${Math.round(ghostOpacity * 100)}%` : "Tắt"}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2.5">
+              {hasAnnotations && (
                 <button
-                  onClick={() => setShowGhostOverlay(!showGhostOverlay)}
-                  className={`min-h-[36px] px-2.5 py-1 rounded-xl text-xs font-bold transition-all ${
-                    showGhostOverlay
-                      ? "bg-emerald-600 text-white"
-                      : "bg-slate-800 text-slate-400 hover:text-white"
+                  onClick={() => setShowAnnotations(!showAnnotations)}
+                  className={`min-h-[36px] px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all active:scale-95 cursor-pointer ${
+                    showAnnotations
+                      ? "bg-violet-100 text-violet-800 border-violet-300"
+                      : "bg-slate-100 text-slate-500 border-slate-200"
                   }`}
+                  title={showAnnotations ? "Ẩn khoanh vùng" : "Hiện khoanh vùng"}
                 >
-                  {showGhostOverlay ? "Đang bật" : "Bật lồng nét"}
+                  <Eye className="w-3.5 h-3.5" />
+                  {showAnnotations ? "Ẩn" : "Hiện"}
                 </button>
-
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={ghostOpacity}
-                  disabled={!showGhostOverlay}
-                  onChange={(e) => setGhostOpacity(parseFloat(e.target.value))}
-                  className="flex-1 accent-emerald-500 cursor-pointer disabled:opacity-30"
-                />
-
-                <button
-                  onClick={() => setShowGridOverlay(!showGridOverlay)}
-                  className={`min-h-[36px] px-2.5 py-1 rounded-xl text-xs font-bold transition-all ${
-                    showGridOverlay
-                      ? "bg-blue-600 text-white"
-                      : "bg-slate-800 text-slate-400 hover:text-white"
-                  }`}
-                  title="Ẩn/Hiện đường kẻ ô ly"
-                >
-                  {showGridOverlay ? "Ô ly: Bật" : "Ô ly: Tắt"}
-                </button>
-              </div>
-            </div>
-
-            {/* BẢNG ĐO LƯỜNG HÌNH HỌC THỰC TẾ (REAL COMPUTER VISION METRICS) */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-              <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Chiều cao ô ly</span>
-                <span className="font-black text-slate-100 text-xs sm:text-sm">
-                  {activeBox?.do_luong?.chieu_cao || "2.0 ô ly"}
-                </span>
-              </div>
-              <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Độ rộng thân chữ</span>
-                <span className="font-black text-slate-100 text-xs sm:text-sm">
-                  {activeBox?.do_luong?.do_rong || "1.5 ô ly"}
-                </span>
-              </div>
-              <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Sai lệch nét</span>
-                <span
-                  className={`font-black text-xs sm:text-sm ${
-                    activeBox?.loai === "loi" ? "text-rose-400" : "text-emerald-400"
-                  }`}
-                >
-                  {activeBox?.do_luong?.do_lech || "0 px (Chuẩn)"}
-                </span>
-              </div>
-              <div className="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800 text-center">
-                <span className="text-[10px] text-slate-400 font-bold block uppercase">Chân bám dòng 1</span>
-                <span className="font-black text-slate-100 text-xs sm:text-sm">
-                  {activeBox?.do_luong?.chan_chu || "Đạt chuẩn"}
-                </span>
-              </div>
-            </div>
-
-            {/* NHẬN XÉT SƯ PHẠM VÀ HƯỚNG DẪN NẮN TAY */}
-            <div className="p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="font-black text-amber-400">
-                  📌 Đánh giá sư phạm nét đang soi:
-                </span>
-                <button
-                  onClick={toggleSpeechGuidance}
-                  className="min-h-[32px] px-2.5 py-1 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs flex items-center gap-1 active:scale-95 shadow-xs"
-                >
-                  {isSpeaking ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                  <span>{isSpeaking ? "Dừng đọc" : "Nghe cô đọc"}</span>
-                </button>
-              </div>
-
-              <p className="text-slate-200 leading-relaxed">
-                {activeBox?.nhan_xet ||
-                  "Chữ viết của bé cơ bản đã hình thành đúng khung ô ly. Hãy đối chiếu với nét mờ của cô giáo để nắn nót thêm."}
-              </p>
-
-              {activeBox?.huong_dan_sua && (
-                <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-800/60 text-emerald-300">
-                  <span className="font-bold block text-emerald-200">💡 Cách sửa tay cho bé:</span>
-                  <span>{activeBox.huong_dan_sua}</span>
-                </div>
               )}
+
+              <button
+                onClick={handleZoomOut}
+                disabled={zoom <= 1.0}
+                className="min-h-[36px] min-w-[36px] rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center active:scale-95 cursor-pointer"
+                title="Thu nhỏ"
+              >
+                <ZoomOut className="w-4 h-4 text-slate-600" />
+              </button>
+
+              <span className="text-xs text-slate-600 font-black w-9 text-center">
+                {Math.round(zoom * 100)}%
+              </span>
+
+              <button
+                onClick={handleZoomIn}
+                disabled={zoom >= 4.0}
+                className="min-h-[36px] min-w-[36px] rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center active:scale-95 cursor-pointer"
+                title="Phóng to"
+              >
+                <ZoomIn className="w-4 h-4 text-slate-600" />
+              </button>
+
+              <button
+                onClick={resetZoom}
+                className="min-h-[36px] px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-600 flex items-center gap-1 active:scale-95 cursor-pointer"
+                title="Xem toàn bài 100%"
+              >
+                <Maximize2 className="w-3.5 h-3.5" />
+                Toàn bài
+              </button>
             </div>
           </div>
 
-          {/* BẢNG TỔNG KẾT ĐIỂM TOÀN BÀI (NẾU CÓ KẾT QUẢ ĐÁNH GIÁ) */}
-          {evaluation && (
-            <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200/90 shadow-lg space-y-3">
-              <div className="flex items-center justify-between border-b pb-3">
-                <div>
-                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider">
-                    Kết quả chấm toàn bài
-                  </span>
-                  <h4 className="text-base font-black text-slate-900">{evaluation.xep_loai}</h4>
+          {/* Scrollable Viewport */}
+          <div
+            ref={scrollContainerRef}
+            className="overflow-auto bg-slate-100 p-3 select-none relative"
+            style={{ maxHeight: "68vh", minHeight: "380px" }}
+          >
+            {/* Inner responsive wrapper scaled by zoom */}
+            <div
+              ref={imageWrapperRef}
+              onPointerMove={handleCanvasPointerMove}
+              onPointerUp={handleCanvasPointerUp}
+              className="relative transition-[width] duration-300 ease-out origin-top-left mx-auto touch-none"
+              style={{
+                width: `${zoom * 100}%`,
+                minWidth: "100%",
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                ref={resultImgRef}
+                src={imageDataUrl!}
+                alt="Bài viết học sinh"
+                className="w-full h-auto block rounded-2xl shadow-xs pointer-events-none select-none"
+                draggable={false}
+              />
+
+              {/* Vùng loại trừ (Mẫu in hướng dẫn, QR, tiêu đề) */}
+              {showAnnotations &&
+                excludedRegions.map((ex, idx) => {
+                  const [ymin, xmin, ymax, xmax] = ex.box_2d;
+                  return (
+                    <div
+                      key={`ex_${idx}`}
+                      className="absolute pointer-events-none transition-all"
+                      style={{
+                        top: `${ymin / 10}%`,
+                        left: `${xmin / 10}%`,
+                        width: `${(xmax - xmin) / 10}%`,
+                        height: `${(ymax - ymin) / 10}%`,
+                        border: "1.5px dashed #94a3b8",
+                        borderRadius: "6px",
+                        background: "rgba(148, 163, 184, 0.12)",
+                        zIndex: 5,
+                      }}
+                      title={ex.mo_ta}
+                    >
+                      <span className="absolute -top-4 left-0 text-[9px] font-bold px-1 rounded bg-slate-500 text-white whitespace-nowrap shadow-xs">
+                        Mẫu in (loại trừ)
+                      </span>
+                    </div>
+                  );
+                })}
+
+              {/* Interactive Bounding Boxes */}
+              {showAnnotations &&
+                boxes.map((bb) => {
+                  const [ymin, xmin, ymax, xmax] = bb.box_2d;
+                  const colors = bbColor(bb.loai);
+                  const isSelected = selectedBB?.id === bb.id;
+
+                  return (
+                    <div
+                      key={bb.id}
+                      onPointerDown={(e) => handleBoxPointerDown(e, bb, "move")}
+                      className={`absolute cursor-move transition-shadow duration-150 touch-none ${
+                        isSelected ? "z-30" : "z-10"
+                      }`}
+                      style={{
+                        top: `${ymin / 10}%`,
+                        left: `${xmin / 10}%`,
+                        width: `${(xmax - xmin) / 10}%`,
+                        height: `${(ymax - ymin) / 10}%`,
+                        border: `2.5px solid ${colors.border}`,
+                        borderRadius: "8px",
+                        background: isSelected
+                          ? colors.bg.replace("0.20", "0.35")
+                          : colors.bg,
+                        boxShadow: isSelected
+                          ? `0 0 0 3px ${colors.border}, 0 0 16px ${colors.border}88`
+                          : "0 1px 4px rgba(0,0,0,0.15)",
+                      }}
+                      title={`${bb.chu}: ${bb.tieu_de} (Kéo để di chuyển, kéo góc để co giãn)`}
+                    >
+                      {/* Badge tag on bounding box */}
+                      <span
+                        className={`absolute -top-5 left-0 text-[10px] font-black px-1.5 py-0.5 rounded-md leading-tight shadow-xs flex items-center gap-1 ${colors.label} pointer-events-none`}
+                        style={{ whiteSpace: "nowrap" }}
+                      >
+                        <span>{colors.icon}</span>
+                        <span>{bb.chu}</span>
+                      </span>
+
+                      {/* Real-time Spot Loading Spinner */}
+                      {isSpotLoading === bb.id && (
+                        <div className="absolute inset-0 bg-violet-900/60 rounded-md flex items-center justify-center z-40 backdrop-blur-xs">
+                          <Loader2 className="w-4 h-4 text-white animate-spin" />
+                          <span className="text-[9px] font-black text-white ml-1">Đang soi...</span>
+                        </div>
+                      )}
+
+                      {/* Move Icon Center Indicator */}
+                      {isSelected && !isSpotLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <Move className="w-4 h-4 text-white drop-shadow-md opacity-80" />
+                        </div>
+                      )}
+
+                      {/* Resize Handle at Bottom-Right */}
+                      {isSelected && (
+                        <div
+                          onPointerDown={(e) => handleBoxPointerDown(e, bb, "resize-se")}
+                          className="absolute -bottom-1.5 -right-1.5 w-4 h-4 bg-white border-2 border-slate-800 rounded-full cursor-se-resize shadow-md flex items-center justify-center touch-none z-40 active:scale-125 transition-transform"
+                          title="Kéo góc này để chỉnh độ rộng/cao ô khoanh"
+                        >
+                          <div className="w-1.5 h-1.5 bg-slate-800 rounded-full" />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+
+          {/* Selected Bounding Box Detail Card & Edit Controls */}
+          {selectedBB && (
+            <div className="border-t border-slate-200 p-4 bg-white">
+              <div className="flex items-start justify-between gap-3">
+                {/* Ảnh cắt cận cảnh Real-time của ô này */}
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-violet-200 bg-slate-50 overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={
+                      selectedBB.sample_crop_url ||
+                      (resultImgRef.current ? cropBoxImage(resultImgRef.current, selectedBB.box_2d) : "")
+                    }
+                    alt="Nét chữ cắt cận cảnh"
+                    className="w-full h-full object-contain p-1"
+                  />
+                  {isSpotLoading === selectedBB.id && (
+                    <div className="absolute inset-0 bg-violet-900/60 backdrop-blur-xs flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 text-white animate-spin" />
+                    </div>
+                  )}
                 </div>
-                <div className="text-right">
-                  <span className="text-3xl font-black text-violet-600">{evaluation.tong_diem}</span>
-                  <span className="text-xs font-bold text-slate-400 block">/ 100 điểm</span>
+
+                <div className="flex-1 min-w-0">
+                  {/* Status switches & Letter name */}
+                  <div className="flex items-center gap-2 mb-2 flex-wrap">
+                    <span className="text-xs font-bold text-slate-500">Đánh giá nét:</span>
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateBoxLoai(selectedBB.id, "loi")}
+                      className={`min-h-[30px] px-2 py-0.5 rounded-lg text-xs font-bold border transition-all ${
+                        selectedBB.loai === "loi"
+                          ? "bg-red-600 text-white border-red-600 shadow-xs"
+                          : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
+                      }`}
+                    >
+                      ❌ Lỗi
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateBoxLoai(selectedBB.id, "chu_y")}
+                      className={`min-h-[30px] px-2 py-0.5 rounded-lg text-xs font-bold border transition-all ${
+                        selectedBB.loai === "chu_y"
+                          ? "bg-amber-600 text-white border-amber-600 shadow-xs"
+                          : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                      }`}
+                    >
+                      ⚠️ Cần chú ý
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateBoxLoai(selectedBB.id, "chuan")}
+                      className={`min-h-[30px] px-2 py-0.5 rounded-lg text-xs font-bold border transition-all ${
+                        selectedBB.loai === "chuan"
+                          ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
+                          : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                      }`}
+                    >
+                      ✅ Chuẩn đẹp
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => triggerSpotInspection(selectedBB)}
+                      disabled={isSpotLoading === selectedBB.id}
+                      className="min-h-[30px] px-2.5 py-0.5 rounded-lg text-xs font-bold bg-violet-100 hover:bg-violet-200 text-violet-800 border border-violet-300 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                      title="Yêu cầu AI phân tích tức thì ô cắt này"
+                    >
+                      {isSpotLoading === selectedBB.id ? (
+                        <>
+                          <Loader2 className="w-3 h-3 animate-spin" /> Đang soi...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3 h-3 text-violet-600" /> Soi lại ô này
+                        </>
+                      )}
+                    </button>
+
+                    <div className="flex items-center gap-1 ml-auto">
+                      <span className="text-xs text-slate-400">Chữ:</span>
+                      <input
+                        type="text"
+                        value={selectedBB.chu}
+                        onChange={(e) => handleUpdateBoxChu(selectedBB.id, e.target.value)}
+                        className="w-14 px-1.5 py-0.5 text-xs font-black border border-slate-300 rounded-lg text-center focus:border-violet-500 focus:outline-hidden"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="font-black text-slate-800 text-sm mb-0.5">
+                    {selectedBB.tieu_de}
+                  </div>
+                  <p className="text-xs text-slate-600 mb-1 leading-relaxed">
+                    {selectedBB.nhan_xet}
+                  </p>
+                  {selectedBB.huong_dan_sua && (
+                    <p className="text-xs text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 rounded-xl px-2.5 py-1 mt-1 inline-block">
+                      💡 {selectedBB.huong_dan_sua}
+                    </p>
+                  )}
+                  <p className="text-[11px] text-slate-400 mt-1 italic">
+                    ⚡ Kéo di chuyển ô khoanh ➔ nhả tay ra là AI tự động soi & nhận dạng lại ngay tại chỗ!
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-1.5 items-end shrink-0">
+                  <button
+                    onClick={() => handleDeleteBox(selectedBB.id)}
+                    className="min-h-[36px] px-2.5 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold flex items-center gap-1 border border-rose-200 active:scale-95 transition-all cursor-pointer"
+                    title="Xóa ô khoanh này"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    Xóa ô
+                  </button>
+                  <button
+                    onClick={() => setSelectedBB(null)}
+                    className="min-h-[32px] min-w-[32px] rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
+                    title="Đóng chi tiết"
+                  >
+                    <X className="w-3.5 h-3.5 text-slate-500" />
+                  </button>
                 </div>
               </div>
+            </div>
+          )}
 
-              {/* Lời khuyên phụ huynh */}
-              {evaluation.nhan_xet_phu_huynh && (
-                <div className="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-xs text-amber-900 space-y-1">
-                  <span className="font-bold block text-amber-950">👨‍👩‍👧 Lời khuyên cho Ba Mẹ:</span>
-                  <p>{evaluation.nhan_xet_phu_huynh}</p>
-                </div>
-              )}
+          {/* Legend */}
+          {hasAnnotations && (
+            <div className="px-4 py-2.5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between flex-wrap gap-2 text-xs text-slate-500">
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm border-2 border-red-500 bg-red-100" />
+                  Lỗi cần sửa
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm border-2 border-amber-500 bg-amber-100" />
+                  Cần chú ý
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-3 h-3 rounded-sm border-2 border-emerald-500 bg-emerald-100" />
+                  Chuẩn đẹp
+                </span>
+              </div>
+              <span className="text-slate-500 font-bold text-[11px]">
+                ✋ Kéo thả ô khoanh tùy ý • Bấm &quot;Chấm lại&quot; để AI thẩm định
+              </span>
+            </div>
+          )}
+        </div>
 
-              {/* Nút bấm nghe toàn bộ nhận xét */}
-              <button
-                onClick={toggleSpeechGuidance}
-                className="w-full min-h-[44px] py-2.5 rounded-2xl bg-violet-50 hover:bg-violet-100 text-violet-700 font-bold text-xs flex items-center justify-center gap-2 border border-violet-200 transition-all active:scale-95"
-              >
-                <Volume2 className="w-4 h-4 text-violet-600" />
-                <span>Nghe cô giáo nhận xét chi tiết toàn bài</span>
-              </button>
+        {/* ── RIGHT: Pedagogical Feedback & Error List ── */}
+        <div className="lg:col-span-5 flex flex-col gap-4 order-2">
+
+          {/* Căn cứ chấm điểm minh bạch (Rubric) */}
+          {rubricEntries.length > 0 && (
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5">
+              <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5 mb-2.5">
+                <Sparkles className="w-4 h-4 text-violet-600" />
+                Căn cứ tính điểm minh bạch (Rubric)
+              </h3>
+              <div className="space-y-2">
+                {rubricEntries.map(([key, item]) => {
+                  const labelMap: Record<string, string> = {
+                    muc_do_hoan_thanh: "Mức độ hoàn thành",
+                    dung_do_cao_o_ly: "Đúng độ cao ô ly",
+                    can_dong_baseline: "Căn dòng kẻ ngang 1",
+                    khoang_cach_noi_net: "Khoảng cách & Nối nét",
+                    trinh_bay_sach_se: "Trình bày & Vệ sinh",
+                  };
+                  return (
+                    <div
+                      key={key}
+                      className="p-2.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-start justify-between gap-3"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <div className="text-xs font-black text-slate-700 mb-0.5">
+                          {labelMap[key] ?? key}
+                        </div>
+                        <div className="text-[11px] text-slate-500 leading-snug">
+                          {item.giai_thich}
+                        </div>
+                      </div>
+                      <div className="text-xs font-black text-violet-700 shrink-0 bg-violet-100 px-2.5 py-1 rounded-xl">
+                        {item.diem}/10
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Interactive Bounding Box Error List */}
+          {hasAnnotations && (
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
+                  <Crosshair className="w-4 h-4 text-violet-600" />
+                  Vị trí chữ học sinh viết ({boxes.length})
+                </h3>
+                {isAdjusted ? (
+                  <button
+                    onClick={handleReEvaluate}
+                    className="text-[11px] font-black text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200 hover:bg-emerald-100 cursor-pointer transition-colors"
+                  >
+                    🔄 Bấm để chấm lại
+                  </button>
+                ) : (
+                  <span className="text-[11px] text-violet-600 font-bold">
+                    Bấm để soi cận cảnh
+                  </span>
+                )}
+              </div>
+
+              <div className="space-y-2.5 max-h-[46vh] overflow-y-auto pr-1">
+                {boxes.map((bb) => {
+                  const colors = bbColor(bb.loai);
+                  const isSelected = selectedBB?.id === bb.id;
+
+                  return (
+                    <div
+                      key={bb.id}
+                      onClick={() => focusBoundingBox(bb)}
+                      className={`p-3 rounded-2xl border transition-all duration-200 cursor-pointer ${
+                        isSelected
+                          ? "border-violet-500 bg-violet-50/70 shadow-sm ring-2 ring-violet-200"
+                          : "border-slate-200 bg-slate-50/70 hover:border-violet-300 hover:bg-violet-50/30"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <div className="flex items-center gap-2 flex-wrap min-w-0">
+                          <span
+                            className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${colors.badge}`}
+                          >
+                            {colors.text}
+                          </span>
+                          {bb.dong_so && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-200 text-slate-700">
+                              Dòng {bb.dong_so}
+                            </span>
+                          )}
+                          <span className="text-lg font-cursive-vn text-violet-700 leading-none">
+                            「{bb.chu}」
+                          </span>
+                          <span className="font-black text-slate-800 text-xs truncate">
+                            {bb.tieu_de}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          className="min-h-[32px] px-2.5 py-1 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-[11px] flex items-center gap-1 shrink-0 active:scale-95 transition-all cursor-pointer"
+                        >
+                          <ZoomIn className="w-3 h-3" />
+                          Soi lỗi
+                        </button>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                        {bb.nhan_xet}
+                      </p>
+                      {bb.bang_chung && (
+                        <p className="text-[11px] text-slate-500 italic mt-0.5">
+                          🔍 {bb.bang_chung}
+                        </p>
+                      )}
+                      {bb.huong_dan_sua && (
+                        <p className="text-[11px] text-emerald-700 font-bold mt-1">
+                          💡 {bb.huong_dan_sua}
+                        </p>
+                      )}
+                      {bb.can_giao_vien_kiem_tra && (
+                        <p className="text-[10px] text-amber-700 font-bold mt-1 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200 inline-block">
+                          ⚠️ Cần cô giáo trực tiếp thẩm định thêm
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Nhận xét chung */}
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5">
+            <h3 className="text-sm font-black text-slate-700 mb-2 flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-violet-600" />
+              Nhận xét của AI
+            </h3>
+            <p className="text-sm text-slate-700 leading-relaxed">
+              {result.nhan_xet_chung}
+            </p>
+          </div>
+
+          {/* Điểm tốt */}
+          {result.diem_tot?.length > 0 && (
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4">
+              <h4 className="text-xs font-black text-emerald-700 uppercase flex items-center gap-1.5 mb-2.5">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                Điểm đã làm tốt
+              </h4>
+              <ul className="space-y-2">
+                {result.diem_tot.map((d, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                    <span className="shrink-0 w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
+                      <span className="text-emerald-600 text-[10px] font-black">✓</span>
+                    </span>
+                    <span className="leading-snug">{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Lỗi cần cải thiện (nếu có thêm ngoài bounding box) */}
+          {result.loi_can_cai_thien?.length > 0 && !hasAnnotations && (
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4">
+              <h4 className="text-xs font-black text-rose-700 uppercase flex items-center gap-1.5 mb-2.5">
+                <AlertTriangle className="w-3.5 h-3.5" />
+                Cần cải thiện
+              </h4>
+              <ul className="space-y-2">
+                {result.loi_can_cai_thien.map((l, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                    <span className="shrink-0 w-4 h-4 rounded-full bg-rose-100 flex items-center justify-center mt-0.5">
+                      <span className="text-rose-600 text-[10px] font-black">!</span>
+                    </span>
+                    <span className="leading-snug">{l}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Gợi ý luyện tập */}
+          {result.goi_y_luyen_tap?.length > 0 && (
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4">
+              <h4 className="text-xs font-black text-blue-700 uppercase flex items-center gap-1.5 mb-2.5">
+                <BookOpen className="w-3.5 h-3.5" />
+                Gợi ý luyện tập
+              </h4>
+              <ul className="space-y-2">
+                {result.goi_y_luyen_tap.map((g, i) => (
+                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
+                    <ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-500" />
+                    <span className="leading-snug">{g}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Nhắn gửi phụ huynh */}
+          {result.nhan_xet_phu_huynh && (
+            <div className="bg-amber-50 rounded-3xl border border-amber-200 p-4">
+              <h4 className="text-xs font-black text-amber-800 uppercase mb-2">
+                💌 Nhắn gửi phụ huynh
+              </h4>
+              <p className="text-sm text-amber-900 leading-relaxed">
+                {result.nhan_xet_phu_huynh}
+              </p>
             </div>
           )}
         </div>
