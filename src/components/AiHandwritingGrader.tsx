@@ -87,6 +87,7 @@ export function AiHandwritingGrader() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
+  const mainImageRef = useRef<HTMLImageElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const previewPathRef = useRef<SVGPathElement>(null);
   const previewEllipseRef = useRef<SVGEllipseElement>(null);
@@ -278,6 +279,107 @@ export function AiHandwritingGrader() {
     setInspectMode("student");
   };
 
+  // Cắt tức thì ảnh vùng quét thực tế từ ảnh đang hiển thị trên canvas
+  const cropRegionFromMainImage = (
+    box_2d: [number, number, number, number],
+    paddingPercent: number = 0.12
+  ): string | undefined => {
+    const img = mainImageRef.current;
+    if (!img) return undefined;
+    const nw = img.naturalWidth || img.width;
+    const nh = img.naturalHeight || img.height;
+    if (!nw || !nh) return undefined;
+
+    const [ymin1000, xmin1000, ymax1000, xmax1000] = box_2d;
+    const x1 = (xmin1000 / 1000) * nw;
+    const y1 = (ymin1000 / 1000) * nh;
+    const x2 = (xmax1000 / 1000) * nw;
+    const y2 = (ymax1000 / 1000) * nh;
+
+    const w = Math.max(16, x2 - x1);
+    const h = Math.max(16, y2 - y1);
+
+    const padX = w * paddingPercent;
+    const padY = h * paddingPercent;
+
+    const sx = Math.max(0, Math.floor(x1 - padX));
+    const sy = Math.max(0, Math.floor(y1 - padY));
+    const sw = Math.min(nw - sx, Math.ceil(w + padX * 2));
+    const sh = Math.min(nh - sy, Math.ceil(h + padY * 2));
+
+    if (sw <= 0 || sh <= 0) return undefined;
+
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = sw;
+      canvas.height = sh;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return undefined;
+
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+      return canvas.toDataURL("image/jpeg", 0.92);
+    } catch (e) {
+      console.warn("Could not crop canvas region:", e);
+      return undefined;
+    }
+  };
+
+  // Tạo đối tượng Bounding Box kèm ảnh crop tức thì từ đúng vùng quét thực tế
+  const buildAnnotationFromBbox = (
+    id: string,
+    idx: number,
+    bbox: [number, number, number, number],
+    shape: AnnotationShape,
+    extra: {
+      points?: [number, number][];
+      ellipse?: [number, number, number, number];
+    }
+  ): HandwritingBoundingBox => {
+    const cropUrl = cropRegionFromMainImage(bbox);
+    const lyCount = Math.max(0.5, (bbox[2] - bbox[0]) / 36).toFixed(1);
+    const widthLy = Math.max(0.5, (bbox[3] - bbox[1]) / 36).toFixed(1);
+
+    const title =
+      gradeTag === "loi"
+        ? `Nét cần sửa #${idx}`
+        : gradeTag === "chuan"
+        ? `Nét chuẩn đẹp #${idx}`
+        : `Lưu ý nét #${idx}`;
+
+    const nhanXet =
+      gradeTag === "loi"
+        ? `Vùng quét có độ cao ${lyCount} ô ly. Nét chữ cần uốn cong mềm mại và bám sát đường kẻ ngang 1.`
+        : gradeTag === "chuan"
+        ? `Vùng quét đạt độ cao ${lyCount} ô ly chuẩn mực, nét chữ đều đặn.`
+        : `Vùng quét có độ cao ${lyCount} ô ly, cần chú ý lực tay đều hơn.`;
+
+    const huongDan =
+      gradeTag === "loi"
+        ? "Cầm bút nghiêng 45 độ, uốn nhẹ cổ tay đưa nét chạm đúng đường kẻ ô ly quy định."
+        : undefined;
+
+    return {
+      id,
+      shape,
+      points: extra.points,
+      ellipse: extra.ellipse,
+      box_2d: bbox,
+      loai: gradeTag,
+      chu: `Vùng #${idx}`,
+      tieu_de: title,
+      nhan_xet: nhanXet,
+      huong_dan_sua: huongDan,
+      sample_crop_url: cropUrl,
+      teacher_sample_url: "/data/samples/crop_a_co_giao_mau.jpg",
+      do_luong: {
+        chieu_cao: `${lyCount} ô ly`,
+        do_rong: `${widthLy} ô ly`,
+        do_lech: gradeTag === "loi" ? "Cần điều chỉnh nét" : "0 px (Đạt)",
+        chan_chu: "Đang kiểm tra bám dòng 1",
+      },
+    };
+  };
+
   // XỬ LÝ VẼ THỦ CÔNG LINH HOẠT TRÊN SVG (FREEHAND LASSO / CIRCLE / RECTANGLE)
   const getNormalizedCoords = (e: React.PointerEvent<SVGSVGElement>): { x: number; y: number } | null => {
     const svg = svgRef.current;
@@ -403,26 +505,7 @@ export function AiHandwritingGrader() {
       if (w < 8 && h < 8) return;
 
       sound.playTone(620, 0.05);
-      const newBox: HandwritingBoundingBox = {
-        id: newId,
-        shape: "freehand",
-        points: pts,
-        box_2d: bbox,
-        loai: gradeTag,
-        chu: `Nét ${nextIdx}`,
-        tieu_de: `${gradeTag === "loi" ? "Nét cần sửa" : gradeTag === "chuan" ? "Nét chuẩn" : "Chú ý"} #${nextIdx}`,
-        nhan_xet:
-          gradeTag === "loi"
-            ? "Nét chữ vượt ô ly hoặc chưa đúng quy chuẩn mẫu."
-            : gradeTag === "chuan"
-            ? "Nét viết tròn đều, uốn lượn đúng kỹ thuật."
-            : "Nét chữ tương đối đều, cần nắn nót thêm.",
-        huong_dan_sua:
-          gradeTag === "loi"
-            ? "Cầm bút đúng 3 ngón, nắn nhẹ cổ tay theo đường kẻ ngang 1."
-            : undefined,
-      };
-
+      const newBox = buildAnnotationFromBbox(newId, nextIdx, bbox, "freehand", { points: pts });
       setAnnotations((prev) => [...prev, newBox]);
       setActiveBoxId(newId);
     } else if (drawTool === "circle") {
@@ -440,22 +523,9 @@ export function AiHandwritingGrader() {
         Math.min(1000, Math.round(cx + rx)),
       ];
 
-      const newBox: HandwritingBoundingBox = {
-        id: newId,
-        shape: "circle",
+      const newBox = buildAnnotationFromBbox(newId, nextIdx, bbox, "circle", {
         ellipse: [Math.round(cx), Math.round(cy), Math.round(rx), Math.round(ry)],
-        box_2d: bbox,
-        loai: gradeTag,
-        chu: `Nét ${nextIdx}`,
-        tieu_de: `${gradeTag === "loi" ? "Nét cần sửa" : gradeTag === "chuan" ? "Nét chuẩn" : "Chú ý"} #${nextIdx}`,
-        nhan_xet:
-          gradeTag === "loi"
-            ? "Nét khoanh tròn cần điều chỉnh độ rộng và độ cao."
-            : gradeTag === "chuan"
-            ? "Hình dáng chữ tròn trịa, cân đối rất đẹp."
-            : "Lưu ý độ uốn của nét tròn.",
-      };
-
+      });
       setAnnotations((prev) => [...prev, newBox]);
       setActiveBoxId(newId);
     } else if (drawTool === "rect") {
@@ -473,21 +543,7 @@ export function AiHandwritingGrader() {
         Math.round(xmax),
       ];
 
-      const newBox: HandwritingBoundingBox = {
-        id: newId,
-        shape: "rect",
-        box_2d: bbox,
-        loai: gradeTag,
-        chu: `Nét ${nextIdx}`,
-        tieu_de: `${gradeTag === "loi" ? "Nét cần sửa" : gradeTag === "chuan" ? "Nét chuẩn" : "Chú ý"} #${nextIdx}`,
-        nhan_xet:
-          gradeTag === "loi"
-            ? "Khung chữ này cần sửa khoảng cách và độ cao."
-            : gradeTag === "chuan"
-            ? "Chữ cái nằm ngay ngắn trên dòng kẻ ô ly."
-            : "Cần chú ý giữ khoảng cách đều nhau.",
-      };
-
+      const newBox = buildAnnotationFromBbox(newId, nextIdx, bbox, "rect", {});
       setAnnotations((prev) => [...prev, newBox]);
       setActiveBoxId(newId);
     }
@@ -991,10 +1047,12 @@ export function AiHandwritingGrader() {
                   >
                     {/* Ảnh bài viết */}
                     <img
+                      ref={mainImageRef}
                       src={selectedImage}
                       alt="Bài tập viết của bé"
                       className="w-full h-auto max-h-[70vh] object-contain rounded-xl select-none pointer-events-none block mx-auto"
                       draggable={false}
+                      crossOrigin="anonymous"
                     />
 
                     {/* SVG Bounding Boxes Overlay */}
@@ -1353,12 +1411,12 @@ export function AiHandwritingGrader() {
                         <line x1="0" y1="105" x2="300" y2="105" stroke="#60a5fa" strokeWidth="1.5" strokeDasharray="3 3" />
                       </svg>
 
-                      {/* Hình ảnh nét viết */}
+                      {/* Hình ảnh nét viết thực tế: Luôn lấy đúng vùng quét của người dùng */}
                       <img
                         src={
                           inspectMode === "teacher" && activeAnnotation.teacher_sample_url
                             ? activeAnnotation.teacher_sample_url
-                            : activeAnnotation.sample_crop_url || "/data/samples/crop_a_loi_nho_cao.jpg"
+                            : activeAnnotation.sample_crop_url || cropRegionFromMainImage(activeAnnotation.box_2d) || selectedImage
                         }
                         alt="Soi nét chữ thực tế"
                         className="w-auto h-3/4 object-contain z-10 select-none drop-shadow-md rounded-lg"
@@ -1369,9 +1427,9 @@ export function AiHandwritingGrader() {
                         <svg className="absolute inset-0 w-full h-full pointer-events-none z-20" viewBox="0 0 300 225">
                           {/* Vòng tròn nét đứt đỏ quanh điểm lỗi thực tế */}
                           <circle
-                            cx={activeAnnotation.chu === "ca" ? "142" : "152"}
-                            cy={activeAnnotation.chu === "ca" ? "112" : "98"}
-                            r={activeAnnotation.chu === "ca" ? "24" : "26"}
+                            cx={activeAnnotation.chu === "ca" ? "142" : activeAnnotation.callout ? "152" : "150"}
+                            cy={activeAnnotation.chu === "ca" ? "112" : activeAnnotation.callout ? "98" : "112"}
+                            r={activeAnnotation.chu === "ca" ? "24" : "28"}
                             fill="rgba(239, 68, 68, 0.08)"
                             stroke="#ef4444"
                             strokeWidth={3}
@@ -1379,8 +1437,8 @@ export function AiHandwritingGrader() {
                           />
                           {/* Đường chỉ dẫn chéo lên góc trên bên phải */}
                           <line
-                            x1={activeAnnotation.chu === "ca" ? "158" : "170"}
-                            y1={activeAnnotation.chu === "ca" ? "98" : "80"}
+                            x1={activeAnnotation.chu === "ca" ? "158" : activeAnnotation.callout ? "170" : "170"}
+                            y1={activeAnnotation.chu === "ca" ? "98" : activeAnnotation.callout ? "80" : "94"}
                             x2={activeAnnotation.chu === "ca" ? "220" : "225"}
                             y2="35"
                             stroke="#ef4444"
