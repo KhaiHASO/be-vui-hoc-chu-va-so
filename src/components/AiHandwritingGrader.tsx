@@ -27,27 +27,6 @@ import { HandwritingEvaluationResult, HandwritingBoundingBox } from "@/types/let
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function scoreColor(score: number): string {
-  if (score >= 9) return "text-emerald-700";
-  if (score >= 7) return "text-blue-700";
-  if (score >= 5) return "text-amber-700";
-  return "text-rose-700";
-}
-
-function scoreBg(score: number): string {
-  if (score >= 9) return "bg-emerald-100 border-emerald-200";
-  if (score >= 7) return "bg-blue-100 border-blue-200";
-  if (score >= 5) return "bg-amber-100 border-amber-200";
-  return "bg-rose-100 border-rose-200";
-}
-
-function totalColor(total: number): string {
-  if (total >= 90) return "text-emerald-700";
-  if (total >= 75) return "text-blue-700";
-  if (total >= 60) return "text-amber-700";
-  return "text-rose-700";
-}
-
 function bbColor(loai: HandwritingBoundingBox["loai"]) {
   if (loai === "loi") {
     return {
@@ -81,15 +60,6 @@ function bbColor(loai: HandwritingBoundingBox["loai"]) {
     icon: "✅",
   };
 }
-
-const TIEU_CHI_LABELS: Record<string, string> = {
-  dung_mau_chu: "Đúng mẫu chữ",
-  do_deu_net: "Đều nét",
-  khoang_cach: "Khoảng cách",
-  do_thang_hang: "Thẳng hàng",
-  trinh_bay: "Trình bày",
-  net_co_ban: "Nét cơ bản",
-};
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 
@@ -684,68 +654,10 @@ export function AiHandwritingGrader() {
 
   const excludedRegions = result.vung_loai_tru_khong_cham ?? [];
   const hasAnnotations = boxes.length > 0;
-  const criteriaPairs = Object.entries(result.tieu_chi);
   const rubricEntries = result.rubric_minh_bach ? Object.entries(result.rubric_minh_bach) : [];
 
   return (
     <div className="w-full py-3 sm:py-5 px-3 sm:px-6 pb-12">
-      {/* ── Top Score Strip ── */}
-      <div className="w-full max-w-5xl mx-auto mb-5">
-        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            {/* Total score */}
-            <div className="flex items-center gap-4">
-              <div
-                className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center border-2 font-black shadow-xs ${scoreBg(
-                  result.tong_diem / 10
-                )}`}
-              >
-                <span className={`text-2xl leading-none ${totalColor(result.tong_diem)}`}>
-                  {result.tong_diem}
-                </span>
-                <span className="text-[10px] text-slate-500 font-bold">/100</span>
-              </div>
-              <div className="min-w-0">
-                <div className="font-black text-slate-800 text-base sm:text-lg leading-tight truncate">
-                  {result.xep_loai}
-                </div>
-                {result.bai_hoc ? (
-                  <div className="text-xs font-bold text-violet-700 mt-0.5 truncate max-w-[280px]">
-                    📖 {result.bai_hoc}
-                  </div>
-                ) : imageName ? (
-                  <div className="text-xs text-slate-400 mt-0.5 truncate max-w-[200px]">
-                    📄 {imageName}
-                  </div>
-                ) : null}
-              </div>
-            </div>
-
-            {/* 6 criteria boxes */}
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-1.5 flex-1 min-w-[280px]">
-              {criteriaPairs.map(([key, val]) => (
-                <div
-                  key={key}
-                  className={`rounded-xl px-2 py-1.5 border text-center ${scoreBg(val)}`}
-                >
-                  <div className={`text-sm font-black ${scoreColor(val)}`}>{val}</div>
-                  <div className="text-[10px] text-slate-600 font-bold leading-tight">
-                    {TIEU_CHI_LABELS[key] ?? key}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button
-              onClick={handleReset}
-              className="min-h-[44px] px-4 py-2 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer"
-            >
-              <RotateCcw className="w-3.5 h-3.5" /> Chấm bài khác
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* ── Main 2-Column Layout ── */}
       <div className="w-full max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
@@ -832,6 +744,15 @@ export function AiHandwritingGrader() {
               >
                 <Maximize2 className="w-3.5 h-3.5" />
                 Toàn bài
+              </button>
+
+              <button
+                onClick={handleReset}
+                className="min-h-[36px] px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                title="Chấm bài khác / Đổi ảnh"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Chấm bài khác</span>
               </button>
             </div>
           </div>
