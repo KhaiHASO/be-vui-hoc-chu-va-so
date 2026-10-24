@@ -83,6 +83,7 @@ export interface HandwritingBoundingBox {
   ellipse?: [number, number, number, number]; // [centerX, centerY, radiusX, radiusY] theo thang 0 - 1000
   loai: "loi" | "chuan" | "chu_y"; // 'loi' = đỏ, 'chuan' = xanh lá, 'chu_y' = vàng cam
   chu: string;
+  confidence?: number;
   tieu_de: string;
   nhan_xet: string;
   huong_dan_sua?: string;

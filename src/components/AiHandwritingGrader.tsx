@@ -74,13 +74,6 @@ const PRESET_SAMPLES: PresetSample[] = [
   },
 ];
 
-// Danh sách các chữ cái Tiểu học phổ biến để cô giáo đổi nhanh nếu cần
-const COMMON_LETTERS = [
-  "a", "ă", "â", "b", "c", "d", "đ", "e", "ê",
-  "g", "h", "i", "k", "l", "m", "n", "o", "ô",
-  "ơ", "p", "q", "r", "s", "t", "u", "ư", "v", "x", "y"
-];
-
 // ─── Helpers: Trạng thái & Màu sắc ──────────────────────────────────────────
 
 function getStatusTheme(loai: HandwritingBoundingBox["loai"]) {
@@ -117,176 +110,78 @@ function getStatusTheme(loai: HandwritingBoundingBox["loai"]) {
   };
 }
 
-// ─── SVG Mẫu Nét Chân Lý Chuẩn Màu Đỏ (Ground-truth overlay) ─────────────────
+// ─── Chữ Mẫu Chân Lý Từ Cuốn Cô Giáo Viết (DuLieuCoGiaoViet) ─────────────────
 
-function StandardRedStrokeOverlay({
-  letter,
-  opacity,
-}: {
-  letter: string;
-  opacity: number;
-}) {
-  const norm = letter.toLowerCase().trim();
+function getTeacherMasterUrl(chu: string): string {
+  if (!chu) return "/data/teacher_masters/master_a.png";
+  const norm = chu.toLowerCase().trim();
 
-  // Baseline y=75%, Dòng 2 y=55%, Dòng 3 (2 ly) y=35%, Dòng 4 (3 ly) y=20%, Dòng 5 (4-5 ly) y=8%
-  let pathContent: React.ReactNode = null;
+  // Mapping các từ ghép / cụm từ bài học trong sách Cô giáo
+  const wordMap: Record<string, string> = {
+    "ca múa": "/data/teacher_masters/master_ca_mua.png",
+    "ca mua": "/data/teacher_masters/master_ca_mua.png",
+    "mùa thu": "/data/teacher_masters/master_mua_thu.png",
+    "mua thu": "/data/teacher_masters/master_mua_thu.png",
+    "sữa chua": "/data/teacher_masters/master_sua_chua.png",
+    "sua chua": "/data/teacher_masters/master_sua_chua.png",
+    "mùa mưa": "/data/teacher_masters/master_mua_mua.png",
+    "mua mua": "/data/teacher_masters/master_mua_mua.png",
+    "nhà bà có cà chua.": "/data/teacher_masters/master_nha_ba_co_ca_chua.png",
+    "nhà bà có cà chua": "/data/teacher_masters/master_nha_ba_co_ca_chua.png",
+    "nha ba co ca chua": "/data/teacher_masters/master_nha_ba_co_ca_chua.png",
+    "thỏ bé": "/data/teacher_masters/master_tho_be.png",
+    "tho be": "/data/teacher_masters/master_tho_be.png",
+    "ca": "/data/teacher_masters/master_ca.png",
+    "cá": "/data/teacher_masters/master_ca_sac.png",
+    "bà": "/data/teacher_masters/master_ba.png",
+    "bề": "/data/teacher_masters/master_e_mu.png",
+    "th": "/data/teacher_masters/master_th.png",
+    "ia": "/data/teacher_masters/master_ia.png",
+    "ua": "/data/teacher_masters/master_ua.png",
+    "ưa": "/data/teacher_masters/master_ua.png",
+    "v": "/data/teacher_masters/master_v.png",
+    "xe ngựa": "/data/teacher_masters/master_tho_be.png",
+  };
 
-  if (norm === "a" || norm === "ă" || norm === "â") {
-    pathContent = (
-      <>
-        {/* Nét cong kín chuẩn 2 ly */}
-        <ellipse
-          cx="44"
-          cy="55"
-          rx="18"
-          ry="20"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-        {/* Nét móc ngược chuẩn dừng ở dòng 2 */}
-        <path
-          d="M 62 35 L 62 67 Q 62 75 72 75 Q 78 75 82 66"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-        {/* Điểm dừng bút */}
-        <circle cx="82" cy="66" r="2.5" fill="#dc2626" />
-        {/* Dấu mũ nếu là ă hoặc â */}
-        {norm === "ă" && (
-          <path d="M 38 24 Q 44 28 50 24" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" />
-        )}
-        {norm === "â" && (
-          <path d="M 38 25 L 44 20 L 50 25" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        )}
-      </>
-    );
-  } else if (norm === "o" || norm === "ô" || norm === "ơ") {
-    pathContent = (
-      <>
-        <ellipse
-          cx="50"
-          cy="55"
-          rx="20"
-          ry="20"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-        {norm === "ô" && (
-          <path d="M 44 26 L 50 20 L 56 26" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        )}
-        {norm === "ơ" && (
-          <path d="M 66 36 Q 72 32 70 42" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" />
-        )}
-      </>
-    );
-  } else if (norm === "c") {
-    pathContent = (
-      <>
-        {/* Nét cong hở phải chuẩn 2 ly */}
-        <path
-          d="M 68 44 C 64 35 34 35 34 55 C 34 75 64 75 72 70"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-        <circle cx="72" cy="70" r="2.5" fill="#dc2626" />
-      </>
-    );
-  } else if (norm === "e" || norm === "ê") {
-    pathContent = (
-      <>
-        <path
-          d="M 36 60 L 66 60 C 66 35 34 35 34 55 C 34 75 64 75 72 68"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-        <circle cx="72" cy="68" r="2.5" fill="#dc2626" />
-        {norm === "ê" && (
-          <path d="M 44 26 L 50 20 L 56 26" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        )}
-      </>
-    );
-  } else if (norm === "b") {
-    pathContent = (
-      <>
-        {/* Nét khuyết trên cao 5 ly + nét thắt */}
-        <path
-          d="M 44 75 L 44 25 C 44 10 58 8 62 16 C 66 26 52 50 52 75 C 52 75 66 75 70 66 C 72 62 66 58 62 60"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-      </>
-    );
-  } else if (norm === "u" || norm === "ư") {
-    pathContent = (
-      <>
-        {/* Nét móc hai đầu + nét móc ngược */}
-        <path
-          d="M 32 45 Q 32 35 40 35 L 40 68 Q 40 75 52 75 L 52 35 L 66 35 L 66 68 Q 66 75 76 75 Q 82 75 86 66"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-        <circle cx="86" cy="66" r="2.5" fill="#dc2626" />
-        {norm === "ư" && (
-          <path d="M 68 36 Q 74 32 72 42" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" />
-        )}
-      </>
-    );
-  } else if (norm === "v") {
-    pathContent = (
-      <>
-        {/* Nét móc hai đầu + nét thắt ngang dòng 2 */}
-        <path
-          d="M 32 45 Q 32 35 44 35 L 44 68 Q 44 75 56 75 Q 68 75 68 56 C 72 54 66 50 62 52"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-        />
-      </>
-    );
-  } else {
-    // Mẫu tổng quát thể hiện khuôn chữ 2 ly chuẩn
-    pathContent = (
-      <>
-        <rect
-          x="30"
-          y="35"
-          width="40"
-          height="40"
-          rx="12"
-          fill="none"
-          stroke="#dc2626"
-          strokeWidth="2.5"
-          strokeDasharray="4 3"
-        />
-        <circle cx="70" cy="55" r="3" fill="#dc2626" />
-      </>
-    );
+  if (wordMap[norm]) {
+    return wordMap[norm];
   }
 
-  return (
-    <svg
-      viewBox="0 0 100 100"
-      className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-200"
-      style={{ opacity }}
-    >
-      {pathContent}
-    </svg>
-  );
+  // Chữ cái đơn lẻ
+  const single = norm.charAt(0);
+  const letterMap: Record<string, string> = {
+    "a": "/data/teacher_masters/master_a.png",
+    "ă": "/data/teacher_masters/master_ă.png",
+    "â": "/data/teacher_masters/master_â.png",
+    "b": "/data/teacher_masters/master_b.png",
+    "c": "/data/teacher_masters/master_c.png",
+    "d": "/data/teacher_masters/master_d.png",
+    "đ": "/data/teacher_masters/master_đ.png",
+    "e": "/data/teacher_masters/master_e.png",
+    "ê": "/data/teacher_masters/master_ê.png",
+    "g": "/data/teacher_masters/master_g.png",
+    "h": "/data/teacher_masters/master_h.png",
+    "i": "/data/teacher_masters/master_i.png",
+    "k": "/data/teacher_masters/master_k.png",
+    "l": "/data/teacher_masters/master_l.png",
+    "m": "/data/teacher_masters/master_m.png",
+    "n": "/data/teacher_masters/master_n.png",
+    "o": "/data/teacher_masters/master_o.png",
+    "ô": "/data/teacher_masters/master_ô.png",
+    "ơ": "/data/teacher_masters/master_ơ.png",
+    "p": "/data/teacher_masters/master_p.png",
+    "q": "/data/teacher_masters/master_q.png",
+    "r": "/data/teacher_masters/master_r.png",
+    "s": "/data/teacher_masters/master_s.png",
+    "t": "/data/teacher_masters/master_t.png",
+    "u": "/data/teacher_masters/master_u.png",
+    "ư": "/data/teacher_masters/master_ư.png",
+    "v": "/data/teacher_masters/master_v.png",
+    "x": "/data/teacher_masters/master_x.png",
+    "y": "/data/teacher_masters/master_y.png",
+  };
+
+  return letterMap[single] || "/data/teacher_masters/master_a.png";
 }
 
 // ─── Main Component: AiHandwritingGrader ──────────────────────────────────────
@@ -551,7 +446,7 @@ export function AiHandwritingGrader() {
             mode: "spot_inspect",
             cropImage: crop,
             boxId: targetBox.id,
-            targetChar: overrideChar || (targetBox.chu !== "..." ? targetBox.chu : undefined),
+            targetChar: overrideChar || undefined,
           }),
         });
 
@@ -563,6 +458,7 @@ export function AiHandwritingGrader() {
                 ? {
                     ...b,
                     chu: spotData.chu || overrideChar || b.chu,
+                    confidence: spotData.confidence || b.confidence,
                     loai: spotData.loai || b.loai,
                     tieu_de: spotData.tieu_de || b.tieu_de,
                     nhan_xet: spotData.nhan_xet || b.nhan_xet,
@@ -592,14 +488,12 @@ export function AiHandwritingGrader() {
     const newBox: HandwritingBoundingBox = {
       id: newId,
       box_2d: boxCoords,
-      loai: "chuan",
-      chu: "a",
-      tieu_de: "Đang soi nét...",
-      nhan_xet: "AI đang phân tích nét viết theo chuẩn ô ly Bộ GD&ĐT...",
-      huong_dan_sua: "Giữ vững nét viết đều tay đúng ô ly.",
-      do_cao_o_ly: "2.0 ly (Chuẩn)",
-      do_rong_o_ly: "1.5 ly (Chuẩn)",
-      diem_dung_but: "Dòng kẻ ngang 2",
+      loai: "chu_y",
+      chu: "...",
+      confidence: undefined,
+      tieu_de: "AI đang quét nét...",
+      nhan_xet: "AI đang nhận diện con chữ và đối chiếu với mẫu của cô giáo...",
+      huong_dan_sua: "Chờ AI phân tích nét viết...",
       sample_crop_url: initialCrop,
     };
 
@@ -792,13 +686,7 @@ export function AiHandwritingGrader() {
     }
   };
 
-  const handleChangeLetter = (newChar: string) => {
-    if (!currentBox) return;
-    setBoxes((prev) =>
-      prev.map((b) => (b.id === currentBox.id ? { ...b, chu: newChar } : b))
-    );
-    triggerSpotInspection(currentBox, newChar);
-  };
+
 
   // ── If no document is selected yet: Clean, friendly Zero-Friction Entry ──
   if (!imageDataUrl) {
@@ -1214,10 +1102,17 @@ export function AiHandwritingGrader() {
 
                   {/* Red Ground-Truth Standard Guide Overlay */}
                   {showRedTruthOverlay && (
-                    <StandardRedStrokeOverlay
-                      letter={currentBox.chu}
-                      opacity={redOpacity}
-                    />
+                    <div
+                      className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center p-2.5 transition-opacity duration-150"
+                      style={{ opacity: redOpacity }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={getTeacherMasterUrl(currentBox.chu)}
+                        alt={`Mẫu chân lý: ${currentBox.chu}`}
+                        className="w-full h-full object-contain filter drop-shadow-xs"
+                      />
+                    </div>
                   )}
 
                   {/* Real-time spinner overlay */}
@@ -1272,106 +1167,82 @@ export function AiHandwritingGrader() {
                 </div>
               </div>
 
-              {/* ── Quick Letter Switcher Chips ── */}
-              <div>
-                <div className="text-[11px] font-black text-slate-500 mb-1.5 flex items-center justify-between">
-                  <span>Con chữ đang soi:</span>
-                  <span className="text-violet-600 font-bold">
-                    Bấm để đổi chữ đối chiếu nếu cần
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto p-1 bg-slate-50 rounded-xl border border-slate-100">
-                  {COMMON_LETTERS.map((char) => {
-                    const isCur = currentBox.chu.toLowerCase() === char;
-                    return (
-                      <button
-                        key={char}
-                        onClick={() => handleChangeLetter(char)}
-                        className={`min-h-[30px] min-w-[30px] rounded-lg text-xs font-bold transition-all active:scale-95 cursor-pointer flex items-center justify-center ${
-                          isCur
-                            ? "bg-violet-600 text-white shadow-xs font-black"
-                            : "bg-white text-slate-700 border border-slate-200 hover:border-violet-300"
-                        }`}
-                      >
-                        {char}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
+              {/* ── AI Vision Recognition & Pedagogical Inspection ── */}
+              <div className="space-y-3">
+                {/* AI Recognition Header */}
+                <div className="p-3 rounded-2xl bg-gradient-to-r from-violet-50 to-indigo-50 border border-violet-100 flex items-center justify-between gap-2 shadow-xs">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-8 h-8 rounded-xl bg-violet-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <Sparkles className="w-4 h-4 animate-pulse" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[10px] font-bold text-violet-600 uppercase tracking-wider flex items-center gap-1.5">
+                        <span>AI Vision OCR đọc nét:</span>
+                        {currentBox.confidence && (
+                          <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.2 rounded-full border border-emerald-200">
+                            {currentBox.confidence}% tin cậy
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm sm:text-base font-black text-slate-900 truncate">
+                        Con chữ &quot;{currentBox.chu}&quot;
+                      </div>
+                    </div>
+                  </div>
 
-              {/* ── Status Evaluation & Pedagogical Feedback ── */}
-              <div className="space-y-2.5">
-                {/* Status Badge & Title */}
-                <div className="flex items-center justify-between gap-2">
+                  {/* Status Badge */}
                   {(() => {
                     const theme = getStatusTheme(currentBox.loai);
                     return (
-                      <div className="flex items-center gap-1.5">
-                        <span className={`text-xs font-black px-2.5 py-0.5 rounded-full border ${theme.badge} flex items-center gap-1`}>
-                          <span>{theme.icon}</span>
-                          <span>{theme.text}</span>
-                        </span>
-                        <span className="font-black text-slate-800 text-xs">
-                          {currentBox.tieu_de}
-                        </span>
-                      </div>
+                      <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${theme.badge} flex items-center gap-1 shrink-0 shadow-xs`}>
+                        <span>{theme.icon}</span>
+                        <span>{theme.text}</span>
+                      </span>
                     );
                   })()}
                 </div>
 
-                {/* 3 Core Grade 1 Ministry of Education Criteria */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="text-[10px] font-bold text-slate-400 mb-0.5">
-                      📏 Độ cao ô ly
-                    </div>
-                    <div className="text-xs font-black text-slate-800">
-                      {currentBox.do_cao_o_ly || "2.0 ly (Chuẩn)"}
-                    </div>
-                  </div>
-
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="text-[10px] font-bold text-slate-400 mb-0.5">
-                      📐 Độ rộng bụng chữ
-                    </div>
-                    <div className="text-xs font-black text-slate-800">
-                      {currentBox.do_rong_o_ly || "1.5 ly (Chuẩn)"}
+                {/* Real Stroke Detection Details */}
+                <div className="p-3.5 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-2.5">
+                  <div className="flex items-start gap-2">
+                    <Crosshair className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                        Đặc điểm nét phát hiện:
+                      </div>
+                      <p className="text-xs font-bold text-slate-800 mt-0.5 leading-snug">
+                        {currentBox.tieu_de || `Soi nét chữ '${currentBox.chu}'`}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                    <div className="text-[10px] font-bold text-slate-400 mb-0.5">
-                      📍 Điểm dừng bút
-                    </div>
-                    <div className="text-xs font-black text-slate-800">
-                      {currentBox.diem_dung_but || "Dòng kẻ ngang 2"}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Short Pedagogical Teacher's Tip with Audio Button */}
-                <div className="p-3 rounded-2xl bg-violet-50/80 border border-violet-100 flex items-start justify-between gap-2.5">
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[11px] font-black text-violet-800 mb-1 flex items-center gap-1">
-                      <span>💡 Lời cô giáo chỉ dẫn sửa tay:</span>
-                    </div>
-                    <p className="text-xs text-slate-700 font-medium leading-relaxed">
-                      {currentBox.huong_dan_sua || currentBox.nhan_xet}
-                    </p>
+                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-700 leading-relaxed font-medium">
+                    {currentBox.nhan_xet}
                   </div>
 
-                  <button
-                    onClick={() => speakTip(currentBox.huong_dan_sua || currentBox.nhan_xet)}
-                    className={`min-h-[36px] min-w-[36px] rounded-xl flex items-center justify-center shrink-0 active:scale-95 transition-all cursor-pointer ${
-                      isPlayingVoice
-                        ? "bg-violet-600 text-white shadow-md animate-pulse"
-                        : "bg-white text-violet-700 border border-violet-200 hover:bg-violet-100"
-                    }`}
-                    title="Nghe cô giáo đọc hướng dẫn sửa tay"
-                  >
-                    <Volume2 className="w-4 h-4" />
-                  </button>
+                  {/* Teacher Correction Tip with Audio Button */}
+                  <div className="p-3 rounded-xl bg-violet-50/80 border border-violet-100 flex items-start justify-between gap-2.5">
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[11px] font-black text-violet-800 mb-0.5 flex items-center gap-1">
+                        <span>💡 Lời cô giáo chỉ dẫn sửa tay:</span>
+                      </div>
+                      <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                        {currentBox.huong_dan_sua || currentBox.nhan_xet}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => speakTip(currentBox.huong_dan_sua || currentBox.nhan_xet)}
+                      className={`min-h-[36px] min-w-[36px] rounded-xl flex items-center justify-center shrink-0 active:scale-95 transition-all cursor-pointer ${
+                        isPlayingVoice
+                          ? "bg-violet-600 text-white shadow-md animate-pulse"
+                          : "bg-white text-violet-700 border border-violet-200 hover:bg-violet-100"
+                      }`}
+                      title="Nghe cô giáo đọc hướng dẫn sửa tay"
+                    >
+                      <Volume2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
