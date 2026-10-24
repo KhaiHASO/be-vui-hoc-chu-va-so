@@ -46,6 +46,15 @@ interface PresetSample {
 
 const PRESET_SAMPLES: PresetSample[] = [
   {
+    id: "sample_la_he",
+    title: "Bài 12-13: Luyện từ 'lá hẹ', 'hồ cá', 'kì cọ'",
+    subtitle: "Vở viết chữ thực tế có cụm từ 'lá hẹ', 'hồ cá', 'kì cọ', chữ 'h', 'k'",
+    type: "image",
+    url: "/data/samples/bai_12_la_he_ho_ca.jpg",
+    badge: "Bài 'lá hẹ'",
+    badgeColor: "bg-blue-100 text-blue-800 border-blue-200",
+  },
+  {
     id: "sample_err_a",
     title: "Bài 1: Nét chữ 'a' thực tế",
     subtitle: "Ảnh vở ô ly có lỗi nét móc nhô cao thực tế của bé",
@@ -757,11 +766,11 @@ export function AiHandwritingGrader() {
             <div className="flex items-center gap-2 mb-3.5">
               <Sparkles className="w-4 h-4 text-violet-600" />
               <h4 className="text-xs font-black text-slate-600 uppercase tracking-wider">
-                Hoặc trải nghiệm ngay với 3 bài mẫu có sẵn:
+                Hoặc trải nghiệm ngay với các bài mẫu có sẵn:
               </h4>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {PRESET_SAMPLES.map((preset) => (
                 <button
                   key={preset.id}
