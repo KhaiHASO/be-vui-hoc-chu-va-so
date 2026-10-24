@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { execFile } from "child_process";
 import { promisify } from "util";
+import crypto from "crypto";
 
 const execFileAsync = promisify(execFile);
 
@@ -197,14 +198,38 @@ export async function POST(req: NextRequest) {
       try {
         const scriptPath = path.join(process.cwd(), "scripts/spot_ocr.py");
         if (fs.existsSync(scriptPath)) {
+          // Lưu cropImage thành file tạm để tránh E2BIG khi gọi process
+          const cropData = spotTargetImage.includes(",") ? spotTargetImage.split(",")[1] : spotTargetImage;
+          const tmpCropPath = path.join("/tmp", `spot_crop_${boxId || Date.now()}_${Math.random().toString(36).substring(7)}.jpg`);
+          await fs.promises.writeFile(tmpCropPath, Buffer.from(cropData, "base64"));
+
+          // Lưu fullImage thành file tạm và dùng MD5 hash để cache giữa các lần soi nét cùng trang
+          let tmpFullPath = "";
+          const fullImgSrc = fullImage || image;
+          if (fullImgSrc) {
+            if (fullImgSrc.startsWith("/") && fs.existsSync(fullImgSrc)) {
+              tmpFullPath = fullImgSrc;
+            } else {
+              const fullData = fullImgSrc.includes(",") ? fullImgSrc.split(",")[1] : fullImgSrc;
+              const hashKey = crypto.createHash("md5").update(fullData.slice(0, 4000) + fullData.length).digest("hex");
+              tmpFullPath = path.join("/tmp", `spot_full_${hashKey}.jpg`);
+              if (!fs.existsSync(/*turbopackIgnore: true*/ tmpFullPath)) {
+                await fs.promises.writeFile(tmpFullPath, Buffer.from(fullData, "base64"));
+              }
+            }
+          }
+
           const args = [
             scriptPath,
-            spotTargetImage,
+            tmpCropPath,
             JSON.stringify(box_2d || null),
             fileName || "",
-            fullImage || image || "",
+            tmpFullPath,
           ];
           const { stdout } = await execFileAsync("python3", args, { timeout: 4000 });
+          // Xóa file crop tạm
+          fs.promises.unlink(tmpCropPath).catch(() => {});
+
           const ocrResult = JSON.parse(stdout.trim());
           if (ocrResult && ocrResult.chu) {
             const isUnrec = ocrResult.is_unrecognized || ocrResult.chu === "Chưa rõ nét";
@@ -212,8 +237,8 @@ export async function POST(req: NextRequest) {
               boxId,
               chu: isUnrec ? "Chưa rõ nét" : (targetChar || ocrResult.chu),
               confidence: isUnrec ? 0 : (ocrResult.confidence || 96),
-              loai: ocrResult.loai || "chu_y",
-              tieu_de: ocrResult.tieu_de || `Chữ '${ocrResult.chu}'`,
+              loai: isUnrec ? "chu_y" : (ocrResult.loai || "chuan"),
+              tieu_de: isUnrec ? "Chưa nhận diện rõ con chữ" : (ocrResult.tieu_de || `Chữ '${ocrResult.chu}'`),
               nhan_xet: ocrResult.nhan_xet,
               huong_dan_sua: ocrResult.huong_dan_sua,
               is_ai_recognized: !isUnrec,
@@ -231,6 +256,7 @@ export async function POST(req: NextRequest) {
         const charHint = targetChar ? `Học sinh đang viết chữ cái: "${targetChar}".` : "";
         const spotPrompt = `Bạn là chuyên gia sư phạm Tiểu học chấm thi Luyện chữ đẹp Bộ GD&ĐT Việt Nam.
 Nhiệm vụ: Soi ô chữ hoặc nét viết tay ô ly này của học sinh lớp 1. ${charHint}
+Nếu hình ảnh không rõ nét chữ hoặc ô rỗng, trả về "chu": "Chưa rõ nét", "confidence": 0, "loai": "chu_y".
 CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (Không markdown, không giải thích):
 {
   "chu": "${targetChar || "chữ cái nhận diện được (ví dụ: a, b, c, ca múa, th, ua...)"}",
@@ -271,11 +297,15 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (Không markdown, không g
             const lastBrace = rawContent.lastIndexOf("}");
             if (firstBrace !== -1 && lastBrace !== -1) {
               const parsedSpot = JSON.parse(rawContent.substring(firstBrace, lastBrace + 1));
+              const isUnrec = !parsedSpot.chu || parsedSpot.chu === "Chưa rõ nét" || parsedSpot.confidence === 0;
               return NextResponse.json({
                 boxId,
                 ...parsedSpot,
-                chu: targetChar || parsedSpot.chu || "a",
-                confidence: parsedSpot.confidence || 95,
+                chu: isUnrec ? "Chưa rõ nét" : (targetChar || parsedSpot.chu),
+                confidence: isUnrec ? 0 : (parsedSpot.confidence || 95),
+                loai: isUnrec ? "chu_y" : (parsedSpot.loai || "chuan"),
+                is_ai_recognized: !isUnrec,
+                is_unrecognized: isUnrec,
               });
             }
           }
@@ -284,17 +314,17 @@ CHỈ TRẢ VỀ DUY NHẤT 1 CHUỖI JSON HỢP LỆ (Không markdown, không g
         }
       }
 
-      // 3. Fallback thông minh dựa trên con chữ
-      const detectedChar = targetChar || "a";
+      // 3. Nghiêm cấm đoán bừa: Trả về trạng thái Chưa rõ nét nếu AI chưa đọc được
       return NextResponse.json({
         boxId,
-        chu: detectedChar,
-        confidence: 94.0,
-        loai: "chuan",
-        tieu_de: `Nét chữ '${detectedChar}' đúng chuẩn`,
-        nhan_xet: `Con chữ '${detectedChar}' viết thẳng thớm, nét thanh nét đậm rõ ràng và đặt ngay ngắn trên đường kẻ ngang 1.`,
-        huong_dan_sua: "Giữ vững lực tay đều đặn và khoảng cách giữa các chữ con nhé!",
-        is_ai_recognized: true,
+        chu: "Chưa rõ nét",
+        confidence: 0,
+        loai: "chu_y",
+        tieu_de: "Chưa nhận diện rõ con chữ",
+        nhan_xet: "Nét chữ trong ô khoanh quá mờ hoặc nằm ngoài vùng chữ mẫu.",
+        huong_dan_sua: "Hãy kéo mở rộng ô khoanh bao trọn vẹn cả con chữ để AI nhận diện rõ nhé con!",
+        is_ai_recognized: false,
+        is_unrecognized: true,
       });
     }
 

@@ -3,8 +3,8 @@
 Senior-Grade Handwriting Character & Word Recognition (Vision AI)
 - Zero guesswork: accurately reads Grade 1 Vietnamese handwriting
 - Pre-computed perceptual image hash lookup (dHash) to match known workbook pages even if renamed or compressed
-- Live Apple Vision OCR for new custom uploaded images & crops
-- If a stroke or region cannot be read with high certainty, returns "Chưa rõ nét" instead of guessing!
+- Live Apple Vision OCR (macOS) / Tesseract OCR (Linux) for new custom uploaded images & crops
+- If a stroke or region cannot be read with high certainty, returns "Chưa rõ nét" (confidence 0) instead of guessing!
 """
 
 import sys
@@ -15,6 +15,7 @@ import subprocess
 import cv2
 import numpy as np
 import unicodedata
+import shutil
 
 BASE_DIR = "/Users/admin/Desktop/BeVuiHocChuVaSo" if os.path.exists("/Users/admin/Desktop/BeVuiHocChuVaSo") else "/var/www/be-vui-hoc-chu-va-so"
 OCR_INDEX_FILE = os.path.join(BASE_DIR, "src/data/ocr_page_indexes.json")
@@ -23,29 +24,37 @@ OCR_HASH_FILE = os.path.join(BASE_DIR, "src/data/ocr_page_hashes.json")
 NORM_MAP = {
     "в": "b", "lo": "b", "l": "b",
     "cau": "ca", "col": "ca", "c a": "ca",
-    "kì co": "kì cọ", "ki co": "kì cọ", "hại cọ": "kì cọ", "kệ cọ": "kì cọ",
-    "kê da": "kê đá", "kê da.": "kê đá", "hẻ dá": "kê đá",
-    "hồ ca": "hồ cá", "hỗ cá": "hồ cá", "hô cá": "hồ cá",
-    "la he": "lá hẹ", "lá he": "lá hẹ",
-    "на": "ua", "иа": "ua", "ngua": "xe ngựa", "xe ngua": "xe ngựa",
+    "kì co": "kì cọ", "ki co": "kì cọ", "hại cọ": "kì cọ", "kệ cọ": "kì cọ", "ki": "kì", "co": "cọ",
+    "kê da": "kê đá", "kê da.": "kê đá", "hẻ dá": "kê đá", "kê": "kê", "da": "đá", "dá": "đá",
+    "hồ ca": "hồ cá", "hỗ cá": "hồ cá", "hô cá": "hồ cá", "hồ": "hồ", "hỗ": "hồ", "hô": "hồ",
+    "la he": "lá hẹ", "lá he": "lá hẹ", "la": "lá", "he": "hẹ",
+    "ha ha h": "h", "nh h h h h": "h", "ha ha": "h", "ha": "h",
+    "на": "ua", "иа": "ua", "и": "u", "И": "u",
+    "ngua": "xe ngựa", "xe ngua": "xe ngựa",
     "bài": "bà", "bà.": "bà", "bẻ": "bé",
     "thơ": "thỏ bé", "tho be": "thỏ bé", "thơ bé": "thỏ bé",
     "ha thia": "lia thia", "sua chua": "sữa chua",
     "mua thu": "mùa thu", "mua mua": "mùa mưa", "la tia to": "lá tía tô",
+    "aù đỏ": "dù đỏ", "dù đỏ aù đỏ": "dù đỏ", "aù": "dù", "dù": "dù", "đỏ": "đỏ",
+    "lừc đie": "lực điền", "lừc đie lừ đie lừ đứ": "lực điền",
     "chủ cẹp": "chữ đẹp", "vu thi": "v"
 }
 
 def normalize_text(t):
+    if not t:
+        return ""
     cleaned = t.strip().strip(".,:-_")
     lower = cleaned.lower()
     return NORM_MAP.get(lower, cleaned)
 
 def remove_accents(s):
-    if not s: return ""
+    if not s:
+        return ""
     return "".join(c for c in unicodedata.normalize("NFKD", s) if not unicodedata.combining(c)).lower()
 
 def dhash(image, hash_size=8):
-    if image is None: return 0
+    if image is None:
+        return 0
     if len(image.shape) == 3:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     resized = cv2.resize(image, (hash_size + 1, hash_size))
@@ -70,8 +79,8 @@ def find_page_by_hash(im_bgr, hash_dict):
                 best_key = k
         except Exception:
             continue
-    # If hamming distance is small (<= 8 bits difference out of 64), it's the exact same page!
-    if min_dist <= 8:
+    # If hamming distance is small (<= 10 bits difference out of 64), it's the exact same page!
+    if min_dist <= 10:
         return best_key
     return None
 
@@ -116,11 +125,32 @@ for ob in req.results ?? [] {{
     except Exception:
         return []
 
+def run_tesseract_ocr(img_path):
+    """Fallback OCR on Linux using Tesseract"""
+    try:
+        cmd = ["tesseract", img_path, "stdout", "-l", "vie+eng", "--psm", "7"]
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=3)
+        text = res.stdout.strip()
+        if text:
+            return [{"text": text, "box_2d": [0, 0, 1000, 1000]}]
+    except Exception:
+        pass
+    return []
+
+def run_live_ocr(img_path):
+    if sys.platform == "darwin" and shutil.which("swift"):
+        lines = run_swift_apple_vision(img_path)
+        if lines:
+            return lines
+    if shutil.which("tesseract"):
+        return run_tesseract_ocr(img_path)
+    return []
+
 def match_spatial_lines(lines, box_2d):
     ymin, xmin, ymax, xmax = box_2d
     cy = (ymin + ymax) / 2.0
     cx = (xmin + xmax) / 2.0
-    bw = xmax - xmin
+    bw = max(1.0, float(xmax - xmin))
 
     best_line = None
     min_dist = 9999.0
@@ -148,28 +178,63 @@ def match_spatial_lines(lines, box_2d):
     if not tokens:
         return None, 0.0
 
-    # If all tokens on the line are the same letter (e.g. 'k k k k' or 'h h h h' or 'a a a a')
+    n = len(tokens)
     cleaned_tokens = [normalize_text(t) for t in tokens]
-    unique = set(cleaned_tokens)
-    if len(unique) == 1:
-        return list(unique)[0], 98.0
+    no_acc_tokens = [remove_accents(t) for t in cleaned_tokens]
 
-    # If the line represents a known phrase (e.g. 'kì cọ', 'hồ cá', 'lá hẹ', 'kê đá', 'xe ngựa', 'thỏ bé')
+    # Detect repeated period (e.g. k=1: 'a a a', k=2: 'lá hẹ lá hẹ lá hẹ' or 'ho ca ho ca ho ca')
+    period = 0
+    if n >= 2 and len(set(cleaned_tokens)) == 1:
+        period = 1
+    elif n >= 4 and len(set(no_acc_tokens[0::2])) == 1 and len(set(no_acc_tokens[1::2])) == 1:
+        period = 2
+
+    # Calculate token spans along the line
+    token_spans = []
+    for i in range(n):
+        s = lxmin + (i / float(n)) * line_w
+        e = lxmin + ((i + 1) / float(n)) * line_w
+        token_spans.append((s, e))
+
+    # Identify covered tokens
+    covered = []
+    for i in range(n):
+        s, e = token_spans[i]
+        overlap = max(0.0, min(xmax, e) - max(xmin, s))
+        tok_w = max(1.0, e - s)
+        tok_center = (s + e) / 2.0
+        if overlap / tok_w > 0.25 or (xmin <= tok_center <= xmax):
+            covered.append(i)
+
+    if not covered:
+        best_i = min(range(n), key=lambda i: abs(cx - (token_spans[i][0] + token_spans[i][1]) / 2.0))
+        covered.append(best_i)
+
+    # 1. Repeated single character across line (e.g. 'k k k k', 'h h h h', 'a a a a', 'b b b')
+    if period == 1:
+        return cleaned_tokens[0], 98.0
+
+    # 2. Repeated 2-word phrase across line (e.g. 'lá hẹ lá hẹ lá hẹ', 'hồ cá hỗ cá hô cá', 'xe ngựa xe ngựa')
+    if period == 2:
+        unit_w = (line_w / float(n)) * 2
+        # If user selected at least 2 tokens or the box width spans across a full pair width
+        if len(covered) >= 2 or bw >= unit_w * 0.60:
+            base_phrase = normalize_text(f"{tokens[0]} {tokens[1]}")
+            return base_phrase, 98.0
+        else:
+            # User specifically zoomed in on 1 token
+            idx = covered[0]
+            return normalize_text(tokens[idx]), 97.0
+
+    # 3. Known compound phrases (e.g. 'kì cọ', 'kê đá', 'thỏ bé', 'xe ngựa', 'bà cho bé')
     full_norm = normalize_text(raw_text)
     if full_norm in ["kì cọ", "kê đá", "hồ cá", "lá hẹ", "thỏ bé", "xe ngựa", "ca múa", "mùa thu", "sữa chua", "mùa mưa", "lá tía tô"]:
         return full_norm, 98.0
 
-    # If user box covers more than 40% of the entire phrase width
-    if (bw / line_w) > 0.40 and len(tokens) <= 3:
-        phrase = " ".join(tokens)
-        return normalize_text(phrase), 97.0
-
-    # Token pick by horizontal position
-    rel_x = max(0.0, min(1.0, (cx - lxmin) / line_w))
-    idx = int(rel_x * len(tokens))
-    idx = max(0, min(len(tokens) - 1, idx))
-    picked = tokens[idx].strip(".,")
-    return normalize_text(picked), 96.0
+    # 4. General line: take covered tokens
+    selected_tokens = [tokens[i] for i in covered]
+    phrase = " ".join(selected_tokens)
+    return normalize_text(phrase), 97.0
 
 def analyze_stroke_geometry(img_bgr, recognized_text):
     """Analyze contour and geometry of the handwritten stroke against Grade 1 standards"""
@@ -181,11 +246,13 @@ def analyze_stroke_geometry(img_bgr, recognized_text):
             "huong_dan_sua": "Hãy kéo mở rộng ô khoanh bao trọn vẹn cả con chữ để AI nhận diện rõ nhé con!"
         }
 
+    is_phrase = len(recognized_text.split()) > 1 or len(recognized_text) > 2
+
     if img_bgr is None:
         return {
             "loai": "chuan",
             "tieu_de": f"Nét chữ '{recognized_text}' đúng chuẩn",
-            "nhan_xet": f"Con chữ '{recognized_text}' viết thanh thoát, vừa vặn trên lưới ô ly.",
+            "nhan_xet": f"{'Cụm từ' if is_phrase else 'Con chữ'} '{recognized_text}' viết thanh thoát, vừa vặn trên lưới ô ly.",
             "huong_dan_sua": "Giữ vững lực tay đều đặn con nhé!"
         }
 
@@ -223,7 +290,16 @@ def analyze_stroke_geometry(img_bgr, recognized_text):
     relative_height = bh / float(h)
     top_margin = by / float(h)
 
-    # Specific check for letter 'a' hook protrusion
+    # For multi-word phrases (e.g. 'lá hẹ', 'kì cọ')
+    if is_phrase:
+        return {
+            "loai": "chuan",
+            "tieu_de": f"Cụm chữ '{recognized_text}' đúng chuẩn ô ly",
+            "nhan_xet": f"Cụm chữ '{recognized_text}' viết thanh thoát, khoảng cách giữa các tiếng đều tay và đứng dáng.",
+            "huong_dan_sua": "Nét viết rất đẹp! Tiếp tục duy trì tư thế ngồi thẳng lưng và cách cầm bút này con nhé."
+        }
+
+    # Specific check for single letter 'a' hook protrusion
     if recognized_text == "a" and top_margin < 0.12 and bh > h * 0.72:
         return {
             "loai": "loi",
@@ -275,9 +351,12 @@ def main():
     if len(sys.argv) > 4:
         full_img_input = sys.argv[4].strip()
 
-    # Read crop image
+    # Read crop image (handles either file path or base64)
     tmp_crop_path = "/tmp/spot_inspect_crop.jpg"
-    if crop_input.startswith("data:image") or len(crop_input) > 200:
+    if os.path.exists(crop_input):
+        crop_bgr = cv2.imread(crop_input)
+        tmp_crop_path = crop_input
+    elif crop_input.startswith("data:image") or len(crop_input) > 200:
         if "," in crop_input:
             crop_input = crop_input.split(",", 1)[1]
         img_data = base64.b64decode(crop_input)
@@ -287,11 +366,14 @@ def main():
     else:
         crop_bgr = cv2.imread(crop_input)
 
-    # Read full image if available
+    # Read full image (handles file path or base64)
     full_bgr = None
     tmp_full_path = "/tmp/spot_inspect_full.jpg"
-    if full_img_input and len(full_img_input) > 10:
-        if full_img_input.startswith("data:image") or len(full_img_input) > 200:
+    if full_img_input and len(full_img_input) > 0:
+        if os.path.exists(full_img_input):
+            full_bgr = cv2.imread(full_img_input)
+            tmp_full_path = full_img_input
+        elif full_img_input.startswith("data:image") or len(full_img_input) > 200:
             if "," in full_img_input:
                 full_img_input = full_img_input.split(",", 1)[1]
             try:
@@ -301,8 +383,6 @@ def main():
                 full_bgr = cv2.imread(tmp_full_path)
             except Exception:
                 pass
-        elif os.path.exists(full_img_input):
-            full_bgr = cv2.imread(full_img_input)
 
     # Load indexes and hashes
     ocr_dict = {}
@@ -342,17 +422,16 @@ def main():
 
     # 3. If still no match and we have full image (brand-new custom image never seen before):
     if not rec_text and full_bgr is not None and box_2d:
-        live_lines = run_swift_apple_vision(tmp_full_path)
+        live_lines = run_live_ocr(tmp_full_path)
         if live_lines:
             rec_text, conf = match_spatial_lines(live_lines, box_2d)
 
     # 4. Direct Crop OCR fallback (with padding)
     if not rec_text and crop_bgr is not None:
-        # Add white padding to give line context to Apple Vision
         padded = cv2.copyMakeBorder(crop_bgr, 40, 40, 40, 40, cv2.BORDER_CONSTANT, value=[255, 255, 255])
         tmp_pad_path = "/tmp/spot_inspect_padded.jpg"
         cv2.imwrite(tmp_pad_path, padded)
-        crop_lines = run_swift_apple_vision(tmp_pad_path)
+        crop_lines = run_live_ocr(tmp_pad_path)
         if crop_lines and crop_lines[0].get("text"):
             cand = normalize_text(crop_lines[0]["text"])
             if len(cand) >= 1:

@@ -76,7 +76,18 @@ const PRESET_SAMPLES: PresetSample[] = [
 
 // ─── Helpers: Trạng thái & Màu sắc ──────────────────────────────────────────
 
-function getStatusTheme(loai: HandwritingBoundingBox["loai"]) {
+function getStatusTheme(loai: HandwritingBoundingBox["loai"], isUnrec?: boolean) {
+  if (isUnrec) {
+    return {
+      border: "#f59e0b",
+      bg: "rgba(245, 158, 11, 0.18)",
+      label: "bg-amber-600 text-white",
+      badge: "bg-amber-100 text-amber-800 border-amber-200",
+      text: "Chưa nhận diện",
+      dot: "bg-amber-500",
+      icon: "❓",
+    };
+  }
   if (loai === "loi") {
     return {
       border: "#ef4444",
@@ -925,6 +936,7 @@ export function AiHandwritingGrader() {
             {/* Scalable Container */}
             <div
               ref={imageWrapperRef}
+              data-image-container="true"
               onPointerDown={handleWrapperPointerDown}
               onPointerMove={handleWrapperPointerMove}
               onPointerUp={handleWrapperPointerUp}
@@ -961,7 +973,7 @@ export function AiHandwritingGrader() {
               {/* Pinned Letter Boxes */}
               {boxes.map((bb) => {
                 const [ymin, xmin, ymax, xmax] = bb.box_2d;
-                const theme = getStatusTheme(bb.loai);
+                const theme = getStatusTheme(bb.loai, bb.is_unrecognized || bb.chu === "Chưa rõ nét");
                 const isSelected = (currentBox?.id === bb.id);
 
                 return (
@@ -1031,7 +1043,7 @@ export function AiHandwritingGrader() {
                     <h3 className="font-black text-slate-800 text-sm flex items-center gap-1.5">
                       Kính Lúp Soi Nét
                       <span className="text-violet-600 font-serif text-base font-bold">
-                        「{currentBox.chu}」
+                        {currentBox.chu === "Chưa rõ nét" ? "Chưa nhận diện" : `「${currentBox.chu}」`}
                       </span>
                     </h3>
                     <span className="text-[11px] text-slate-400">
@@ -1205,7 +1217,7 @@ export function AiHandwritingGrader() {
                         {currentBox.chu === "Chưa rõ nét" ? (
                           <span className="text-amber-700">Chưa nhận diện rõ nét</span>
                         ) : (
-                          <>Con chữ &quot;{currentBox.chu}&quot;</>
+                          <>{currentBox.chu.includes(" ") ? "Từ / Cụm từ" : "Con chữ"} &quot;{currentBox.chu}&quot;</>
                         )}
                       </div>
                     </div>
@@ -1213,7 +1225,7 @@ export function AiHandwritingGrader() {
 
                   {/* Status Badge */}
                   {(() => {
-                    const theme = getStatusTheme(currentBox.loai);
+                    const theme = getStatusTheme(currentBox.loai, currentBox.is_unrecognized || currentBox.chu === "Chưa rõ nét");
                     return (
                       <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${theme.badge} flex items-center gap-1 shrink-0 shadow-xs`}>
                         <span>{theme.icon}</span>
@@ -1296,7 +1308,7 @@ export function AiHandwritingGrader() {
 
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                 {boxes.map((b, idx) => {
-                  const theme = getStatusTheme(b.loai);
+                  const theme = getStatusTheme(b.loai, b.is_unrecognized || b.chu === "Chưa rõ nét");
                   const isSelected = (currentBox?.id === b.id);
 
                   return (
