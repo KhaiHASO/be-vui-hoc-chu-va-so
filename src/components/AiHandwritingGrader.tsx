@@ -7,7 +7,6 @@ import {
   Loader2,
   CheckCircle2,
   AlertTriangle,
-  Info,
   RotateCcw,
   ZoomIn,
   ZoomOut,
@@ -457,20 +456,7 @@ export function AiHandwritingGrader() {
 
   if (!imageDataUrl) {
     return (
-      <div className="w-full flex flex-col items-center py-4 sm:py-8 px-4 sm:px-6">
-        <div className="w-full max-w-2xl mb-6">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-violet-100 text-violet-800 border border-violet-200 mb-2">
-            <Sparkles className="w-3.5 h-3.5" />
-            AI Chấm Bài Viết Lớp 1 Chuẩn Ô Ly
-          </span>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-800 mb-1">
-            Đánh Giá Chất Lượng Nét Chữ
-          </h2>
-          <p className="text-sm text-slate-500">
-            Tải ảnh chụp bài tập viết. AI sẽ soi từng con chữ, tự động khoanh vùng lỗi trên bài, và cho phép cô giáo linh hoạt di chuyển, co giãn ô khoanh để thẩm định lại.
-          </p>
-        </div>
-
+      <div className="w-full flex flex-col items-center py-6 sm:py-12 px-4 sm:px-6">
         {/* Drop Zone */}
         <div
           className={`w-full max-w-2xl rounded-3xl border-2 border-dashed transition-all duration-200 cursor-pointer ${
@@ -512,25 +498,6 @@ export function AiHandwritingGrader() {
               Chọn ảnh từ thiết bị
             </button>
           </div>
-        </div>
-
-        {/* Tips */}
-        <div className="w-full max-w-2xl mt-5 p-4 rounded-2xl bg-blue-50 border border-blue-200">
-          <h4 className="text-xs font-black text-blue-800 flex items-center gap-1.5 mb-2">
-            <Info className="w-3.5 h-3.5" />
-            Mẹo chụp ảnh để AI chấm chính xác:
-          </h4>
-          <ul className="text-xs text-blue-700 space-y-1.5">
-            <li className="flex items-start gap-1.5">
-              <span>📷</span> Chụp thẳng góc từ trên xuống, đủ ánh sáng, không bị bóng mờ
-            </li>
-            <li className="flex items-start gap-1.5">
-              <span>📄</span> Thấy rõ các đường kẻ ngang và lưới ô ly tập viết
-            </li>
-            <li className="flex items-start gap-1.5">
-              <span>🔍</span> Ảnh sắc nét, chữ viết không bị nhòe tay hay rung lắc khi chụp
-            </li>
-          </ul>
         </div>
 
         <input
