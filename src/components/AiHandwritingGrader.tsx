@@ -358,7 +358,8 @@ export function AiHandwritingGrader() {
   }, []);
 
   const handleSelectPreset = async (preset: PresetSample) => {
-    setDocName(preset.title);
+    const fileName = preset.url.split("/").pop() || preset.title;
+    setDocName(fileName);
     setBoxes([]);
     setSelectedBoxId(null);
     setZoom(1.0);
@@ -446,6 +447,8 @@ export function AiHandwritingGrader() {
             mode: "spot_inspect",
             cropImage: crop,
             boxId: targetBox.id,
+            box_2d: targetBox.box_2d,
+            fileName: docName,
             targetChar: overrideChar || undefined,
           }),
         });
@@ -478,7 +481,7 @@ export function AiHandwritingGrader() {
         setIsSpotLoading(false);
       }
     },
-    []
+    [docName]
   );
 
   // ── Create & Inspect New Box ──

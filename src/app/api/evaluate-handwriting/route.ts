@@ -187,17 +187,23 @@ export async function POST(req: NextRequest) {
 
     // ── Chế độ Soi Nét Real-Time (Spot Inspection): Phân tích tức thì 1 ô cắt lẻ (~1s) ──
     if (mode === "spot_inspect") {
-      const { targetChar } = body;
+      const { targetChar, box_2d } = body;
       const spotTargetImage = cropImage || image;
       if (!spotTargetImage) {
         return NextResponse.json({ error: "Thiếu ảnh cắt vùng nét." }, { status: 400 });
       }
 
-      // 1. Chạy AI Vision OCR thực tế qua Python + macOS Apple Vision Framework
+      // 1. Chạy AI Vision OCR thực tế qua Python + Curriculum Matrix + OCR Index
       try {
         const scriptPath = path.join(process.cwd(), "scripts/spot_ocr.py");
         if (fs.existsSync(scriptPath)) {
-          const { stdout } = await execFileAsync("python3", [scriptPath, spotTargetImage], { timeout: 4000 });
+          const args = [
+            scriptPath,
+            spotTargetImage,
+            JSON.stringify(box_2d || null),
+            fileName || "",
+          ];
+          const { stdout } = await execFileAsync("python3", args, { timeout: 4000 });
           const ocrResult = JSON.parse(stdout.trim());
           if (ocrResult && ocrResult.chu) {
             return NextResponse.json({
