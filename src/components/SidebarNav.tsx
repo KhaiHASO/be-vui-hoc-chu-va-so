@@ -51,6 +51,8 @@ interface SidebarNavProps {
   onSelectDigraph?: (digraph: DigraphData) => void;
   onOpenVisitorLog?: () => void;
   isOwnerExcluded?: boolean;
+  activeOnlineCount?: number;
+  totalVisitsCount?: number;
 }
 
 export function SidebarNav({
@@ -74,6 +76,8 @@ export function SidebarNav({
   onSelectDigraph,
   onOpenVisitorLog,
   isOwnerExcluded = false,
+  activeOnlineCount = 1,
+  totalVisitsCount = 0,
 }: SidebarNavProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -155,7 +159,7 @@ export function SidebarNav({
             </div>
             <div className="min-w-0">
               <div className="text-xs font-black text-white flex items-center gap-1.5">
-                <span>34 đang học online</span>
+                <span>{activeOnlineCount} đang online</span>
                 {isOwnerExcluded && (
                   <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
                     Chủ web
@@ -163,12 +167,12 @@ export function SidebarNav({
                 )}
               </div>
               <div className="text-[11px] text-slate-400 font-semibold group-hover:text-violet-300 transition-colors truncate">
-                Nhật ký 63 tỉnh thành &gt;
+                Nhật ký truy cập Live &gt;
               </div>
             </div>
           </div>
-          <span className="text-xs font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-lg border border-amber-400/20 shrink-0">
-            24.8k
+          <span className="text-xs font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-lg border border-amber-400/20 shrink-0 font-mono">
+            {totalVisitsCount > 1000 ? `${(totalVisitsCount / 1000).toFixed(1)}k` : totalVisitsCount}
           </span>
         </button>
       </div>
@@ -420,7 +424,7 @@ export function SidebarNav({
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="hidden sm:inline">Online:</span>
-            <span>34</span>
+            <span>{activeOnlineCount}</span>
           </button>
 
           <button

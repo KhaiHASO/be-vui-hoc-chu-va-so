@@ -45,5 +45,7 @@ ContextGopY
 DuLieuChuViet
 HoSo
 public/dynamic_visitor_logs.json
+data/real_access_logs.json
+data/geoip_cache.json
 
 

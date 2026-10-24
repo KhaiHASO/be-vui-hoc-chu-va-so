@@ -57,6 +57,30 @@ export default function HomePage() {
   // Trạng thái Nhật Ký Truy Cập & Bộ Lọc Chủ Sản Phẩm / Kỹ Sư
   const [isVisitorLogOpen, setIsVisitorLogOpen] = useState(false);
   const [isOwnerExcluded, setIsOwnerExcluded] = useState(false);
+  const [visitorStats, setVisitorStats] = useState({ activeNow: 1, totalVisits: 0 });
+
+  // Tải thống kê thực tế từ server
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/visitor-logs?includeDev=0", { cache: "no-store" });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.stats) {
+            setVisitorStats({
+              activeNow: json.stats.activeNow,
+              totalVisits: json.stats.totalVisits,
+            });
+          }
+        }
+      } catch {
+        // Im lặng
+      }
+    };
+    fetchStats();
+    const interval = setInterval(fetchStats, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Phần tử đang được chọn - lưu giữ trạng thái xuyên suốt quá trình chuyển đổi giữa các tab
   const [currentLetter, setCurrentLetter] = useState<LetterCardData>(letters[0]);
@@ -92,35 +116,56 @@ export default function HomePage() {
   useEffect(() => {
     const logVisit = async () => {
       try {
+        let actionType = "page_view";
+        let actionName = "Truy cập ứng dụng";
+
+        if (mainCategory === "letters") {
+          if (letterMode === "grader") {
+            actionType = "ai_grader";
+            actionName = "AI Chấm & Soi Nét Bài Viết Lớp 1";
+          } else if (letterMode === "writing") {
+            actionType = "writing_practice";
+            actionName = `Bé tập viết chữ "${currentLetter.letter.toLowerCase()}" thường ô ly`;
+          } else if (letterMode === "strokes") {
+            actionType = "strokes";
+            actionName = `Luyện nét viết: ${currentStroke.name}`;
+          } else if (letterMode === "digraphs") {
+            actionType = "digraphs";
+            actionName = `Học âm đôi / vần ghép: âm "${currentDigraph.name}"`;
+          } else if (letterMode === "quiz") {
+            actionType = "page_view";
+            actionName = "Đố Vui Bắt Chữ Thông Minh";
+          } else {
+            actionType = "letter_view";
+            actionName = `Khám phá Thẻ Chữ Cái 3D: Chữ ${currentLetter.letter}`;
+          }
+        } else {
+          if (numberMode === "writing") {
+            actionType = "writing_practice";
+            actionName = `Bé tập viết số ${currentNumber.number} ô ly`;
+          } else if (numberMode === "counting") {
+            actionType = "math_game";
+            actionName = `Bé tập đếm con vật tương tác: Số ${currentNumber.number}`;
+          } else if (numberMode === "bonds") {
+            actionType = "math_game";
+            actionName = `Tách - Gộp Số Singapore CPA: Số ${currentNumber.number}`;
+          } else if (numberMode === "guide") {
+            actionType = "parent_guide";
+            actionName = "Xem Cẩm Nang Góc Ba Mẹ";
+          } else {
+            actionType = "page_view";
+            actionName = `Khám phá Thẻ Học Số 3D: Số ${currentNumber.number}`;
+          }
+        }
+
         await fetch("/api/visitor-logs", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             isDev: isOwnerExcluded,
-            activityCategory:
-              letterMode === "grader"
-                ? "ai_grader"
-                : letterMode === "writing"
-                ? "writing"
-                : letterMode === "strokes"
-                ? "strokes"
-                : letterMode === "digraphs"
-                ? "digraphs"
-                : mainCategory === "numbers"
-                ? "math"
-                : "general",
-            activityTitle:
-              letterMode === "grader"
-                ? "AI Chấm & Nhận Xét Bài Viết"
-                : letterMode === "writing"
-                ? `Bé tập viết chữ "${currentLetter.letter.toLowerCase()}"`
-                : mainCategory === "numbers"
-                ? `Học số ${currentNumber.number}`
-                : "Khám phá bài học",
-            activityDetail:
-              mainCategory === "letters"
-                ? `Đang học môn Tiếng Việt Lớp 1 (${letterMode})`
-                : `Đang học môn Toán Học Lớp 1 (${numberMode})`,
+            actionType,
+            actionName,
+            path: `/?cat=${mainCategory}&mode=${mainCategory === "letters" ? letterMode : numberMode}`,
           }),
         });
       } catch {
@@ -128,9 +173,18 @@ export default function HomePage() {
       }
     };
 
-    const timer = setTimeout(logVisit, 2000);
+    const timer = setTimeout(logVisit, 1200);
     return () => clearTimeout(timer);
-  }, [mainCategory, letterMode, numberMode, isOwnerExcluded]);
+  }, [
+    mainCategory,
+    letterMode,
+    numberMode,
+    currentLetter,
+    currentNumber,
+    currentStroke,
+    currentDigraph,
+    isOwnerExcluded,
+  ]);
 
   // Điều hướng qua lại chữ cái tiếp theo/trước đó
   const handleNextLetter = () => {
@@ -245,6 +299,8 @@ export default function HomePage() {
         onSelectDigraph={(dg) => setCurrentDigraph(dg)}
         onOpenVisitorLog={() => setIsVisitorLogOpen(true)}
         isOwnerExcluded={isOwnerExcluded}
+        activeOnlineCount={visitorStats.activeNow}
+        totalVisitsCount={visitorStats.totalVisits}
       />
 
       {/* 2. KHÔNG GIAN TƯƠNG TÁC CHÍNH (MAIN PLAYGROUND AREA) */}
@@ -319,15 +375,17 @@ export default function HomePage() {
                 setIsVisitorLogOpen(true);
               }}
               className="min-h-[44px] px-3 py-1.5 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs font-bold text-slate-700 border border-slate-200/90 transition-all flex items-center gap-2 shadow-2xs"
-              title="Xem nhật ký truy cập & hoạt động từ các trường tiểu học"
+              title="Xem nhật ký truy cập thực tế"
             >
               <div className="relative">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 block" />
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute inset-0 animate-ping opacity-75" />
               </div>
-              <span className="font-black text-slate-800">34 Online</span>
+              <span className="font-black text-slate-800">{visitorStats.activeNow} Online</span>
               <span className="text-slate-300 hidden sm:inline">|</span>
-              <span className="text-violet-600 font-black hidden sm:inline">24.8k Lượt học</span>
+              <span className="text-violet-600 font-black hidden sm:inline font-mono">
+                {visitorStats.totalVisits.toLocaleString()} Lượt học
+              </span>
               {isOwnerExcluded && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 font-bold border border-amber-200 hidden md:inline">
                   🛡️ Chủ web

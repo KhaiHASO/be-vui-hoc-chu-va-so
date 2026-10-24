@@ -5,19 +5,19 @@ import {
   X,
   Users,
   Eye,
-  Award,
-  School,
+  Globe2,
   ShieldCheck,
   RefreshCw,
-  Sparkles,
   Smartphone,
   Laptop,
   Tablet,
-  CheckCircle2,
+  Bot,
+  Activity,
+  MapPin,
   Clock,
-  Filter,
+  Radio,
 } from "lucide-react";
-import { VisitorApiResponse, VisitorLogEntry, ActivityCategory } from "@/types/visitor";
+import { AccessLogApiResponse, RealAccessLog } from "@/types/visitor";
 
 interface VisitorLogModalProps {
   isOpen: boolean;
@@ -32,23 +32,25 @@ export function VisitorLogModal({
   isOwnerExcluded,
   onToggleOwnerExcluded,
 }: VisitorLogModalProps) {
-  const [data, setData] = useState<VisitorApiResponse | null>(null);
+  const [data, setData] = useState<AccessLogApiResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<ActivityCategory>("all");
-  const [timeNow, setTimeNow] = useState(Date.now());
+  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [showMyDevClicks, setShowMyDevClicks] = useState(false);
+  const [nowMs, setNowMs] = useState(Date.now());
 
-  // Tải dữ liệu từ API
-  const fetchLogs = async () => {
+  const fetchRealLogs = async (includeDev: boolean) => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/visitor-logs", { cache: "no-store" });
+      const res = await fetch(`/api/visitor-logs?includeDev=${includeDev ? "1" : "0"}`, {
+        cache: "no-store",
+      });
       if (res.ok) {
         const json = await res.json();
         setData(json);
-        setTimeNow(Date.now());
+        setNowMs(Date.now());
       }
     } catch (err) {
-      console.error("Lỗi khi tải nhật ký truy cập:", err);
+      console.error("Lỗi khi tải nhật ký truy cập thực tế:", err);
     } finally {
       setIsLoading(false);
     }
@@ -56,24 +58,25 @@ export function VisitorLogModal({
 
   useEffect(() => {
     if (isOpen) {
-      fetchLogs();
-      const interval = setInterval(fetchLogs, 30000); // 30s cập nhật 1 lần
+      fetchRealLogs(showMyDevClicks);
+      const interval = setInterval(() => {
+        fetchRealLogs(showMyDevClicks);
+      }, 10000); // 10s cập nhật 1 lần
       return () => clearInterval(interval);
     }
-  }, [isOpen]);
+  }, [isOpen, showMyDevClicks]);
 
-  // Cập nhật mốc thời gian tương đối mỗi 10 giây
+  // Cập nhật relative time mỗi 5 giây
   useEffect(() => {
     if (!isOpen) return;
-    const timer = setInterval(() => setTimeNow(Date.now()), 10000);
+    const timer = setInterval(() => setNowMs(Date.now()), 5000);
     return () => clearInterval(timer);
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // Định dạng thời gian tương đối
-  const formatTimeAgo = (timestamp: number) => {
-    const diffSec = Math.max(5, Math.floor((timeNow - timestamp) / 1000));
+  const formatRelativeTime = (timestamp: number) => {
+    const diffSec = Math.max(1, Math.floor((nowMs - timestamp) / 1000));
     if (diffSec < 60) return `${diffSec} giây trước`;
     const diffMin = Math.floor(diffSec / 60);
     if (diffMin < 60) return `${diffMin} phút trước`;
@@ -82,49 +85,47 @@ export function VisitorLogModal({
     return `${Math.floor(diffHour / 24)} ngày trước`;
   };
 
-  const filteredLogs = (data?.logs || []).filter((item) => {
-    if (selectedCategory === "all") return true;
-    if (selectedCategory === "ai_grader") return item.activityCategory === "ai_grader";
-    if (selectedCategory === "writing") return item.activityCategory === "writing";
-    if (selectedCategory === "strokes")
-      return item.activityCategory === "strokes" || item.activityCategory === "digraphs";
-    if (selectedCategory === "math") return item.activityCategory === "math";
+  const logs = (data?.logs || []).filter((item) => {
+    if (selectedFilter === "all") return true;
+    if (selectedFilter === "ai") return item.actionType === "ai_grader";
+    if (selectedFilter === "writing") return item.actionType === "writing_practice";
+    if (selectedFilter === "math") return item.actionType === "math_game";
+    if (selectedFilter === "page") return item.actionType === "page_view" || item.actionType === "letter_view";
     return true;
   });
 
-  const getDeviceIcon = (device: string) => {
-    if (device.includes("Tablet") || device.includes("iPad"))
-      return <Tablet className="w-3.5 h-3.5 text-sky-500" />;
-    if (device.includes("iPhone") || device.includes("Android"))
-      return <Smartphone className="w-3.5 h-3.5 text-emerald-500" />;
-    return <Laptop className="w-3.5 h-3.5 text-indigo-500" />;
+  const getDeviceIcon = (device: RealAccessLog["device"]) => {
+    if (device === "Bot Tìm kiếm") return <Bot className="w-4 h-4 text-purple-500" />;
+    if (device === "iPad / Máy tính bảng") return <Tablet className="w-4 h-4 text-sky-500" />;
+    if (device === "Điện thoại Di động") return <Smartphone className="w-4 h-4 text-emerald-500" />;
+    return <Laptop className="w-4 h-4 text-indigo-500" />;
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
       <div
-        className="w-full max-w-3xl max-h-[92dvh] bg-white rounded-3xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+        className="w-full max-w-4xl max-h-[92dvh] bg-white rounded-3xl shadow-2xl border border-slate-200/90 flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
         role="dialog"
         aria-modal="true"
       >
         {/* 1. HEADER MODAL */}
-        <div className="p-4 sm:p-5 bg-linear-to-r from-violet-600 via-indigo-600 to-purple-700 text-white flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-linear-to-r from-slate-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between shrink-0 border-b border-slate-800">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-xl shrink-0 shadow-inner">
-              📊
+            <div className="w-10 h-10 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center font-bold text-xl shrink-0 shadow-inner text-emerald-400">
+              <Activity className="w-5 h-5 animate-pulse" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h3 className="text-base sm:text-lg font-black tracking-tight truncate">
-                  Nhật Ký Truy Cập & Hoạt Động Giáo Dục
+                  Nhật Ký Truy Cập Thời Gian Thực (Live Access Log)
                 </h3>
-                <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  Live Real-Time
+                <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  Real HTTP Data 100%
                 </span>
               </div>
-              <p className="text-xs text-violet-200 truncate">
-                Dữ liệu trực tiếp từ 63 tỉnh thành & hơn 1,280 trường tiểu học
+              <p className="text-xs text-slate-300 truncate">
+                Ghi nhận địa chỉ IP, Vị trí địa lý GeoIP, Thiết bị & Hành động thực tế của người dùng
               </p>
             </div>
           </div>
@@ -138,112 +139,127 @@ export function VisitorLogModal({
           </button>
         </div>
 
-        {/* 2. CHẾ ĐỘ LOẠI TRỪ CHỦ SẢN PHẨM / KỸ SƯ (DEV / OWNER EXCLUSION BAR) */}
-        <div className="px-4 py-2.5 bg-amber-50/90 border-b border-amber-200/70 flex flex-wrap items-center justify-between gap-2.5 text-xs">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <div className="w-7 h-7 rounded-xl bg-amber-200/80 text-amber-800 flex items-center justify-center shrink-0">
+        {/* 2. THANH KIỂM SOÁT BỘ LỌC CHỦ SẢN PHẨM / KỸ SƯ */}
+        <div className="px-4 py-3 bg-amber-50/90 border-b border-amber-200/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-start gap-2.5 min-w-0 flex-1">
+            <div className="w-8 h-8 rounded-xl bg-amber-200/80 text-amber-900 flex items-center justify-center shrink-0 mt-0.5">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <span className="font-bold text-amber-900 block sm:inline">
-                Bộ lọc Chủ sản phẩm / Kỹ sư:{" "}
-              </span>
-              <span className="text-amber-700">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-black text-amber-950">Chế độ Chủ sản phẩm / Dev:</span>
+                {data?.clientIp && (
+                  <span className="font-mono text-[11px] bg-amber-200/60 px-1.5 py-0.2 rounded text-amber-900 font-bold">
+                    IP: {data.clientIp} • {data.clientLocation}
+                  </span>
+                )}
+              </div>
+              <p className="text-amber-800 text-[11px] mt-0.5 leading-relaxed">
                 {isOwnerExcluded
-                  ? "Đã loại trừ bạn (mọi thao tác & lượt xem của bạn không tính vào data)."
-                  : "Chưa loại trừ (lượt click của bạn đang tính như người dùng thật)."}
-              </span>
+                  ? "✓ Đang kích hoạt: Mọi truy cập và click của bạn ĐÃ BỊ LOẠI TRỪ khỏi tổng lượt xem và nhật ký để đảm bảo tính khách quan."
+                  : "Chưa kích hoạt: Các click của bạn đang được tính như khách thông thường."}
+              </p>
             </div>
           </div>
 
-          <button
-            onClick={() => onToggleOwnerExcluded(!isOwnerExcluded)}
-            className={`min-h-[38px] px-3.5 py-1.5 rounded-xl font-bold transition-all active:scale-95 flex items-center gap-1.5 shrink-0 ${
-              isOwnerExcluded
-                ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
-                : "bg-amber-200 hover:bg-amber-300 text-amber-900"
-            }`}
-          >
-            <CheckCircle2 className="w-3.5 h-3.5" />
-            <span>{isOwnerExcluded ? "Đang Loại Trừ (Bật)" : "Bật Chế Độ Chủ Web"}</span>
-          </button>
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Toggle hiển thị click của Dev để test */}
+            <label className="flex items-center gap-1.5 cursor-pointer select-none bg-white/80 hover:bg-white px-2.5 py-1.5 rounded-xl border border-amber-300 text-amber-900 font-bold text-[11px]">
+              <input
+                type="checkbox"
+                checked={showMyDevClicks}
+                onChange={(e) => setShowMyDevClicks(e.target.checked)}
+                className="rounded text-violet-600 focus:ring-violet-500 w-3.5 h-3.5"
+              />
+              <span>Hiện cả click của tôi (Test live)</span>
+            </label>
+
+            <button
+              onClick={() => onToggleOwnerExcluded(!isOwnerExcluded)}
+              className={`min-h-[36px] px-3 py-1.5 rounded-xl font-bold transition-all active:scale-95 text-xs flex items-center gap-1 ${
+                isOwnerExcluded
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs"
+                  : "bg-amber-300 hover:bg-amber-400 text-amber-950"
+              }`}
+            >
+              <span>{isOwnerExcluded ? "Đang Loại Trừ (Bật)" : "Bật Loại Trừ"}</span>
+            </button>
+          </div>
         </div>
 
-        {/* 3. THỐNG KÊ TỔNG QUAN (4 METRIC CARDS) */}
-        <div className="p-4 sm:p-5 bg-slate-50 border-b border-slate-200 shrink-0">
+        {/* 3. BẢNG THỐNG KÊ THỰC TẾ (4 REAL STATS CARDS) */}
+        <div className="p-4 bg-slate-50 border-b border-slate-200 shrink-0">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
-            {/* Card 1: Đang online */}
-            <div className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-3">
+            {/* Card 1: Người online thực tế */}
+            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 relative">
                 <Users className="w-5 h-5" />
-                <span className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
               </div>
               <div className="min-w-0">
                 <div className="text-lg sm:text-xl font-black text-slate-800 leading-tight">
-                  {data?.stats.activeNow || 34}
+                  {data?.stats.activeNow ?? 1}
                 </div>
-                <div className="text-xs font-semibold text-emerald-600 truncate">Đang học online</div>
+                <div className="text-xs font-bold text-emerald-600 truncate">Đang online (5 phút)</div>
               </div>
             </div>
 
-            {/* Card 2: Tổng lượt truy cập */}
-            <div className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-3">
+            {/* Card 2: Tổng lượt truy cập thật */}
+            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center shrink-0">
                 <Eye className="w-5 h-5" />
               </div>
               <div className="min-w-0">
                 <div className="text-lg sm:text-xl font-black text-slate-800 leading-tight">
-                  {(data?.stats.totalVisits || 24860).toLocaleString()}
+                  {(data?.stats.totalVisits ?? 0).toLocaleString()}
                 </div>
-                <div className="text-xs font-semibold text-slate-500 truncate">Tổng lượt truy cập</div>
+                <div className="text-xs font-semibold text-slate-500 truncate">Tổng lượt thật ghi nhận</div>
               </div>
             </div>
 
-            {/* Card 3: Bài chấm AI */}
-            <div className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
-                <Award className="w-5 h-5" />
+            {/* Card 3: IP duy nhất */}
+            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                <Radio className="w-5 h-5" />
               </div>
               <div className="min-w-0">
                 <div className="text-lg sm:text-xl font-black text-slate-800 leading-tight">
-                  {(data?.stats.aiGradedCount || 3156).toLocaleString()}
+                  {(data?.stats.uniqueIpsCount ?? 0).toLocaleString()}
                 </div>
-                <div className="text-xs font-semibold text-slate-500 truncate">Bài chấm chữ đẹp AI</div>
+                <div className="text-xs font-semibold text-slate-500 truncate">Địa chỉ IP duy nhất</div>
               </div>
             </div>
 
-            {/* Card 4: Trường & Tỉnh thành */}
-            <div className="p-3 bg-white rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-3">
+            {/* Card 4: Tỉnh / Thành phố */}
+            <div className="p-3 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center shrink-0">
-                <School className="w-5 h-5" />
+                <Globe2 className="w-5 h-5" />
               </div>
               <div className="min-w-0">
                 <div className="text-lg sm:text-xl font-black text-slate-800 leading-tight">
-                  63 / 1,280+
+                  {data?.stats.uniqueProvincesCount ?? 1} Khu vực
                 </div>
-                <div className="text-xs font-semibold text-slate-500 truncate">Tỉnh / Trường học</div>
+                <div className="text-xs font-semibold text-slate-500 truncate">Định vị GeoIP</div>
               </div>
             </div>
           </div>
 
-          {/* BỘ LỌC DANH MỤC */}
-          <div className="mt-3.5 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-            <span className="text-xs font-bold text-slate-500 flex items-center gap-1 shrink-0 mr-1">
-              <Filter className="w-3.5 h-3.5" /> Lọc:
-            </span>
+          {/* BỘ LỌC DANH MỤC HOẠT ĐỘNG */}
+          <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <span className="text-xs font-bold text-slate-500 shrink-0 mr-1">Lọc:</span>
             {[
-              { id: "all" as ActivityCategory, label: "Tất cả hoạt động" },
-              { id: "ai_grader" as ActivityCategory, label: "🤖 AI Chấm Bài" },
-              { id: "writing" as ActivityCategory, label: "✍️ Bé Tập Viết" },
-              { id: "strokes" as ActivityCategory, label: "✨ 11 Nét & Vần" },
-              { id: "math" as ActivityCategory, label: "🔢 Toán Singapore" },
+              { id: "all", label: "Tất cả lưu lượng" },
+              { id: "page", label: "📖 Học Chữ & Đọc Âm" },
+              { id: "writing", label: "✍️ Bé Tập Viết Ô Ly" },
+              { id: "ai", label: "🤖 AI Chấm & Soi Nét" },
+              { id: "math", label: "🔢 Toán Học Singapore" },
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setSelectedCategory(tab.id)}
-                className={`min-h-[38px] px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 active:scale-95 ${
-                  selectedCategory === tab.id
-                    ? "bg-violet-600 text-white shadow-xs"
+                onClick={() => setSelectedFilter(tab.id)}
+                className={`min-h-[36px] px-3 py-1.5 rounded-xl text-xs font-bold transition-all shrink-0 active:scale-95 ${
+                  selectedFilter === tab.id
+                    ? "bg-indigo-600 text-white shadow-xs"
                     : "bg-white text-slate-600 hover:bg-slate-200 border border-slate-200"
                 }`}
               >
@@ -253,84 +269,84 @@ export function VisitorLogModal({
           </div>
         </div>
 
-        {/* 4. DANH SÁCH NHẬT KÝ CHI TIẾT (ACTIVITY STREAM) */}
-        <div className="flex-1 min-w-0 p-4 sm:p-5 overflow-y-auto space-y-2.5">
-          {filteredLogs.length === 0 ? (
+        {/* 4. BẢNG DỮ LIỆU NHẬT KÝ TRUY CẬP THỰC TẾ (REAL LOGS STREAM) */}
+        <div className="flex-1 min-w-0 p-3 sm:p-4 overflow-y-auto space-y-2">
+          {logs.length === 0 ? (
             <div className="py-12 text-center text-slate-400">
-              <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm font-semibold">Chưa có hoạt động nào trong danh mục này</p>
+              <Activity className="w-8 h-8 mx-auto mb-2 opacity-40 animate-pulse" />
+              <p className="text-sm font-semibold">Chưa có lượt truy cập nào trong danh mục này</p>
+              <p className="text-xs text-slate-400 mt-1">
+                {isOwnerExcluded && !showMyDevClicks
+                  ? "(Lượt của bạn đang bị ẩn vì đã bật Chế độ Chủ web. Hãy tích vào 'Hiện cả click của tôi' để xem)."
+                  : "Dữ liệu sẽ tự động xuất hiện khi có người dùng truy cập."}
+              </p>
             </div>
           ) : (
-            filteredLogs.map((log) => {
-              const roleBg =
-                log.userRole === "Giáo viên"
-                  ? "bg-blue-100 text-blue-700 border-blue-200"
-                  : log.userRole === "Phụ huynh"
-                  ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                  : "bg-purple-100 text-purple-700 border-purple-200";
-
+            logs.map((log) => {
               return (
                 <div
                   key={log.id}
-                  className="p-3.5 bg-white hover:bg-slate-50 rounded-2xl border border-slate-200/90 shadow-2xs transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  className={`p-3 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${
+                    log.isDev
+                      ? "bg-amber-50/60 border-amber-200/90 hover:bg-amber-50"
+                      : "bg-white border-slate-200 hover:bg-slate-50 shadow-2xs"
+                  }`}
                 >
-                  <div className="flex items-start gap-3 min-w-0 flex-1">
-                    <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0 font-bold text-base mt-0.5">
-                      {log.activityCategory === "ai_grader"
-                        ? "🤖"
-                        : log.activityCategory === "writing"
-                        ? "✍️"
-                        : log.activityCategory === "math"
-                        ? "🔢"
-                        : log.activityCategory === "strokes" || log.activityCategory === "digraphs"
-                        ? "✨"
-                        : "⭐"}
+                  {/* Cột 1: Icon & Thông tin tương tác */}
+                  <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                    <div className="w-9 h-9 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 font-bold text-base mt-0.5 shadow-2xs">
+                      {getDeviceIcon(log.device)}
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-1.5 mb-1">
-                        <span className={`text-[11px] font-black px-2 py-0.5 rounded-md border ${roleBg}`}>
-                          {log.userRole}
+                      <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
+                        <span className="font-mono text-xs font-black text-slate-800 bg-slate-100 px-1.5 py-0.2 rounded border border-slate-200">
+                          {log.maskedIp}
                         </span>
-                        <span className="text-xs font-bold text-slate-800 truncate">
-                          {log.institution}
+
+                        <span className="text-xs font-bold text-indigo-700 flex items-center gap-1 truncate">
+                          <MapPin className="w-3 h-3 text-rose-500 shrink-0" />
+                          <span>
+                            {log.city}, {log.region}
+                          </span>
                         </span>
-                        <span className="text-xs font-semibold text-slate-400">
-                          • {log.location}
+
+                        <span className="text-[11px] text-slate-400 font-semibold truncate hidden sm:inline">
+                          ({log.isp})
                         </span>
-                        {log.isLive && (
-                          <span className="text-[10px] font-black px-1.5 py-0.2 rounded-full bg-rose-500 text-white animate-pulse">
-                            Vừa xong
+
+                        {log.isDev && (
+                          <span className="text-[10px] font-black px-1.5 py-0.2 rounded bg-amber-200 text-amber-900 border border-amber-300">
+                            Chủ web / Dev
                           </span>
                         )}
+
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          {log.statusCode || 200} OK
+                        </span>
                       </div>
 
-                      <div className="text-xs sm:text-sm font-bold text-slate-700 mb-0.5">
-                        {log.activityTitle}
+                      <div className="text-xs sm:text-sm font-bold text-slate-800 line-clamp-1">
+                        {log.actionName}
                       </div>
-                      <div className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                        {log.activityDetail}
+
+                      <div className="flex items-center gap-2 text-[11px] text-slate-500 font-medium mt-0.5">
+                        <span className="truncate">
+                          {log.os} • {log.browser}
+                        </span>
+                        <span>•</span>
+                        <span className="font-mono text-slate-400 truncate">{log.path}</span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-                    {log.score && (
-                      <span className="px-2.5 py-0.5 rounded-lg text-xs font-black bg-amber-100 text-amber-800 border border-amber-200">
-                        {log.score}
-                      </span>
-                    )}
-                    <div className="flex items-center gap-2 text-[11px] text-slate-400 font-semibold">
-                      <span className="flex items-center gap-1">
-                        {getDeviceIcon(log.device)}
-                        <span className="hidden sm:inline">{log.device}</span>
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3 text-slate-400" />
-                        {formatTimeAgo(log.timestamp)}
-                      </span>
-                    </div>
+                  {/* Cột 2: Mốc thời gian */}
+                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1 shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-slate-100 text-[11px]">
+                    <span className="font-bold text-slate-700 flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-indigo-500" />
+                      <span>{formatRelativeTime(log.timestamp)}</span>
+                    </span>
+                    <span className="text-slate-400 font-mono text-[10px]">{log.timeStr}</span>
                   </div>
                 </div>
               );
@@ -339,26 +355,26 @@ export function VisitorLogModal({
         </div>
 
         {/* 5. FOOTER MODAL */}
-        <div className="p-3.5 sm:p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
-          <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+        <div className="p-3.5 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2 shrink-0">
+          <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Tự động đồng bộ mỗi 30s</span>
+            <span>Tự động cập nhật thời gian thực mỗi 10 giây</span>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={fetchLogs}
+              onClick={() => fetchRealLogs(showMyDevClicks)}
               disabled={isLoading}
               className="min-h-[44px] px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 active:scale-95 text-slate-700 border border-slate-200 text-xs font-bold transition-all flex items-center gap-1.5"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-violet-600" : ""}`} />
-              <span>{isLoading ? "Đang tải..." : "Làm mới"}</span>
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin text-indigo-600" : ""}`} />
+              <span>{isLoading ? "Đang nạp..." : "Làm mới"}</span>
             </button>
             <button
               onClick={onClose}
-              className="min-h-[44px] px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 active:scale-95 text-white text-xs font-black transition-all shadow-xs"
+              className="min-h-[44px] px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 active:scale-95 text-white text-xs font-black transition-all shadow-xs"
             >
-              Đã hiểu
+              Đóng
             </button>
           </div>
         </div>
