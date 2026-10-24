@@ -86,6 +86,9 @@ export interface HandwritingBoundingBox {
   tieu_de: string;
   nhan_xet: string;
   huong_dan_sua?: string;
+  do_cao_o_ly?: string;
+  do_rong_o_ly?: string;
+  diem_dung_but?: string;
   // Chuẩn hiển thị GiaoDienMongMuon: Vòng tròn nét đứt + Đường chỉ dẫn callout
   callout?: {
     target: [number, number]; // [x, y] điểm lỗi trên nét (tâm vòng tròn nét đứt)
