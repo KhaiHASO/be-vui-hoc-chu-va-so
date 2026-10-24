@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import rawNumbersData from "@/data/numbers.json";
 import rawLettersData from "@/data/letters.json";
 import rawStrokesData from "@/data/strokes.json";
@@ -32,6 +32,10 @@ import { WritingCanvas } from "@/components/WritingCanvas";
 import { NumberBondsInteractive } from "@/components/NumberBondsInteractive";
 import { ParentGuideView } from "@/components/ParentGuideView";
 
+// Component Nhật Ký Truy Cập & Hoạt Động Trực Tuyến
+import { VisitorLogModal } from "@/components/VisitorLogModal";
+import { LiveActivityToast } from "@/components/LiveActivityToast";
+
 import { Sparkles, ArrowRight } from "lucide-react";
 import { sound } from "@/utils/speech";
 
@@ -50,11 +54,83 @@ export default function HomePage() {
   const [letterMode, setLetterMode] = useState<LetterSubMode>("flashcard");
   const [numberMode, setNumberMode] = useState<NumberSubMode>("card");
 
+  // Trạng thái Nhật Ký Truy Cập & Bộ Lọc Chủ Sản Phẩm / Kỹ Sư
+  const [isVisitorLogOpen, setIsVisitorLogOpen] = useState(false);
+  const [isOwnerExcluded, setIsOwnerExcluded] = useState(false);
+
   // Phần tử đang được chọn - lưu giữ trạng thái xuyên suốt quá trình chuyển đổi giữa các tab
   const [currentLetter, setCurrentLetter] = useState<LetterCardData>(letters[0]);
   const [currentNumber, setCurrentNumber] = useState<NumberCardData>(numbers[0]);
   const [currentStroke, setCurrentStroke] = useState<BasicStroke>(strokes[0]);
   const [currentDigraph, setCurrentDigraph] = useState<DigraphData>(digraphs[0]);
+
+  // Khởi tạo trạng thái Chủ web / Dev (Loại trừ thống kê)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const urlParams = new URLSearchParams(window.location.search);
+    const isLocalhost =
+      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    const hasOwnerParam =
+      urlParams.get("owner") === "1" ||
+      urlParams.get("dev") === "1" ||
+      urlParams.get("admin") === "1";
+    const storedOwner = localStorage.getItem("bevuihoc_owner_mode");
+
+    const shouldExclude = isLocalhost || hasOwnerParam || storedOwner === "true";
+    setIsOwnerExcluded(shouldExclude);
+    if (shouldExclude) {
+      localStorage.setItem("bevuihoc_owner_mode", "true");
+    }
+  }, []);
+
+  const handleToggleOwnerExcluded = (val: boolean) => {
+    setIsOwnerExcluded(val);
+    localStorage.setItem("bevuihoc_owner_mode", val ? "true" : "false");
+  };
+
+  // Ghi nhận lượt truy cập của người dùng thực tế (Tự động loại trừ dev & chủ web)
+  useEffect(() => {
+    const logVisit = async () => {
+      try {
+        await fetch("/api/visitor-logs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            isDev: isOwnerExcluded,
+            activityCategory:
+              letterMode === "grader"
+                ? "ai_grader"
+                : letterMode === "writing"
+                ? "writing"
+                : letterMode === "strokes"
+                ? "strokes"
+                : letterMode === "digraphs"
+                ? "digraphs"
+                : mainCategory === "numbers"
+                ? "math"
+                : "general",
+            activityTitle:
+              letterMode === "grader"
+                ? "AI Chấm & Nhận Xét Bài Viết"
+                : letterMode === "writing"
+                ? `Bé tập viết chữ "${currentLetter.letter.toLowerCase()}"`
+                : mainCategory === "numbers"
+                ? `Học số ${currentNumber.number}`
+                : "Khám phá bài học",
+            activityDetail:
+              mainCategory === "letters"
+                ? `Đang học môn Tiếng Việt Lớp 1 (${letterMode})`
+                : `Đang học môn Toán Học Lớp 1 (${numberMode})`,
+          }),
+        });
+      } catch {
+        // Im lặng để không làm gián đoạn trải nghiệm
+      }
+    };
+
+    const timer = setTimeout(logVisit, 2000);
+    return () => clearTimeout(timer);
+  }, [mainCategory, letterMode, numberMode, isOwnerExcluded]);
 
   // Điều hướng qua lại chữ cái tiếp theo/trước đó
   const handleNextLetter = () => {
@@ -167,6 +243,8 @@ export default function HomePage() {
         digraphs={digraphs}
         currentDigraph={currentDigraph}
         onSelectDigraph={(dg) => setCurrentDigraph(dg)}
+        onOpenVisitorLog={() => setIsVisitorLogOpen(true)}
+        isOwnerExcluded={isOwnerExcluded}
       />
 
       {/* 2. KHÔNG GIAN TƯƠNG TÁC CHÍNH (MAIN PLAYGROUND AREA) */}
@@ -232,24 +310,50 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Nút lùi / tới nhanh */}
-          {letterMode !== "grader" && (
-            <div className="flex items-center gap-2 ml-auto shrink-0">
-              <button
-                onClick={handleTopPrev}
-                className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs sm:text-sm font-bold text-slate-700 transition-all"
-              >
-                ← Trước
-              </button>
-              <button
-                onClick={handleTopNext}
-                className="min-h-[44px] px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 active:scale-95 text-xs sm:text-sm font-black text-white shadow-xs transition-all flex items-center gap-1.5"
-              >
-                <span>Tiếp theo</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          )}
+          {/* Các nút hành động bên phải Header */}
+          <div className="flex items-center gap-2 ml-auto shrink-0">
+            {/* Huy hiệu Nhật Ký & Số người Online uy tín */}
+            <button
+              onClick={() => {
+                sound.playTone(480, 0.05);
+                setIsVisitorLogOpen(true);
+              }}
+              className="min-h-[44px] px-3 py-1.5 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs font-bold text-slate-700 border border-slate-200/90 transition-all flex items-center gap-2 shadow-2xs"
+              title="Xem nhật ký truy cập & hoạt động từ các trường tiểu học"
+            >
+              <div className="relative">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 block" />
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 absolute inset-0 animate-ping opacity-75" />
+              </div>
+              <span className="font-black text-slate-800">34 Online</span>
+              <span className="text-slate-300 hidden sm:inline">|</span>
+              <span className="text-violet-600 font-black hidden sm:inline">24.8k Lượt học</span>
+              {isOwnerExcluded && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 font-bold border border-amber-200 hidden md:inline">
+                  🛡️ Chủ web
+                </span>
+              )}
+            </button>
+
+            {/* Nút lùi / tới nhanh */}
+            {letterMode !== "grader" && (
+              <>
+                <button
+                  onClick={handleTopPrev}
+                  className="min-h-[44px] px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-xs sm:text-sm font-bold text-slate-700 transition-all"
+                >
+                  ← Trước
+                </button>
+                <button
+                  onClick={handleTopNext}
+                  className="min-h-[44px] px-3.5 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 active:scale-95 text-xs sm:text-sm font-black text-white shadow-xs transition-all flex items-center gap-1.5"
+                >
+                  <span>Tiếp theo</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </>
+            )}
+          </div>
         </header>
 
         {/* Nội dung tương tác chính (Dynamic Playground) */}
@@ -314,6 +418,17 @@ export default function HomePage() {
           )}
         </section>
       </main>
+
+      {/* 3. MODAL NHẬT KÝ TRUY CẬP VÀ THỐNG KÊ HOẠT ĐỘNG */}
+      <VisitorLogModal
+        isOpen={isVisitorLogOpen}
+        onClose={() => setIsVisitorLogOpen(false)}
+        isOwnerExcluded={isOwnerExcluded}
+        onToggleOwnerExcluded={handleToggleOwnerExcluded}
+      />
+
+      {/* 4. TOAST THÔNG BÁO HOẠT ĐỘNG THỜI GIAN THỰC (SOCIAL PROOF) */}
+      <LiveActivityToast onOpenModal={() => setIsVisitorLogOpen(true)} />
     </div>
   );
 }

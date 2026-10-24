@@ -49,6 +49,8 @@ interface SidebarNavProps {
   digraphs?: DigraphData[];
   currentDigraph?: DigraphData;
   onSelectDigraph?: (digraph: DigraphData) => void;
+  onOpenVisitorLog?: () => void;
+  isOwnerExcluded?: boolean;
 }
 
 export function SidebarNav({
@@ -70,6 +72,8 @@ export function SidebarNav({
   digraphs,
   currentDigraph,
   onSelectDigraph,
+  onOpenVisitorLog,
+  isOwnerExcluded = false,
 }: SidebarNavProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -131,6 +135,41 @@ export function SidebarNav({
           className="lg:hidden min-h-[44px] min-w-[44px] p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800"
         >
           <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Thẻ Uy Tín: Số người đang học & Nhật Ký Truy Cập */}
+      <div className="px-3 pt-3">
+        <button
+          onClick={() => {
+            sound.playTone(480, 0.05);
+            onOpenVisitorLog?.();
+          }}
+          className="w-full text-left p-2.5 rounded-2xl bg-slate-800/90 hover:bg-slate-750 active:scale-95 border border-slate-700/80 transition-all flex items-center justify-between group shadow-inner"
+          title="Bấm để xem nhật ký truy cập từ các trường tiểu học"
+        >
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="relative shrink-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 block" />
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 absolute inset-0 animate-ping opacity-75" />
+            </div>
+            <div className="min-w-0">
+              <div className="text-xs font-black text-white flex items-center gap-1.5">
+                <span>34 đang học online</span>
+                {isOwnerExcluded && (
+                  <span className="text-[10px] px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold">
+                    Chủ web
+                  </span>
+                )}
+              </div>
+              <div className="text-[11px] text-slate-400 font-semibold group-hover:text-violet-300 transition-colors truncate">
+                Nhật ký 63 tỉnh thành &gt;
+              </div>
+            </div>
+          </div>
+          <span className="text-xs font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded-lg border border-amber-400/20 shrink-0">
+            24.8k
+          </span>
         </button>
       </div>
 
@@ -370,12 +409,25 @@ export function SidebarNav({
           </div>
         </div>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => {
+              sound.playTone(480, 0.05);
+              onOpenVisitorLog?.();
+            }}
+            className="min-h-[40px] px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-xs font-bold text-emerald-400 border border-slate-700 flex items-center gap-1.5"
+            title="Xem nhật ký truy cập"
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="hidden sm:inline">Online:</span>
+            <span>34</span>
+          </button>
+
           <button
             onClick={() => onSelectMainCategory(mainCategory === "letters" ? "numbers" : "letters")}
-            className="min-h-[44px] px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-amber-400 border border-slate-700"
+            className="min-h-[40px] px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-amber-400 border border-slate-700 active:scale-95"
           >
-            Đổi sang {mainCategory === "letters" ? "🔢 Học Số" : "🅰️ Học Chữ"}
+            {mainCategory === "letters" ? "🔢 Học Số" : "🅰️ Học Chữ"}
           </button>
         </div>
       </header>
