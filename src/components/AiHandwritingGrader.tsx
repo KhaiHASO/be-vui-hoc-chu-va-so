@@ -453,24 +453,6 @@ export function AiHandwritingGrader() {
     setIsAdjusted(true);
   };
 
-  // Cập nhật loại lỗi cho ô
-  const handleUpdateBoxLoai = (id: string, loai: "loi" | "chu_y" | "chuan") => {
-    setBoxes((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, loai } : b))
-    );
-    setSelectedBB((prev) => (prev && prev.id === id ? { ...prev, loai } : prev));
-    setIsAdjusted(true);
-  };
-
-  // Cập nhật tên con chữ
-  const handleUpdateBoxChu = (id: string, chu: string) => {
-    setBoxes((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, chu } : b))
-    );
-    setSelectedBB((prev) => (prev && prev.id === id ? { ...prev, chu } : prev));
-    setIsAdjusted(true);
-  };
-
   // ── Render: Upload Zone ──────────────────────────────────────────────────────
 
   if (!imageDataUrl) {
@@ -879,155 +861,6 @@ export function AiHandwritingGrader() {
                 })}
             </div>
           </div>
-
-          {/* Selected Bounding Box Detail Card & Edit Controls */}
-          {selectedBB && (
-            <div className="border-t border-slate-200 p-4 bg-white">
-              <div className="flex items-start justify-between gap-3">
-                {/* Ảnh cắt cận cảnh Real-time của ô này */}
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-violet-200 bg-slate-50 overflow-hidden shrink-0 flex items-center justify-center shadow-xs">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={
-                      selectedBB.sample_crop_url ||
-                      (resultImgRef.current ? cropBoxImage(resultImgRef.current, selectedBB.box_2d) : "")
-                    }
-                    alt="Nét chữ cắt cận cảnh"
-                    className="w-full h-full object-contain p-1"
-                  />
-                  {isSpotLoading === selectedBB.id && (
-                    <div className="absolute inset-0 bg-violet-900/60 backdrop-blur-xs flex items-center justify-center">
-                      <Loader2 className="w-5 h-5 text-white animate-spin" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  {/* Status switches & Letter name */}
-                  <div className="flex items-center gap-2 mb-2 flex-wrap">
-                    <span className="text-xs font-bold text-slate-500">Đánh giá nét:</span>
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateBoxLoai(selectedBB.id, "loi")}
-                      className={`min-h-[30px] px-2 py-0.5 rounded-lg text-xs font-bold border transition-all ${
-                        selectedBB.loai === "loi"
-                          ? "bg-red-600 text-white border-red-600 shadow-xs"
-                          : "bg-red-50 text-red-700 border-red-200 hover:bg-red-100"
-                      }`}
-                    >
-                      ❌ Lỗi
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateBoxLoai(selectedBB.id, "chu_y")}
-                      className={`min-h-[30px] px-2 py-0.5 rounded-lg text-xs font-bold border transition-all ${
-                        selectedBB.loai === "chu_y"
-                          ? "bg-amber-600 text-white border-amber-600 shadow-xs"
-                          : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
-                      }`}
-                    >
-                      ⚠️ Cần chú ý
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateBoxLoai(selectedBB.id, "chuan")}
-                      className={`min-h-[30px] px-2 py-0.5 rounded-lg text-xs font-bold border transition-all ${
-                        selectedBB.loai === "chuan"
-                          ? "bg-emerald-600 text-white border-emerald-600 shadow-xs"
-                          : "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                      }`}
-                    >
-                      ✅ Chuẩn đẹp
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => triggerSpotInspection(selectedBB)}
-                      disabled={isSpotLoading === selectedBB.id}
-                      className="min-h-[30px] px-2.5 py-0.5 rounded-lg text-xs font-bold bg-violet-100 hover:bg-violet-200 text-violet-800 border border-violet-300 flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
-                      title="Yêu cầu AI phân tích tức thì ô cắt này"
-                    >
-                      {isSpotLoading === selectedBB.id ? (
-                        <>
-                          <Loader2 className="w-3 h-3 animate-spin" /> Đang soi...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-3 h-3 text-violet-600" /> Soi lại ô này
-                        </>
-                      )}
-                    </button>
-
-                    <div className="flex items-center gap-1 ml-auto">
-                      <span className="text-xs text-slate-400">Chữ:</span>
-                      <input
-                        type="text"
-                        value={selectedBB.chu}
-                        onChange={(e) => handleUpdateBoxChu(selectedBB.id, e.target.value)}
-                        className="w-14 px-1.5 py-0.5 text-xs font-black border border-slate-300 rounded-lg text-center focus:border-violet-500 focus:outline-hidden"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="font-black text-slate-800 text-sm mb-0.5">
-                    {selectedBB.tieu_de}
-                  </div>
-                  <p className="text-xs text-slate-600 mb-1 leading-relaxed">
-                    {selectedBB.nhan_xet}
-                  </p>
-                  {selectedBB.huong_dan_sua && (
-                    <p className="text-xs text-emerald-800 font-bold bg-emerald-50 border border-emerald-200 rounded-xl px-2.5 py-1 mt-1 inline-block">
-                      💡 {selectedBB.huong_dan_sua}
-                    </p>
-                  )}
-                  <p className="text-[11px] text-slate-400 mt-1 italic">
-                    ⚡ Kéo di chuyển ô khoanh ➔ nhả tay ra là AI tự động soi & nhận dạng lại ngay tại chỗ!
-                  </p>
-                </div>
-
-                <div className="flex flex-col gap-1.5 items-end shrink-0">
-                  <button
-                    onClick={() => handleDeleteBox(selectedBB.id)}
-                    className="min-h-[36px] px-2.5 py-1 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold flex items-center gap-1 border border-rose-200 active:scale-95 transition-all cursor-pointer"
-                    title="Xóa ô khoanh này"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                    Xóa ô
-                  </button>
-                  <button
-                    onClick={() => setSelectedBB(null)}
-                    className="min-h-[32px] min-w-[32px] rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center cursor-pointer transition-colors"
-                    title="Đóng chi tiết"
-                  >
-                    <X className="w-3.5 h-3.5 text-slate-500" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Legend */}
-          {hasAnnotations && (
-            <div className="px-4 py-2.5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between flex-wrap gap-2 text-xs text-slate-500">
-              <div className="flex items-center gap-3 flex-wrap">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm border-2 border-red-500 bg-red-100" />
-                  Lỗi cần sửa
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm border-2 border-amber-500 bg-amber-100" />
-                  Cần chú ý
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-3 rounded-sm border-2 border-emerald-500 bg-emerald-100" />
-                  Chuẩn đẹp
-                </span>
-              </div>
-              <span className="text-slate-500 font-bold text-[11px]">
-                ✋ Kéo thả ô khoanh tùy ý • Bấm &quot;Chấm lại&quot; để AI thẩm định
-              </span>
-            </div>
-          )}
         </div>
 
         {/* ── RIGHT: Pedagogical Feedback & Error List ── */}
@@ -1128,13 +961,26 @@ export function AiHandwritingGrader() {
                             {bb.tieu_de}
                           </span>
                         </div>
-                        <button
-                          type="button"
-                          className="min-h-[32px] px-2.5 py-1 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-[11px] flex items-center gap-1 shrink-0 active:scale-95 transition-all cursor-pointer"
-                        >
-                          <ZoomIn className="w-3 h-3" />
-                          Soi lỗi
-                        </button>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            type="button"
+                            className="min-h-[32px] px-2.5 py-1 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-[11px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer"
+                          >
+                            <ZoomIn className="w-3 h-3" />
+                            Soi lỗi
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteBox(bb.id);
+                            }}
+                            className="min-h-[32px] min-w-[32px] rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 flex items-center justify-center transition-colors active:scale-95 cursor-pointer"
+                            title="Xóa ô này"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                       <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
                         {bb.nhan_xet}
@@ -1158,87 +1004,6 @@ export function AiHandwritingGrader() {
                   );
                 })}
               </div>
-            </div>
-          )}
-
-          {/* Nhận xét chung */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4 sm:p-5">
-            <h3 className="text-sm font-black text-slate-700 mb-2 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-violet-600" />
-              Nhận xét của AI
-            </h3>
-            <p className="text-sm text-slate-700 leading-relaxed">
-              {result.nhan_xet_chung}
-            </p>
-          </div>
-
-          {/* Điểm tốt */}
-          {result.diem_tot?.length > 0 && (
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4">
-              <h4 className="text-xs font-black text-emerald-700 uppercase flex items-center gap-1.5 mb-2.5">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                Điểm đã làm tốt
-              </h4>
-              <ul className="space-y-2">
-                {result.diem_tot.map((d, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                    <span className="shrink-0 w-4 h-4 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
-                      <span className="text-emerald-600 text-[10px] font-black">✓</span>
-                    </span>
-                    <span className="leading-snug">{d}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Lỗi cần cải thiện (nếu có thêm ngoài bounding box) */}
-          {result.loi_can_cai_thien?.length > 0 && !hasAnnotations && (
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4">
-              <h4 className="text-xs font-black text-rose-700 uppercase flex items-center gap-1.5 mb-2.5">
-                <AlertTriangle className="w-3.5 h-3.5" />
-                Cần cải thiện
-              </h4>
-              <ul className="space-y-2">
-                {result.loi_can_cai_thien.map((l, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                    <span className="shrink-0 w-4 h-4 rounded-full bg-rose-100 flex items-center justify-center mt-0.5">
-                      <span className="text-rose-600 text-[10px] font-black">!</span>
-                    </span>
-                    <span className="leading-snug">{l}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Gợi ý luyện tập */}
-          {result.goi_y_luyen_tap?.length > 0 && (
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm p-4">
-              <h4 className="text-xs font-black text-blue-700 uppercase flex items-center gap-1.5 mb-2.5">
-                <BookOpen className="w-3.5 h-3.5" />
-                Gợi ý luyện tập
-              </h4>
-              <ul className="space-y-2">
-                {result.goi_y_luyen_tap.map((g, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-700">
-                    <ChevronRight className="w-3.5 h-3.5 shrink-0 mt-0.5 text-blue-500" />
-                    <span className="leading-snug">{g}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Nhắn gửi phụ huynh */}
-          {result.nhan_xet_phu_huynh && (
-            <div className="bg-amber-50 rounded-3xl border border-amber-200 p-4">
-              <h4 className="text-xs font-black text-amber-800 uppercase mb-2">
-                💌 Nhắn gửi phụ huynh
-              </h4>
-              <p className="text-sm text-amber-900 leading-relaxed">
-                {result.nhan_xet_phu_huynh}
-              </p>
             </div>
           )}
         </div>
