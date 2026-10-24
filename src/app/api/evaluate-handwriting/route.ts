@@ -183,7 +183,7 @@ function isInsideOrOverlapping(
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { image, fileName, apiKey, annotations, mode, cropImage, boxId } = body;
+    const { image, fileName, apiKey, annotations, mode, cropImage, boxId, fullImage } = body;
 
     // ── Chế độ Soi Nét Real-Time (Spot Inspection): Phân tích tức thì 1 ô cắt lẻ (~1s) ──
     if (mode === "spot_inspect") {
@@ -193,7 +193,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Thiếu ảnh cắt vùng nét." }, { status: 400 });
       }
 
-      // 1. Chạy AI Vision OCR thực tế qua Python + Curriculum Matrix + OCR Index
+      // 1. Chạy AI Vision OCR thực tế qua Python + Perceptual Hash + Live Vision
       try {
         const scriptPath = path.join(process.cwd(), "scripts/spot_ocr.py");
         if (fs.existsSync(scriptPath)) {
@@ -202,24 +202,27 @@ export async function POST(req: NextRequest) {
             spotTargetImage,
             JSON.stringify(box_2d || null),
             fileName || "",
+            fullImage || image || "",
           ];
           const { stdout } = await execFileAsync("python3", args, { timeout: 4000 });
           const ocrResult = JSON.parse(stdout.trim());
           if (ocrResult && ocrResult.chu) {
+            const isUnrec = ocrResult.is_unrecognized || ocrResult.chu === "Chưa rõ nét";
             return NextResponse.json({
               boxId,
-              chu: targetChar || ocrResult.chu,
-              confidence: ocrResult.confidence || 96,
-              loai: ocrResult.loai || "chuan",
+              chu: isUnrec ? "Chưa rõ nét" : (targetChar || ocrResult.chu),
+              confidence: isUnrec ? 0 : (ocrResult.confidence || 96),
+              loai: ocrResult.loai || "chu_y",
               tieu_de: ocrResult.tieu_de || `Chữ '${ocrResult.chu}'`,
               nhan_xet: ocrResult.nhan_xet,
               huong_dan_sua: ocrResult.huong_dan_sua,
-              is_ai_recognized: true,
+              is_ai_recognized: !isUnrec,
+              is_unrecognized: isUnrec,
             });
           }
         }
       } catch (ocrErr) {
-        console.warn("Local spot OCR error, trying API fallback:", ocrErr);
+        console.warn("Local spot OCR error:", ocrErr);
       }
 
       // 2. Nếu có OpenAI Key (Vision), gọi OpenAI gpt-4o-mini

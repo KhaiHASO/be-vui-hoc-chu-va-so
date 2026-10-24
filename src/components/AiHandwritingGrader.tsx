@@ -113,11 +113,16 @@ function getStatusTheme(loai: HandwritingBoundingBox["loai"]) {
 // ─── Chữ Mẫu Chân Lý Từ Cuốn Cô Giáo Viết (DuLieuCoGiaoViet) ─────────────────
 
 function getTeacherMasterUrl(chu: string): string {
-  if (!chu) return "/data/teacher_masters/master_a.png";
+  if (!chu || chu === "..." || chu.includes("chưa rõ") || chu.includes("chua ro")) return "";
   const norm = chu.toLowerCase().trim();
 
   // Mapping các từ ghép / cụm từ bài học trong sách Cô giáo
   const wordMap: Record<string, string> = {
+    "kì cọ": "/data/teacher_masters/master_k.png",
+    "ki co": "/data/teacher_masters/master_k.png",
+    "kê đá": "/data/teacher_masters/master_k.png",
+    "hồ cá": "/data/teacher_masters/master_h.png",
+    "lá hẹ": "/data/teacher_masters/master_l.png",
     "ca múa": "/data/teacher_masters/master_ca_mua.png",
     "ca mua": "/data/teacher_masters/master_ca_mua.png",
     "mùa thu": "/data/teacher_masters/master_mua_thu.png",
@@ -141,6 +146,8 @@ function getTeacherMasterUrl(chu: string): string {
     "ưa": "/data/teacher_masters/master_ua.png",
     "v": "/data/teacher_masters/master_v.png",
     "xe ngựa": "/data/teacher_masters/master_tho_be.png",
+    "xe": "/data/teacher_masters/master_x.png",
+    "khế": "/data/teacher_masters/master_k.png",
   };
 
   if (wordMap[norm]) {
@@ -449,6 +456,7 @@ export function AiHandwritingGrader() {
             boxId: targetBox.id,
             box_2d: targetBox.box_2d,
             fileName: docName,
+            fullImage: imageDataUrl,
             targetChar: overrideChar || undefined,
           }),
         });
@@ -461,11 +469,12 @@ export function AiHandwritingGrader() {
                 ? {
                     ...b,
                     chu: spotData.chu || overrideChar || b.chu,
-                    confidence: spotData.confidence || b.confidence,
+                    confidence: spotData.confidence !== undefined ? spotData.confidence : b.confidence,
                     loai: spotData.loai || b.loai,
                     tieu_de: spotData.tieu_de || b.tieu_de,
                     nhan_xet: spotData.nhan_xet || b.nhan_xet,
                     huong_dan_sua: spotData.huong_dan_sua || b.huong_dan_sua,
+                    is_unrecognized: spotData.is_unrecognized,
                     do_cao_o_ly: spotData.do_cao_o_ly || "2.0 ly (Chuẩn)",
                     do_rong_o_ly: spotData.do_rong_o_ly || "1.5 ly (Chuẩn)",
                     diem_dung_but: spotData.diem_dung_but || "Dòng kẻ ngang 2",
@@ -481,7 +490,7 @@ export function AiHandwritingGrader() {
         setIsSpotLoading(false);
       }
     },
-    [docName]
+    [docName, imageDataUrl]
   );
 
   // ── Create & Inspect New Box ──
@@ -1104,7 +1113,7 @@ export function AiHandwritingGrader() {
                   )}
 
                   {/* Red Ground-Truth Standard Guide Overlay */}
-                  {showRedTruthOverlay && (
+                  {showRedTruthOverlay && currentBox.chu !== "Chưa rõ nét" && currentBox.chu !== "..." && !currentBox.is_unrecognized && (
                     <div
                       className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center p-2.5 transition-opacity duration-150"
                       style={{ opacity: redOpacity }}
@@ -1181,14 +1190,23 @@ export function AiHandwritingGrader() {
                     <div className="min-w-0">
                       <div className="text-[10px] font-bold text-violet-600 uppercase tracking-wider flex items-center gap-1.5">
                         <span>AI Vision OCR đọc nét:</span>
-                        {currentBox.confidence && (
+                        {currentBox.confidence !== undefined && currentBox.confidence > 0 && (
                           <span className="bg-emerald-100 text-emerald-800 text-[9px] font-black px-1.5 py-0.2 rounded-full border border-emerald-200">
                             {currentBox.confidence}% tin cậy
                           </span>
                         )}
+                        {currentBox.confidence === 0 && (
+                          <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-1.5 py-0.2 rounded-full border border-amber-200">
+                            Cần căn chỉnh lại ô
+                          </span>
+                        )}
                       </div>
                       <div className="text-sm sm:text-base font-black text-slate-900 truncate">
-                        Con chữ &quot;{currentBox.chu}&quot;
+                        {currentBox.chu === "Chưa rõ nét" ? (
+                          <span className="text-amber-700">Chưa nhận diện rõ nét</span>
+                        ) : (
+                          <>Con chữ &quot;{currentBox.chu}&quot;</>
+                        )}
                       </div>
                     </div>
                   </div>

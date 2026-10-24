@@ -84,6 +84,7 @@ export interface HandwritingBoundingBox {
   loai: "loi" | "chuan" | "chu_y"; // 'loi' = đỏ, 'chuan' = xanh lá, 'chu_y' = vàng cam
   chu: string;
   confidence?: number;
+  is_unrecognized?: boolean;
   tieu_de: string;
   nhan_xet: string;
   huong_dan_sua?: string;
