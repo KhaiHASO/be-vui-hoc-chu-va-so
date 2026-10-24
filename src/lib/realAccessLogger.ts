@@ -164,85 +164,22 @@ export function formatVietnamTime(ms: number): string {
   return `${time} ${d}`;
 }
 
-// Nhập dữ liệu thật từ Nginx Access Log nếu inMemoryLogs trống (chạy trên VPS)
-function tryImportFromNginx() {
-  if (inMemoryLogs.length > 0 || !fs.existsSync(NGINX_LOG_PATH)) return;
-
-  try {
-    const raw = fs.readFileSync(NGINX_LOG_PATH, "utf8");
-    const lines = raw.trim().split("\n");
-    const parsedLogs: RealAccessLog[] = [];
-
-    // Lấy 80 dòng truy cập thực tế gần nhất
-    const pattern = /^(\S+) \S+ \S+ \[(.*?)\] "(.*?)" (\d+) (\d+) "(.*?)" "(.*?)"/;
-
-    for (let i = lines.length - 1; i >= 0 && parsedLogs.length < 80; i--) {
-      const line = lines[i];
-      const match = pattern.exec(line);
-      if (!match) continue;
-
-      const [, ip, dateStr, reqStr, status, , , ua] = match;
-      if (status !== "200" && status !== "206" && status !== "304") continue;
-
-      // Lọc bỏ scanner rác
-      if (reqStr.includes(".php") || reqStr.includes(".env") || reqStr.includes("device.rsp")) continue;
-
-      // Chỉ lấy request trang web hoặc API chính
-      const isPage = reqStr.startsWith("GET / ") || reqStr.startsWith("GET /api/") || reqStr.startsWith("POST /api/");
-      if (!isPage) continue;
-
-      const isDev = DEV_IPS.has(ip);
-      const { device, os, browser } = parseUserAgent(ua);
-
-      // Phân tích hành động từ request
-      let actionName = "Truy cập ứng dụng";
-      let actionType: RealAccessLog["actionType"] = "page_view";
-
-      if (reqStr.includes("/api/evaluate-handwriting")) {
-        actionName = "AI Chấm & Soi Nét Bài Viết";
-        actionType = "ai_grader";
-      } else if (reqStr.includes("/api/visitor-logs")) {
-        actionName = "Xem Nhật Ký Truy Cập";
-        actionType = "page_view";
-      }
-
-      const timestamp = new Date().getTime() - parsedLogs.length * 90000; // Phân bổ mốc thời gian
-
-      parsedLogs.push({
-        id: `nginx-${parsedLogs.length}-${ip}`,
-        timestamp,
-        timeStr: formatVietnamTime(timestamp),
-        ip,
-        maskedIp: maskIp(ip),
-        city: ip.startsWith("115.76.") ? "Biên Hòa" : "TP. Hồ Chí Minh",
-        region: ip.startsWith("115.76.") ? "Đồng Nai" : "Hồ Chí Minh",
-        country: "Việt Nam",
-        isp: ip.startsWith("115.76.") ? "Viettel Group" : "VNPT",
-        device,
-        browser,
-        os,
-        actionType,
-        actionName,
-        path: reqStr.split(" ")[1] || "/",
-        isDev,
-        statusCode: parseInt(status, 10),
-      });
-    }
-
-    if (parsedLogs.length > 0) {
-      inMemoryLogs = parsedLogs;
-      saveLogsToFile();
-      console.log(`✓ Đã import thành công ${parsedLogs.length} lượt truy cập thực tế từ Nginx access log.`);
-    }
-  } catch (err) {
-    console.warn("Could not import from Nginx log:", err);
-  }
-}
-
 // Khởi tạo
 loadGeoCache();
 inMemoryLogs = loadLogsFromFile();
-tryImportFromNginx();
+
+// Xóa sạch toàn bộ lịch sử truy cập
+export function clearAllLogs() {
+  inMemoryLogs = [];
+  activeSessions.clear();
+  try {
+    if (fs.existsSync(LOGS_FILE)) {
+      fs.writeFileSync(LOGS_FILE, JSON.stringify([], null, 2), "utf8");
+    }
+  } catch (err) {
+    console.warn("Could not clear logs file:", err);
+  }
+}
 
 // ─────────────────────────────────────────────────────────────
 // CÁC HÀM XỬ LÝ CHÍNH ĐƯỢC GỌI TỪ ROUTE
@@ -307,8 +244,7 @@ export function getRealStats(clientIp?: string) {
   for (const ip of activeSessions.keys()) {
     if (!DEV_IPS.has(ip)) activeCount++;
   }
-  // Tối thiểu hiển thị số người online thực tế (ít nhất 1 người đang xem trang)
-  const activeNow = Math.max(1, activeCount);
+  const activeNow = activeCount;
 
   // Thống kê theo ngày hôm nay (0h00)
   const startOfDay = new Date();
@@ -345,8 +281,8 @@ export function getRealStats(clientIp?: string) {
   const isClientDev = clientIp ? DEV_IPS.has(clientIp) : false;
 
   const stats: RealAccessStats = {
-    totalVisits: Math.max(1, totalVisits),
-    todayVisits: Math.max(1, todayVisits),
+    totalVisits,
+    todayVisits,
     activeNow,
     uniqueIpsCount: uniqueIps.size,
     uniqueProvincesCount: uniqueProvinces.size,

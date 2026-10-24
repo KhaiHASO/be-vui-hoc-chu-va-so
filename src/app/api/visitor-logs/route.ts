@@ -5,6 +5,7 @@ import {
   getAllLogs,
   lookupGeoIp,
   maskIp,
+  clearAllLogs,
 } from "@/lib/realAccessLogger";
 
 export async function GET(req: NextRequest) {
@@ -73,6 +74,19 @@ export async function POST(req: NextRequest) {
     });
   } catch (err: any) {
     console.error("Lỗi khi ghi nhận nhật ký truy cập thực tế:", err);
+    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    clearAllLogs();
+    return NextResponse.json({
+      success: true,
+      message: "Đã xóa toàn bộ lịch sử truy cập thành công.",
+    });
+  } catch (err: any) {
+    console.error("Lỗi khi xóa lịch sử truy cập:", err);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }

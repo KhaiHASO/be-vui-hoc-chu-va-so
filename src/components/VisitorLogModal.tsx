@@ -16,6 +16,7 @@ import {
   MapPin,
   Clock,
   Radio,
+  Trash2,
 } from "lucide-react";
 import { AccessLogApiResponse, RealAccessLog } from "@/types/visitor";
 
@@ -51,6 +52,21 @@ export function VisitorLogModal({
       }
     } catch (err) {
       console.error("Lỗi khi tải nhật ký truy cập thực tế:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa sạch toàn bộ lịch sử truy cập về 0 không?")) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/visitor-logs", { method: "DELETE" });
+      if (res.ok) {
+        await fetchRealLogs(showMyDevClicks);
+      }
+    } catch (err) {
+      console.error("Lỗi khi xóa lịch sử truy cập:", err);
     } finally {
       setIsLoading(false);
     }
@@ -362,6 +378,16 @@ export function VisitorLogModal({
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleClearAll}
+              disabled={isLoading}
+              className="min-h-[44px] px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 active:scale-95 text-rose-700 border border-rose-200 text-xs font-bold transition-all flex items-center gap-1.5"
+              title="Xóa toàn bộ lịch sử truy cập về 0"
+            >
+              <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+              <span className="hidden sm:inline">Xóa full lịch sử</span>
+              <span className="sm:hidden">Xóa hết</span>
+            </button>
             <button
               onClick={() => fetchRealLogs(showMyDevClicks)}
               disabled={isLoading}
