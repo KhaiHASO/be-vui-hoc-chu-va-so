@@ -1,9 +1,11 @@
-// Quản lý âm thanh: Bản thu âm gốc của cô giáo và hiệu ứng âm thanh nốt nhạc tương tác
+// Quản lý âm thanh: Bản thu âm gốc của cô giáo, giọng đọc tiếng Việt tự nhiên và hiệu ứng nốt nhạc
 
 class SoundService {
   private audioCtx: AudioContext | null = null;
   private teacherAudio: HTMLAudioElement | null = null;
+  private speechAudio: HTMLAudioElement | null = null;
   private onPlaybackStateChange: ((isPlaying: boolean) => void) | null = null;
+  private onSpeechStateChange: ((isPlaying: boolean) => void) | null = null;
 
   private getAudioContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
@@ -60,6 +62,114 @@ class SoundService {
     if (this.onPlaybackStateChange) {
       this.onPlaybackStateChange(false);
     }
+  }
+
+  // Phát âm giọng đọc tiếng Việt tự nhiên bản ngữ (thay thế giọng robot)
+  speak(text: string, onStateChange?: (isPlaying: boolean) => void) {
+    if (typeof window === "undefined") return;
+
+    const trimmed = text.trim();
+    if (!trimmed) return;
+
+    this.stopSpeech();
+    this.onSpeechStateChange = onStateChange || null;
+
+    // 1. Ưu tiên phát bằng Natural TTS API (chuẩn giọng người Việt tự nhiên, có ngữ điệu)
+    try {
+      const audioUrl = `/api/tts?text=${encodeURIComponent(trimmed)}`;
+      this.speechAudio = new Audio(audioUrl);
+
+      this.speechAudio.onplay = () => {
+        if (this.onSpeechStateChange) this.onSpeechStateChange(true);
+      };
+
+      this.speechAudio.onended = () => {
+        if (this.onSpeechStateChange) this.onSpeechStateChange(false);
+        this.speechAudio = null;
+      };
+
+      this.speechAudio.onerror = () => {
+        // Fallback sang Web Speech API nếu lỗi mạng
+        this.fallbackWebSpeech(trimmed);
+      };
+
+      this.speechAudio.play().catch(() => {
+        this.fallbackWebSpeech(trimmed);
+      });
+    } catch {
+      this.fallbackWebSpeech(trimmed);
+    }
+  }
+
+  // Dự phòng khi offline: Web Speech API có lọc giọng tiếng Việt tự nhiên nhất
+  private fallbackWebSpeech(text: string) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      if (this.onSpeechStateChange) this.onSpeechStateChange(false);
+      return;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "vi-VN";
+      utterance.rate = 0.9;
+      utterance.pitch = 1.0;
+
+      // Ưu tiên chọn giọng tự nhiên nếu có sẵn trên máy
+      const voices = window.speechSynthesis.getVoices();
+      const naturalViVoice = voices.find(
+        (v) =>
+          v.lang.startsWith("vi") &&
+          (v.name.includes("Google") ||
+            v.name.includes("Linh") ||
+            v.name.includes("Nam") ||
+            v.name.includes("Natural") ||
+            v.name.includes("Premium"))
+      ) || voices.find((v) => v.lang.startsWith("vi"));
+
+      if (naturalViVoice) {
+        utterance.voice = naturalViVoice;
+      }
+
+      utterance.onstart = () => {
+        if (this.onSpeechStateChange) this.onSpeechStateChange(true);
+      };
+      utterance.onend = () => {
+        if (this.onSpeechStateChange) this.onSpeechStateChange(false);
+      };
+      utterance.onerror = () => {
+        if (this.onSpeechStateChange) this.onSpeechStateChange(false);
+      };
+
+      window.speechSynthesis.speak(utterance);
+    } catch {
+      if (this.onSpeechStateChange) this.onSpeechStateChange(false);
+    }
+  }
+
+  // Dừng toàn bộ giọng đọc
+  stopSpeech() {
+    if (this.speechAudio) {
+      this.speechAudio.pause();
+      this.speechAudio.currentTime = 0;
+      this.speechAudio = null;
+    }
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+    if (this.onSpeechStateChange) {
+      this.onSpeechStateChange(false);
+    }
+  }
+
+  // Kiểm tra xem có đang đọc giọng nói không
+  isSpeaking(): boolean {
+    return !!(
+      (this.speechAudio && !this.speechAudio.paused) ||
+      (typeof window !== "undefined" &&
+        "speechSynthesis" in window &&
+        window.speechSynthesis.speaking)
+    );
   }
 
   // Kiểm tra xem cô giáo có đang đọc hay không

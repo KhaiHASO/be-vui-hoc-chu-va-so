@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { sound } from "@/utils/speech";
+import { getTeacherMasterUrl } from "@/data/workbookMasters";
 
 // Tỉ lệ kích thước thật của ảnh khung ô ly cắt trực tiếp từ tài liệu BỘ THẺ.pdf
 export const LETTER_WRITING_ASPECTS: Record<string, number> = {
@@ -98,6 +99,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
   const [lineWidth, setLineWidth] = useState<number>(8);
   const [hasDrawn, setHasDrawn] = useState<boolean>(false);
   const [showGuide, setShowGuide] = useState<boolean>(true); // true = Mẫu sách giáo khoa; false = Tự viết trên ô ly
+  const [guideType, setGuideType] = useState<"book" | "red">("book"); // book = Mẫu sách giáo khoa; red = Mẫu vecto đỏ chuẩn ô ly
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
 
   // Undo history & touch tracking (dùng ref để ZERO re-render lúc vẽ)
@@ -141,9 +143,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
       }
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      sound.stopSpeech();
     };
   }, []);
 
@@ -212,10 +212,14 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
 
     if (width <= 0 || height <= 0) return;
 
-    bgCanvas.width = width;
-    bgCanvas.height = height;
-    drawCanvas.width = width;
-    drawCanvas.height = height;
+    if (bgCanvas.width !== width || bgCanvas.height !== height) {
+      bgCanvas.width = width;
+      bgCanvas.height = height;
+    }
+    if (drawCanvas.width !== width || drawCanvas.height !== height) {
+      drawCanvas.width = width;
+      drawCanvas.height = height;
+    }
 
     const bgCtx = bgCanvas.getContext("2d");
     if (!bgCtx) return;
@@ -410,15 +414,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
       origin: { y: 0.6 },
     });
     sound.playSuccessSound();
-
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      const msg = new SpeechSynthesisUtterance(
-        `Hoan hô bé! Bé viết chữ ${lowerChar} rất đẹp và chuẩn ô ly!`
-      );
-      msg.lang = "vi-VN";
-      msg.rate = 0.9;
-      window.speechSynthesis.speak(msg);
-    }
+    sound.speak(`Hoan hô bé! Bé viết chữ ${lowerChar} rất đẹp và chuẩn ô ly!`);
   };
 
   // Nghe phát âm & cô hướng dẫn
@@ -439,15 +435,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
   };
 
   const speakFallback = () => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(
-        `Chữ ${lowerChar} viết thường. ${currentLetter.name}.`
-      );
-      utterance.lang = "vi-VN";
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-    }
+    sound.speak(`Chữ ${lowerChar} viết thường. ${currentLetter.name}.`);
   };
 
   const colors = [
@@ -618,7 +606,7 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
 
             {/* Bật/tắt mẫu sách, Hoàn tác & Viết lại */}
             <div className="flex items-center gap-2">
-              {/* Nút chuyển đổi: Mẫu sách (tô đè) / Tự viết (trên ô ly trắng) */}
+              {/* Nút chuyển đổi: Mẫu hướng dẫn / Tự viết */}
               <button
                 onClick={() => {
                   sound.playTone(400, 0.05);
@@ -629,11 +617,35 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
                     ? "bg-violet-50 hover:bg-violet-100 text-violet-700 border-violet-200"
                     : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300"
                 }`}
-                title={showGuide ? "Đang hiện mẫu sách. Bấm để chuyển sang ô ly tự viết." : "Đang ở ô ly tự viết. Bấm để hiện lại mẫu sách."}
+                title={showGuide ? "Đang hiện mẫu. Bấm để chuyển sang ô ly tự viết." : "Đang ở ô ly tự viết. Bấm để hiện lại mẫu."}
               >
                 {showGuide ? <Eye className="w-4 h-4 text-violet-600" /> : <EyeOff className="w-4 h-4 text-slate-500" />}
-                <span>{showGuide ? "Mẫu Sách" : "Tự Viết"}</span>
+                <span>{showGuide ? "Mẫu Chữ" : "Tự Viết"}</span>
               </button>
+
+              {/* Nút đổi kiểu mẫu: Mẫu Sách SGK / Mẫu Vecto Đỏ */}
+              {showGuide && (
+                <button
+                  onClick={() => {
+                    sound.playTone(450, 0.05);
+                    setGuideType(guideType === "book" ? "red" : "book");
+                  }}
+                  className={`min-h-[44px] px-3 py-2 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all border active:scale-95 cursor-pointer shadow-xs ${
+                    guideType === "red"
+                      ? "bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-300 ring-2 ring-rose-200"
+                      : "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200"
+                  }`}
+                  title={
+                    guideType === "red"
+                      ? "Đang hiện Mẫu Vecto Đỏ Chuẩn. Bấm để chuyển sang Mẫu Sách SGK."
+                      : "Đang hiện Mẫu Sách SGK. Bấm để chuyển sang Mẫu Vecto Đỏ Chuẩn."
+                  }
+                >
+                  <span className="text-base">{guideType === "red" ? "🔴" : "📘"}</span>
+                  <span className="hidden sm:inline">{guideType === "red" ? "Mẫu Vecto Đỏ" : "Mẫu Sách SGK"}</span>
+                  <span className="sm:hidden">{guideType === "red" ? "Vecto Đỏ" : "Sách"}</span>
+                </button>
+              )}
 
               {/* Nút Hoàn tác (Undo) */}
               <button
@@ -683,18 +695,29 @@ export function LetterWritingCanvas({ currentLetter }: LetterWritingCanvasProps)
                 className="absolute inset-0 w-full h-full pointer-events-none"
               />
 
-              {/* Lớp 2: Hiển thị 100% mẫu chữ thường theo sách giáo khoa (tài liệu BỘ THẺ) */}
+              {/* Lớp 2: Hiển thị mẫu chữ (Mẫu sách SGK hoặc Mẫu Vecto đỏ chuẩn) */}
               {showGuide && (
                 <div className="absolute inset-0 pointer-events-none select-none">
-                  <Image
-                    src={writingGuideImg}
-                    alt={`Mẫu chữ thường ${lowerChar} theo sách giáo khoa`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 460px"
-                    className="object-cover select-none pointer-events-none"
-                    priority
-                    unoptimized
-                  />
+                  {guideType === "red" && getTeacherMasterUrl(currentLetter.letter) ? (
+                    <div className="w-full h-full flex items-center justify-center p-8 transition-opacity duration-200">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={getTeacherMasterUrl(currentLetter.letter)}
+                        alt={`Mẫu chữ đỏ chuẩn: ${lowerChar}`}
+                        className="w-full h-full object-contain filter drop-shadow-xs opacity-65"
+                      />
+                    </div>
+                  ) : (
+                    <Image
+                      src={writingGuideImg}
+                      alt={`Mẫu chữ thường ${lowerChar} theo sách giáo khoa`}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 460px"
+                      className="object-cover select-none pointer-events-none"
+                      priority
+                      unoptimized
+                    />
+                  )}
                 </div>
               )}
 

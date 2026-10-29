@@ -15,7 +15,6 @@ import {
   Sparkles,
   PenTool,
   Volume2,
-  Gamepad2,
   Calculator,
   Smile,
   Hash,
@@ -104,7 +103,6 @@ export function SidebarNav({
     { mode: "digraphs" as LetterSubMode, label: "14 Vần Ghép & Âm Đôi", icon: Sparkles },
     { mode: "writing" as LetterSubMode, label: "Bé Tập Viết Ô Ly", icon: PenTool },
     { mode: "grader" as LetterSubMode, label: "AI Chấm Bài Viết ⭐", icon: Award },
-    { mode: "quiz" as LetterSubMode, label: "Đố Vui Bắt Chữ", icon: Gamepad2 },
   ];
 
   const numberSubItems = [
@@ -130,6 +128,12 @@ export function SidebarNav({
             <p className="text-xs text-amber-400 font-bold tracking-wide uppercase">
               Chữ Và Số Lớp 1
             </p>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="text-[10px] font-mono font-bold text-violet-200 bg-violet-950/90 border border-violet-800/80 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                bevuihocchuvaso.site
+              </span>
+            </div>
           </div>
         </div>
 

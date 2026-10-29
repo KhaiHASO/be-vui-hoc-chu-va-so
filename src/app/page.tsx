@@ -22,7 +22,6 @@ import { LetterFlashcardView } from "@/components/LetterFlashcardView";
 import { StrokesPracticeView } from "@/components/StrokesPracticeView";
 import { DigraphsPracticeView } from "@/components/DigraphsPracticeView";
 import { LetterWritingCanvas } from "@/components/LetterWritingCanvas";
-import { LetterQuizGame } from "@/components/LetterQuizGame";
 import { AiHandwritingGrader } from "@/components/AiHandwritingGrader";
 
 // Các component của phần HỌC SỐ (Kế thừa trọn vẹn từ bản cũ)
@@ -132,9 +131,6 @@ export default function HomePage() {
           } else if (letterMode === "digraphs") {
             actionType = "digraphs";
             actionName = `Học âm đôi / vần ghép: âm "${currentDigraph.name}"`;
-          } else if (letterMode === "quiz") {
-            actionType = "page_view";
-            actionName = "Đố Vui Bắt Chữ Thông Minh";
           } else {
             actionType = "letter_view";
             actionName = `Khám phá Thẻ Chữ Cái 3D: Chữ ${currentLetter.letter}`;
@@ -350,9 +346,7 @@ export default function HomePage() {
                     ? `14 Vần ghép & Âm đôi (Âm ${currentDigraph.id - 40}/14)`
                     : letterMode === "writing"
                     ? `Tập viết chữ thường ô ly: chữ "${currentLetter.letter.toLowerCase()}"`
-                    : letterMode === "grader"
-                    ? "AI Chấm & Nhận Xét Bài Viết Chữ Đẹp"
-                    : "Đố Vui Bắt Chữ Thông Minh"
+                    : "AI Chấm & Nhận Xét Bài Viết Chữ Đẹp"
                   : numberMode === "card"
                   ? "Thẻ học số 3D độ nét cao"
                   : numberMode === "counting"
@@ -446,8 +440,6 @@ export default function HomePage() {
               )}
 
               {letterMode === "grader" && <AiHandwritingGrader />}
-
-              {letterMode === "quiz" && <LetterQuizGame />}
             </>
           )}
 

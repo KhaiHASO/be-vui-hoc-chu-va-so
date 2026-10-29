@@ -17,7 +17,7 @@ import numpy as np
 import unicodedata
 import shutil
 
-BASE_DIR = "/Users/admin/Desktop/BeVuiHocChuVaSo" if os.path.exists("/Users/admin/Desktop/BeVuiHocChuVaSo") else "/var/www/be-vui-hoc-chu-va-so"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OCR_INDEX_FILE = os.path.join(BASE_DIR, "src/data/ocr_page_indexes.json")
 OCR_HASH_FILE = os.path.join(BASE_DIR, "src/data/ocr_page_hashes.json")
 

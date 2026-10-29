@@ -29,8 +29,17 @@ import {
   Layers,
   Sliders,
   Check,
+  ArrowUp,
+  ArrowDown,
+  ArrowLeft,
+  ArrowRight,
+  Minus,
+  Zap,
+  Target,
 } from "lucide-react";
 import { HandwritingBoundingBox } from "@/types/letter";
+import { sound } from "@/utils/speech";
+import { getTeacherMasterUrl } from "@/data/workbookMasters";
 
 // ─── Preset Samples ──────────────────────────────────────────────────────────
 
@@ -83,6 +92,107 @@ const PRESET_SAMPLES: PresetSample[] = [
   },
 ];
 
+// ─── Preset Pre-loaded Bounding Boxes for Instant Inspection ─────────────────
+const PRESET_DEFAULT_BOXES: Record<string, HandwritingBoundingBox[]> = {
+  sample_la_he: [
+    {
+      id: "box_ki_co",
+      box_2d: [430, 325, 520, 445],
+      loai: "chu_y",
+      chu: "kì cọ",
+      confidence: 96,
+      tieu_de: "Luyện từ 'kì cọ'",
+      nhan_xet: "Nét khuyết trên chữ 'k' viết thẳng, tuy nhiên khoảng cách giữa 'kì' và 'cọ' hơi hẹp.",
+      huong_dan_sua: "Nhắc con cách đều đúng bằng 1 con chữ 'o' tưởng tượng trước khi đặt bút viết chữ 'cọ'.",
+      do_cao_o_ly: "2.5 ly (khuyết trên) / 2 ly",
+      do_rong_o_ly: "1.5 ly (Chuẩn)",
+      diem_dung_but: "Dòng kẻ ngang 2",
+    },
+    {
+      id: "box_la_he",
+      box_2d: [268, 560, 355, 725],
+      loai: "chuan",
+      chu: "lá hẹ",
+      confidence: 98,
+      tieu_de: "Luyện từ 'lá hẹ'",
+      nhan_xet: "Nét khuyết chữ 'l' và 'h' uốn lượn rất khéo, đúng chuẩn 2.5 ly của Bộ Giáo Dục.",
+      huong_dan_sua: "Giữ vững nét đưa bút thanh thoát này con nhé!",
+      do_cao_o_ly: "2.5 ly (Chuẩn)",
+      do_rong_o_ly: "1.5 ly (Chuẩn)",
+      diem_dung_but: "Dòng kẻ ngang 2",
+    },
+    {
+      id: "box_ho_ca",
+      box_2d: [185, 565, 270, 720],
+      loai: "chuan",
+      chu: "hồ cá",
+      confidence: 97,
+      tieu_de: "Luyện từ 'hồ cá'",
+      nhan_xet: "Chữ viết ngay ngắn, thẳng dòng kẻ ô ly. Dấu huyền đặt đúng trên đầu chữ 'o'.",
+      huong_dan_sua: "Duy trì nét chữ sạch đẹp và thẳng hàng.",
+      do_cao_o_ly: "2.5 ly / 2 ly (Chuẩn)",
+      do_rong_o_ly: "1.5 ly (Chuẩn)",
+      diem_dung_but: "Dòng kẻ ngang 2",
+    },
+  ],
+  sample_err_a: [
+    {
+      id: "box_err_a",
+      box_2d: [118, 250, 168, 360],
+      loai: "loi",
+      chu: "a",
+      confidence: 95,
+      tieu_de: "Nét móc ngược nhô cao quá dòng kẻ 2",
+      nhan_xet: "Nét móc ngược của chữ 'a' bị kéo vọt lên quá dòng kẻ ngang 2 làm chữ mất cân đối.",
+      huong_dan_sua: "Dừng bút nhẹ nhàng ngay tại đường kẻ ngang 2, không hất quá cao con nhé!",
+      do_cao_o_ly: "2.3 ly (Vượt chuẩn 2.0 ly)",
+      do_rong_o_ly: "1.5 ly (Chuẩn)",
+      diem_dung_but: "Vượt qua dòng kẻ 2 (+0.3 ly)",
+    },
+    {
+      id: "box_ca",
+      box_2d: [310, 148, 352, 235],
+      loai: "chuan",
+      chu: "ca",
+      confidence: 98,
+      tieu_de: "Tiếng 'ca' viết liền mạch",
+      nhan_xet: "Nét cong hở phải chữ 'c' đều đặn, nối sang chữ 'a' đúng chuẩn 1 ô ly.",
+      huong_dan_sua: "Chữ viết rất đẹp và đúng mẫu.",
+      do_cao_o_ly: "2.0 ly (Chuẩn)",
+      do_rong_o_ly: "1.5 ly (Chuẩn)",
+      diem_dung_but: "Dòng kẻ ngang 2",
+    },
+  ],
+  sample_exam: [
+    {
+      id: "box_v",
+      box_2d: [310, 50, 360, 115],
+      loai: "chuan",
+      chu: "v",
+      confidence: 99,
+      tieu_de: "Chữ 'v' đạt chuẩn mẫu thi",
+      nhan_xet: "Nét uốn cong chuẩn mực, độ cao 2 ô ly rất chuẩn.",
+      huong_dan_sua: "Giữ vững nét cong tròn và độ nghiêng chuẩn này con nhé!",
+      do_cao_o_ly: "2.0 ly (Chuẩn)",
+      do_rong_o_ly: "1.5 ly (Chuẩn)",
+      diem_dung_but: "Dòng kẻ ngang 2",
+    },
+    {
+      id: "box_ua",
+      box_2d: [395, 220, 445, 310],
+      loai: "chuan",
+      chu: "ua",
+      confidence: 97,
+      tieu_de: "Vần 'ua' nối liền mạch",
+      nhan_xet: "Khoảng cách nối nét giữa u và a rất khéo léo.",
+      huong_dan_sua: "Nét móc ngược đạt chuẩn độ cao 2 ly.",
+      do_cao_o_ly: "2.0 ly (Chuẩn)",
+      do_rong_o_ly: "1.5 ly (Chuẩn)",
+      diem_dung_but: "Dòng kẻ ngang 2",
+    },
+  ],
+};
+
 // ─── Helpers: Trạng thái & Màu sắc ──────────────────────────────────────────
 
 function getStatusTheme(loai: HandwritingBoundingBox["loai"], isUnrec?: boolean) {
@@ -128,87 +238,6 @@ function getStatusTheme(loai: HandwritingBoundingBox["loai"], isUnrec?: boolean)
     dot: "bg-emerald-500",
     icon: "✅",
   };
-}
-
-// ─── Chữ Mẫu Chân Lý Từ Cuốn Cô Giáo Viết (DuLieuCoGiaoViet) ─────────────────
-
-function getTeacherMasterUrl(chu: string): string {
-  if (!chu || chu === "..." || chu.includes("chưa rõ") || chu.includes("chua ro")) return "";
-  const norm = chu.toLowerCase().trim();
-
-  // Mapping các từ ghép / cụm từ bài học trong sách Cô giáo
-  const wordMap: Record<string, string> = {
-    "kì cọ": "/data/teacher_masters/master_k.png",
-    "ki co": "/data/teacher_masters/master_k.png",
-    "kê đá": "/data/teacher_masters/master_k.png",
-    "hồ cá": "/data/teacher_masters/master_h.png",
-    "lá hẹ": "/data/teacher_masters/master_l.png",
-    "ca múa": "/data/teacher_masters/master_ca_mua.png",
-    "ca mua": "/data/teacher_masters/master_ca_mua.png",
-    "mùa thu": "/data/teacher_masters/master_mua_thu.png",
-    "mua thu": "/data/teacher_masters/master_mua_thu.png",
-    "sữa chua": "/data/teacher_masters/master_sua_chua.png",
-    "sua chua": "/data/teacher_masters/master_sua_chua.png",
-    "mùa mưa": "/data/teacher_masters/master_mua_mua.png",
-    "mua mua": "/data/teacher_masters/master_mua_mua.png",
-    "nhà bà có cà chua.": "/data/teacher_masters/master_nha_ba_co_ca_chua.png",
-    "nhà bà có cà chua": "/data/teacher_masters/master_nha_ba_co_ca_chua.png",
-    "nha ba co ca chua": "/data/teacher_masters/master_nha_ba_co_ca_chua.png",
-    "thỏ bé": "/data/teacher_masters/master_tho_be.png",
-    "tho be": "/data/teacher_masters/master_tho_be.png",
-    "ca": "/data/teacher_masters/master_ca.png",
-    "cá": "/data/teacher_masters/master_ca_sac.png",
-    "bà": "/data/teacher_masters/master_ba.png",
-    "bề": "/data/teacher_masters/master_e_mu.png",
-    "th": "/data/teacher_masters/master_th.png",
-    "ia": "/data/teacher_masters/master_ia.png",
-    "ua": "/data/teacher_masters/master_ua.png",
-    "ưa": "/data/teacher_masters/master_ua.png",
-    "v": "/data/teacher_masters/master_v.png",
-    "xe ngựa": "/data/teacher_masters/master_tho_be.png",
-    "xe": "/data/teacher_masters/master_x.png",
-    "khế": "/data/teacher_masters/master_k.png",
-  };
-
-  if (wordMap[norm]) {
-    return wordMap[norm];
-  }
-
-  // Chữ cái đơn lẻ
-  const single = norm.charAt(0);
-  const letterMap: Record<string, string> = {
-    "a": "/data/teacher_masters/master_a.png",
-    "ă": "/data/teacher_masters/master_ă.png",
-    "â": "/data/teacher_masters/master_â.png",
-    "b": "/data/teacher_masters/master_b.png",
-    "c": "/data/teacher_masters/master_c.png",
-    "d": "/data/teacher_masters/master_d.png",
-    "đ": "/data/teacher_masters/master_đ.png",
-    "e": "/data/teacher_masters/master_e.png",
-    "ê": "/data/teacher_masters/master_ê.png",
-    "g": "/data/teacher_masters/master_g.png",
-    "h": "/data/teacher_masters/master_h.png",
-    "i": "/data/teacher_masters/master_i.png",
-    "k": "/data/teacher_masters/master_k.png",
-    "l": "/data/teacher_masters/master_l.png",
-    "m": "/data/teacher_masters/master_m.png",
-    "n": "/data/teacher_masters/master_n.png",
-    "o": "/data/teacher_masters/master_o.png",
-    "ô": "/data/teacher_masters/master_ô.png",
-    "ơ": "/data/teacher_masters/master_ơ.png",
-    "p": "/data/teacher_masters/master_p.png",
-    "q": "/data/teacher_masters/master_q.png",
-    "r": "/data/teacher_masters/master_r.png",
-    "s": "/data/teacher_masters/master_s.png",
-    "t": "/data/teacher_masters/master_t.png",
-    "u": "/data/teacher_masters/master_u.png",
-    "ư": "/data/teacher_masters/master_ư.png",
-    "v": "/data/teacher_masters/master_v.png",
-    "x": "/data/teacher_masters/master_x.png",
-    "y": "/data/teacher_masters/master_y.png",
-  };
-
-  return letterMap[single] || "/data/teacher_masters/master_a.png";
 }
 
 // ─── Main Component: AiHandwritingGrader ──────────────────────────────────────
@@ -261,28 +290,56 @@ export function AiHandwritingGrader() {
   const [isSpotLoading, setIsSpotLoading] = useState<boolean>(false);
   const [showGridOverlay, setShowGridOverlay] = useState<boolean>(true);
   const [showRedTruthOverlay, setShowRedTruthOverlay] = useState<boolean>(true);
-  const [redOpacity, setRedOpacity] = useState<number>(0.6);
+  const [redOpacity, setRedOpacity] = useState<number>(0.65);
+  const [redOffsetX, setRedOffsetX] = useState<number>(0);
+  const [redOffsetY, setRedOffsetY] = useState<number>(0);
+  const [redScale, setRedScale] = useState<number>(1.0);
+  const [isBlinkingRed, setIsBlinkingRed] = useState<boolean>(false);
+  const [blinkVisible, setBlinkVisible] = useState<boolean>(true);
+  const [showAdjustControls, setShowAdjustControls] = useState<boolean>(false);
   const [isPlayingVoice, setIsPlayingVoice] = useState<boolean>(false);
+
+  // Reset micro adjustments when switching box
+  useEffect(() => {
+    setRedOffsetX(0);
+    setRedOffsetY(0);
+    setRedScale(1.0);
+    setIsBlinkingRed(false);
+    setBlinkVisible(true);
+  }, [selectedBoxId]);
+
+  // Blink comparator timer
+  useEffect(() => {
+    if (!isBlinkingRed) {
+      setBlinkVisible(true);
+      return;
+    }
+    const timer = setInterval(() => {
+      setBlinkVisible((prev) => !prev);
+    }, 450);
+    return () => clearInterval(timer);
+  }, [isBlinkingRed]);
 
   // Selected item reference
   const currentBox = boxes.find((b) => b.id === selectedBoxId) || (boxes.length > 0 ? boxes[0] : null);
 
-  // ── Text-to-speech helper ──
-  const speakTip = useCallback((text: string) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    try {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "vi-VN";
-      utterance.rate = 0.92;
-      utterance.pitch = 1.05;
-      utterance.onstart = () => setIsPlayingVoice(true);
-      utterance.onend = () => setIsPlayingVoice(false);
-      utterance.onerror = () => setIsPlayingVoice(false);
-      window.speechSynthesis.speak(utterance);
-    } catch {
-      setIsPlayingVoice(false);
+  // Automatically extract crop if currentBox does not have sample_crop_url
+  useEffect(() => {
+    if (!resultImgRef.current || !currentBox || currentBox.sample_crop_url) return;
+    const imgEl = resultImgRef.current;
+    if (imgEl.naturalWidth > 0 && imgEl.naturalHeight > 0) {
+      const crop = cropBoxImage(imgEl, currentBox.box_2d);
+      if (crop) {
+        setBoxes((prev) =>
+          prev.map((b) => (b.id === currentBox.id ? { ...b, sample_crop_url: crop } : b))
+        );
+      }
     }
+  }, [currentBox, selectedBoxId, imageDataUrl]);
+
+  // ── Text-to-speech helper (Giọng đọc tự nhiên chuẩn người Việt) ──
+  const speakTip = useCallback((text: string) => {
+    sound.speak(text, (isPlaying) => setIsPlayingVoice(isPlaying));
   }, []);
 
   // ── PDF Loader Helper ──
@@ -387,8 +444,9 @@ export function AiHandwritingGrader() {
   const handleSelectPreset = async (preset: PresetSample) => {
     const fileName = preset.url.split("/").pop() || preset.title;
     setDocName(fileName);
-    setBoxes([]);
-    setSelectedBoxId(null);
+    const initialBoxes = PRESET_DEFAULT_BOXES[preset.id] || [];
+    setBoxes(initialBoxes);
+    setSelectedBoxId(initialBoxes.length > 0 ? initialBoxes[0].id : null);
     setZoom(1.0);
     setRotation(0);
     setError(null);
@@ -415,9 +473,7 @@ export function AiHandwritingGrader() {
   };
 
   const handleReset = () => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
+    sound.stopSpeech();
     setImageDataUrl(null);
     setDocName("");
     setBoxes([]);
@@ -964,6 +1020,19 @@ export function AiHandwritingGrader() {
                 alt="Bài viết học sinh"
                 className="w-full h-auto block rounded-2xl shadow-xs pointer-events-none select-none"
                 draggable={false}
+                onLoad={() => {
+                  if (!resultImgRef.current) return;
+                  const img = resultImgRef.current;
+                  setBoxes((prev) =>
+                    prev.map((b) => {
+                      if (!b.sample_crop_url && img.naturalWidth > 0) {
+                        const crop = cropBoxImage(img, b.box_2d);
+                        return crop ? { ...b, sample_crop_url: crop } : b;
+                      }
+                      return b;
+                    })
+                  );
+                }}
               />
 
               {/* Dynamic Dragging Selection Box */}
@@ -1017,6 +1086,28 @@ export function AiHandwritingGrader() {
                       <span>{theme.icon}</span>
                       <span>{bb.chu}</span>
                     </span>
+
+                    {/* Red Master Overlay inside the Bounding Box on the Notebook */}
+                    {showRedTruthOverlay && isSelected && getTeacherMasterUrl(bb.chu) && (
+                      <div
+                        className={`absolute inset-0 pointer-events-none z-10 overflow-hidden flex items-center justify-center transition-opacity duration-75 ${
+                          isBlinkingRed && !blinkVisible ? "opacity-0" : ""
+                        }`}
+                        style={{
+                          opacity: isBlinkingRed ? (blinkVisible ? redOpacity : 0) : redOpacity,
+                        }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={getTeacherMasterUrl(bb.chu)}
+                          alt={`Mẫu đỏ ${bb.chu}`}
+                          className="w-full h-full object-contain filter drop-shadow-xs"
+                          style={{
+                            transform: `translate(${redOffsetX}px, ${redOffsetY}px) scale(${redScale})`,
+                          }}
+                        />
+                      </div>
+                    )}
 
                     {/* Resize Handle at Bottom-Right */}
                     {isSelected && (
@@ -1134,10 +1225,20 @@ export function AiHandwritingGrader() {
                   )}
 
                   {/* Red Ground-Truth Standard Guide Overlay */}
-                  {showRedTruthOverlay && currentBox.chu !== "Chưa rõ nét" && currentBox.chu !== "..." && !currentBox.is_unrecognized && (
+                  {showRedTruthOverlay &&
+                    currentBox.chu !== "Chưa rõ nét" &&
+                    currentBox.chu !== "..." &&
+                    !currentBox.is_unrecognized &&
+                    getTeacherMasterUrl(currentBox.chu) && (
                     <div
-                      className="absolute inset-0 pointer-events-none z-10 flex items-center justify-center p-2.5 transition-opacity duration-150"
-                      style={{ opacity: redOpacity }}
+                      className={`absolute inset-0 pointer-events-none z-10 flex items-center justify-center transition-all duration-75 ${
+                        isBlinkingRed && !blinkVisible ? "opacity-0" : ""
+                      }`}
+                      style={{
+                        opacity: isBlinkingRed ? (blinkVisible ? redOpacity : 0) : redOpacity,
+                        transform: `translate(${redOffsetX}px, ${redOffsetY}px) scale(${redScale})`,
+                        transformOrigin: "center center",
+                      }}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
@@ -1158,45 +1259,183 @@ export function AiHandwritingGrader() {
                 </div>
 
                 {/* Overlay Controls */}
-                <div className="w-full max-w-[280px] mt-2.5 flex items-center justify-between text-xs text-slate-600 bg-slate-50 p-2 rounded-xl border border-slate-100">
-                  <button
-                    onClick={() => setShowGridOverlay(!showGridOverlay)}
-                    className={`px-2 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer ${
-                      showGridOverlay
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-slate-200 text-slate-500"
-                    }`}
-                  >
-                    <Layers className="w-3 h-3" />
-                    Lưới ô ly
-                  </button>
-
-                  <div className="flex items-center gap-1.5">
+                <div className="w-full max-w-[280px] mt-2.5 flex flex-col gap-2">
+                  <div className="flex items-center justify-between text-xs text-slate-600 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
                     <button
-                      onClick={() => setShowRedTruthOverlay(!showRedTruthOverlay)}
+                      onClick={() => setShowGridOverlay(!showGridOverlay)}
                       className={`px-2 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer ${
-                        showRedTruthOverlay
-                          ? "bg-rose-100 text-rose-700"
+                        showGridOverlay
+                          ? "bg-blue-100 text-blue-700"
                           : "bg-slate-200 text-slate-500"
                       }`}
+                      title="Bật/Tắt lưới 4 ô ly tiểu học"
                     >
-                      <span className="w-2 h-2 rounded-full bg-rose-600" />
-                      Mẫu đỏ
+                      <Layers className="w-3 h-3" />
+                      Lưới ô ly
                     </button>
 
-                    {showRedTruthOverlay && (
-                      <input
-                        type="range"
-                        min="0.2"
-                        max="1.0"
-                        step="0.1"
-                        value={redOpacity}
-                        onChange={(e) => setRedOpacity(parseFloat(e.target.value))}
-                        className="w-14 h-1.5 accent-rose-600 cursor-pointer"
-                        title="Độ đậm nét mẫu đỏ"
-                      />
-                    )}
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setShowRedTruthOverlay(!showRedTruthOverlay)}
+                        className={`px-2 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer ${
+                          showRedTruthOverlay
+                            ? "bg-rose-100 text-rose-700 ring-1 ring-rose-300"
+                            : "bg-slate-200 text-slate-500"
+                        }`}
+                        title="Bật/Tắt mẫu chữ đỏ chuẩn"
+                      >
+                        <span className="w-2 h-2 rounded-full bg-rose-600" />
+                        Mẫu đỏ
+                      </button>
+
+                      {showRedTruthOverlay && (
+                        <>
+                          <button
+                            onClick={() => setIsBlinkingRed(!isBlinkingRed)}
+                            className={`px-2 py-1 rounded-lg font-bold text-[11px] flex items-center gap-0.5 active:scale-95 transition-all cursor-pointer ${
+                              isBlinkingRed
+                                ? "bg-amber-100 text-amber-800 ring-2 ring-amber-400 animate-pulse"
+                                : "bg-slate-200 hover:bg-slate-300 text-slate-700"
+                            }`}
+                            title="Bật chế độ chớp tắt mẫu đỏ để so sánh điểm lệch nét"
+                          >
+                            <Zap className="w-3 h-3 text-amber-600" />
+                            <span>Chớp</span>
+                          </button>
+
+                          <button
+                            onClick={() => setShowAdjustControls(!showAdjustControls)}
+                            className={`px-2 py-1 rounded-lg font-bold text-[11px] flex items-center gap-1 active:scale-95 transition-all cursor-pointer ${
+                              showAdjustControls
+                                ? "bg-indigo-100 text-indigo-700 ring-1 ring-indigo-300"
+                                : "bg-slate-200 hover:bg-slate-300 text-slate-700"
+                            }`}
+                            title="Mở bảng phím điều hướng căn chỉnh vị trí nét đỏ"
+                          >
+                            <Target className="w-3 h-3 text-indigo-600" />
+                            <span>Căn nét</span>
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Thanh trượt độ mờ nét đỏ */}
+                  {showRedTruthOverlay && (
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 bg-white px-2.5 py-1 rounded-lg border border-slate-100">
+                      <span>Độ mờ nét đỏ:</span>
+                      <div className="flex items-center gap-1.5">
+                        <input
+                          type="range"
+                          min="0.2"
+                          max="1.0"
+                          step="0.05"
+                          value={redOpacity}
+                          onChange={(e) => setRedOpacity(parseFloat(e.target.value))}
+                          className="w-24 h-1.5 accent-rose-600 cursor-pointer"
+                        />
+                        <span className="w-7 text-right font-bold text-rose-600">{Math.round(redOpacity * 100)}%</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Bảng D-Pad tinh chỉnh vị trí & kích thước nét đỏ */}
+                  {showRedTruthOverlay && showAdjustControls && (
+                    <div className="p-2 rounded-xl bg-indigo-50/70 border border-indigo-200 text-xs flex flex-col items-center gap-1.5 animate-fade-in shadow-xs">
+                      <div className="w-full flex items-center justify-between text-[10px] font-black text-indigo-900 border-b border-indigo-100 pb-1">
+                        <span>🎯 Căn Chỉnh Vị Trí Nét Đỏ</span>
+                        <button
+                          onClick={() => {
+                            setRedOffsetX(0);
+                            setRedOffsetY(0);
+                            setRedScale(1.0);
+                          }}
+                          className="text-indigo-600 hover:text-indigo-800 font-bold underline cursor-pointer"
+                        >
+                          Đặt lại
+                        </button>
+                      </div>
+
+                      <div className="flex items-center justify-center gap-4">
+                        {/* D-Pad 4 hướng */}
+                        <div className="grid grid-cols-3 gap-1">
+                          <div />
+                          <button
+                            onClick={() => setRedOffsetY((y) => y - 2)}
+                            className="w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 border border-indigo-200 flex items-center justify-center font-bold text-slate-700 active:scale-90 shadow-2xs cursor-pointer"
+                            title="Dịch lên trên"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <div />
+
+                          <button
+                            onClick={() => setRedOffsetX((x) => x - 2)}
+                            className="w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 border border-indigo-200 flex items-center justify-center font-bold text-slate-700 active:scale-90 shadow-2xs cursor-pointer"
+                            title="Dịch sang trái"
+                          >
+                            <ArrowLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              setRedOffsetX(0);
+                              setRedOffsetY(0);
+                            }}
+                            className="w-7 h-7 rounded-lg bg-indigo-100 hover:bg-indigo-200 text-indigo-700 font-bold text-[10px] flex items-center justify-center active:scale-90 shadow-2xs cursor-pointer"
+                            title="Về giữa"
+                          >
+                            0
+                          </button>
+                          <button
+                            onClick={() => setRedOffsetX((x) => x + 2)}
+                            className="w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 border border-indigo-200 flex items-center justify-center font-bold text-slate-700 active:scale-90 shadow-2xs cursor-pointer"
+                            title="Dịch sang phải"
+                          >
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+
+                          <div />
+                          <button
+                            onClick={() => setRedOffsetY((y) => y + 2)}
+                            className="w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 border border-indigo-200 flex items-center justify-center font-bold text-slate-700 active:scale-90 shadow-2xs cursor-pointer"
+                            title="Dịch xuống dưới"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <div />
+                        </div>
+
+                        {/* Co giãn phóng to/thu nhỏ */}
+                        <div className="flex flex-col items-center gap-1">
+                          <button
+                            onClick={() => setRedScale((s) => Math.min(1.5, Math.round((s + 0.05) * 100) / 100))}
+                            className="w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 border border-indigo-200 flex items-center justify-center font-bold text-slate-700 active:scale-90 shadow-2xs cursor-pointer"
+                            title="Phóng to nét đỏ (+)"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="text-[10px] font-bold text-indigo-700">{Math.round(redScale * 100)}%</span>
+                          <button
+                            onClick={() => setRedScale((s) => Math.max(0.6, Math.round((s - 0.05) * 100) / 100))}
+                            className="w-7 h-7 rounded-lg bg-white hover:bg-indigo-100 border border-indigo-200 flex items-center justify-center font-bold text-slate-700 active:scale-90 shadow-2xs cursor-pointer"
+                            title="Thu nhỏ nét đỏ (-)"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="w-full text-[10px] text-slate-500 text-center flex items-center justify-center gap-2 pt-1 border-t border-indigo-100/60">
+                        <span className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-rose-600 inline-block" /> Mẫu chuẩn
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <span className="w-2 h-2 rounded-full bg-slate-800 inline-block" /> Bài viết của bé
+                        </span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1258,33 +1497,31 @@ export function AiHandwritingGrader() {
                     </div>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs text-slate-700 leading-relaxed font-medium">
-                    {currentBox.nhan_xet}
-                  </div>
-
-                  {/* Teacher Correction Tip with Audio Button */}
-                  <div className="p-3 rounded-xl bg-violet-50/80 border border-violet-100 flex items-start justify-between gap-2.5">
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[11px] font-black text-violet-800 mb-0.5 flex items-center gap-1">
-                        <span>💡 Lời cô giáo chỉ dẫn sửa tay:</span>
+                  {/* Teacher Correction Tip with Audio Button (chỉ hiện khi có hướng dẫn kỹ thuật sửa tay cụ thể) */}
+                  {currentBox.huong_dan_sua && (
+                    <div className="p-3 rounded-xl bg-violet-50/80 border border-violet-100 flex items-start justify-between gap-2.5">
+                      <div className="min-w-0 flex-1">
+                        <div className="text-[11px] font-black text-violet-800 mb-0.5 flex items-center gap-1">
+                          <span>💡 Hướng dẫn sửa nét:</span>
+                        </div>
+                        <p className="text-xs text-slate-700 font-medium leading-relaxed">
+                          {currentBox.huong_dan_sua}
+                        </p>
                       </div>
-                      <p className="text-xs text-slate-700 font-medium leading-relaxed">
-                        {currentBox.huong_dan_sua || currentBox.nhan_xet}
-                      </p>
-                    </div>
 
-                    <button
-                      onClick={() => speakTip(currentBox.huong_dan_sua || currentBox.nhan_xet)}
-                      className={`min-h-[36px] min-w-[36px] rounded-xl flex items-center justify-center shrink-0 active:scale-95 transition-all cursor-pointer ${
-                        isPlayingVoice
-                          ? "bg-violet-600 text-white shadow-md animate-pulse"
-                          : "bg-white text-violet-700 border border-violet-200 hover:bg-violet-100"
-                      }`}
-                      title="Nghe cô giáo đọc hướng dẫn sửa tay"
-                    >
-                      <Volume2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                      <button
+                        onClick={() => speakTip(currentBox.huong_dan_sua!)}
+                        className={`min-h-[36px] min-w-[36px] rounded-xl flex items-center justify-center shrink-0 active:scale-95 transition-all cursor-pointer ${
+                          isPlayingVoice
+                            ? "bg-violet-600 text-white shadow-md animate-pulse"
+                            : "bg-white text-violet-700 border border-violet-200 hover:bg-violet-100"
+                        }`}
+                        title="Nghe hướng dẫn sửa nét"
+                      >
+                        <Volume2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -112,24 +112,7 @@ async function runAudit() {
       console.warn(`   ⚠ Không chụp được Khẩu Hình:`, e.message);
     }
 
-    // 6. Chụp mục Học Chữ: Đố Vui Bắt Chữ
-    try {
-      if (vp.isMobile) {
-        const menuBtn = page.getByRole("button", { name: /Mở Menu điều hướng/i });
-        if (await menuBtn.isVisible()) await menuBtn.click();
-        await page.waitForTimeout(400);
-      }
-      const quizBtn = page.getByRole("button", { name: /Đố Vui Bắt Chữ/i });
-      if (await quizBtn.isVisible()) {
-        await quizBtn.click();
-        await page.waitForTimeout(600);
-        const quizShot = path.join(outputDir, `${vp.name}_6_chu_do_vui.png`);
-        await page.screenshot({ path: quizShot, fullPage: false });
-        console.log(`   ✓ [Học Chữ] Đã chụp Đố Vui Bắt Chữ -> ${quizShot}`);
-      }
-    } catch (e) {
-      console.warn(`   ⚠ Không chụp được Đố Vui:`, e.message);
-    }
+    // 6. Đố Vui Bắt Chữ đã được loại bỏ khỏi hệ thống
 
     // 7. Chuyển sang mục Lớn 2: HỌC SỐ
     try {
